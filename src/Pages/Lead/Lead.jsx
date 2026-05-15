@@ -217,7 +217,7 @@ const Leads2 = ({ mode }) => {
             state={{ from: fromPage }}
             rel="noopener noreferrer"
           >
-            <p className="hover:text-orange-500">{text}</p>
+            <p className="hover:text-orange-500">{dayjs(text).format("DD MMM YY, hh:mma")}</p>
           </NavLink>
         ),
       },
@@ -338,7 +338,7 @@ const Leads2 = ({ mode }) => {
             to={`/view-lead/${record.id}`} state={{ from: fromPage }}
             rel="noopener noreferrer"
           >
-            <p className="hover:text-orange-500">{text}</p>
+            <p className="hover:text-orange-500">{dayjs(text).format("DD MMM YY, hh:mma")}</p>
           </NavLink>
         ),
       },
