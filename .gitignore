@@ -5,5 +5,4 @@
 package-lock.json
 
 lmscrm-easebuzz-payment/node_modules
-src/lib/Constants.jsx
 .env
