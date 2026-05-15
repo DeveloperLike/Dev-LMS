@@ -1,0 +1,9 @@
+.DS_Store
+/node_modules
+/dist/assets
+/dist
+package-lock.json
+
+lmscrm-easebuzz-payment/node_modules
+src/lib/Constants.jsx
+.env

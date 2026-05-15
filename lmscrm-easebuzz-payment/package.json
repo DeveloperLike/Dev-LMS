@@ -1,0 +1,25 @@
+{
+  "name": "crm-easebuzz",
+  "version": "1.0.0",
+  "description": "a",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^8.6.0",
+    "express": "^5.2.1",
+    "js-sha512": "^0.8.0",
+    "nodemailer": "^8.0.4",
+    "pg": "^8.20.0",
+    "pg-hstore": "^2.3.4",
+    "request": "^2.88.2",
+    "sequelize": "^6.37.8"
+  }
+}

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Payment Confirmation</title>
+</head>
+
+<body style="margin:0;padding:0;background-color:#f5f6fa;font-family:Arial, sans-serif;">
+
+    <table width="100%" cellspacing="0" cellpadding="0" style="background:#f5f6fa;padding:20px;">
+        <tr>
+            <td align="center">
+
+                <table width="600" cellspacing="0" cellpadding="0"
+                    style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.05);">
+
+                    <!-- HEADER -->
+                    <tr>
+                        <td align="center" style="padding-bottom:30px;">
+                            <a href="{{website_link}}">
+                                <img src="https://www.yesgermany.com/wp-content/uploads/2025/11/04_YesGermany_Logo_Yellow_page-0001-300x150.jpg" />
+                            </a>
+                        </td>
+                    </tr>
+
+                    <!-- BODY -->
+                    <tr>
+                        <td style="padding:30px;color:#333;">
+
+                            <p>Hi <strong>{{name}}</strong>,</p>
+
+                            <p>Thankyou for your interest in our services. Please pay and keep the receipt for your records.</p>
+
+                            <table width="100%" cellspacing="0" cellpadding="10"
+                                style="margin-top:20px;border-collapse:collapse;">
+                                <tr style="background:#f1f5f9;">
+                                    <td><strong>Transaction ID</strong></td>
+                                    <td>{{transaction_id}}</td>
+                                </tr>
+
+                                <tr>
+                                    <td><strong>Amount</strong></td>
+                                    <td>₹{{amount}}</td>
+                                </tr>
+
+                                <tr style="background:#f1f5f9;">
+                                    <td><strong>Date</strong></td>
+                                    <td>{{date}}</td>
+                                </tr>
+                            </table>
+
+                            <p>
+                                Payment here
+                            </p>
+                            <p><a href="{{payment_url}}">Click here to view your payment</a></p>
+                            <p style="margin-top:30px;">
+                                If you have any questions, feel free to contact our support team.
+                            </p>
+
+                        </td>
+                    </tr>
+
+                    <!-- FOOTER -->
+                    <tr>
+                        <td style="background:#f9fafb;padding:20px;text-align:center;font-size:12px;color:#777;">
+                            <p style="margin:0;">© {{year}} Yes Germany</p>
+                            <p style="margin:5px 0;">All Rights Reserved</p>
+                        </td>
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+    </table>
+
+</body>
+
+</html>
