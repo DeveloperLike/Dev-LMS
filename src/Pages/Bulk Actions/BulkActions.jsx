@@ -10,6 +10,8 @@ import {
 } from "./ApiService";
 import { IoReload } from "react-icons/io5";
 import { PAGESIZE } from "../../lib/Constants";
+import axios from "axios";
+import { findLeadByEmailAndPhone } from "../Lead/ApiService";
 
 const BulkActions = ({ mode }) => {
   const [btnName, setBtnName] = useState("Import");
@@ -21,6 +23,21 @@ const BulkActions = ({ mode }) => {
   const [importPage, setImportPage] = useState(1);
   const [exportPage, setExportPage] = useState(1);
   const dispatch = useDispatch();
+
+
+  const checkLeadExistance = async () => {
+    const getLeadData = await findLeadByEmailAndPhone({ "phone": "9667037693", "email": 'itssachinbairagi@gmail.com' })
+    if (getLeadData.status === 200) {
+      const lead_id = getLeadData?.data?.lead_id
+
+      console.log(getLeadData?.data)
+
+      // update logs here
+      // updateActivityLog("leadId", "activityType", "description", "notes")
+    } else {
+      console.log("Unable to find the lead data")
+    }
+  }
 
   const templateModulePermission = useSelector(
     (state) => state.permissions.permissionsData
@@ -41,20 +58,20 @@ const BulkActions = ({ mode }) => {
         />
       ),
     },
-    {
-      key: "2",
-      label: " Downloads",
-      children: (
-        <DataDownloads
-          exportData={exportData}
-          setExportData={setExportData}
-          openExport={openExport}
-          setOpenExport={setOpenExport}
-          exportPage={exportPage}
-          setExportPage={setExportPage}
-        />
-      ),
-    },
+    // {
+    //   key: "2",
+    //   label: " Downloads",
+    //   children: (
+    //     <DataDownloads
+    //       exportData={exportData}
+    //       setExportData={setExportData}
+    //       openExport={openExport}
+    //       setOpenExport={setOpenExport}
+    //       exportPage={exportPage}
+    //       setExportPage={setExportPage}
+    //     />
+    //   ),
+    // },
     // {
     //   key: '3',
     //   label: 'Schedule meeting upload',
@@ -117,7 +134,7 @@ const BulkActions = ({ mode }) => {
                   <IoReload />
                 </button>
                 <a href={sampleFile} download={sampleFile}>
-                  <button className={` ${mode === "dark" ? "text-yellow-500 border-yellow-500 hover:text-black" : "text-black"} dark:hover:bg-yellow-500 bg-[#ffce00] hover:bg-orange-500 dark:bg-meta-4 shadow border px-3 py-1 rounded`}>
+                  <button onClick={() => { checkLeadExistance() }} className={` ${mode === "dark" ? "text-yellow-500 border-yellow-500 hover:text-black" : "text-black"} dark:hover:bg-yellow-500 bg-[#ffce00] hover:bg-orange-500 dark:bg-meta-4 shadow border px-3 py-1 rounded`}>
                     Download Sample File
                   </button>
                 </a>

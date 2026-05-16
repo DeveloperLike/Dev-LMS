@@ -349,6 +349,16 @@ const deleteDripMarketingRuleService = (id) => {
 };
 
 
+
+const findLeadByEmailAndPhone = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `api/v1/lead-management/find-lead-data`,
+    data: payload,
+  });
+};
+
+
 export {
   deleteDripMarketingRuleService,
   updateActivityLog,
@@ -392,4 +402,5 @@ export {
   getLeadEmploymentDetailService,
   editLeadEmploymentDetailService,
   getLeadRealPhoneService,
+  findLeadByEmailAndPhone
 };

@@ -521,7 +521,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                         ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
                                         : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
                                     }
-
                                   >
                                     <MdOutlineMarkEmailUnread />
                                     Fresh Lead
@@ -620,7 +619,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               {/* <!-- Menu Sales --> */}
 
                               {/* <!-- Menu Item Bulk Actions --> */}
-                              {/* {(modulePermission.bulk_action_management ===
+                              {(modulePermission.bulk_action_management ===
                                 "edit" ||
                                 modulePermission.bulk_action_management ===
                                 "view") && (
@@ -641,7 +640,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                       Bulk Actions
                                     </NavLink>
                                   </li>
-                                )} */}
+                                )}
                               {/* <!-- Menu Item Bulk Actions --> */}
 
 
@@ -1643,7 +1642,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 className={({ isActive }) =>
                                   isActive
                                     ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white duration-300 ease-in-out"
-                                    : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:bg-graydark hover:text-white"
+                                    : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:bg-graydark hover:text-white"
                                 }
                               >
                                 <FaFacebook />
