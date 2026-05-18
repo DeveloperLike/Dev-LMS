@@ -68,34 +68,20 @@ const AccordianDescription = ({ items }) => {
       title: "Field Name",
       dataIndex: "field_name",
       key: "field_name",
-      render: (text, record) => (
-        <p onClick={() => showDrawer(record.id)}>{text}</p>
-      ),
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "Old Data",
       dataIndex: "old_data",
       key: "old_data",
-      render: (text, record) => (
-        <p onClick={() => showDrawer(record.id)}>{text}</p>
-      ),
+      render: (text) => <p>{text}</p>,
     },
     {
       title: "New Data",
       dataIndex: "new_data",
       key: "new_data",
-      render: (text, record) => (
-        <p onClick={() => showDrawer(record.id)}>{text}</p>
-      ),
+      render: (text) => <p>{text}</p>,
     },
-    // {
-    //   title: "Time",
-    //   dataIndex: "time",
-    //   key: "time",
-    //   render: (text, record) => (
-    //     <p onClick={() => showDrawer(record.id)}>{text}</p>
-    //   ),
-    // },
   ];
 
   return (
