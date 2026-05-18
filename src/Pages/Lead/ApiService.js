@@ -361,7 +361,7 @@ const findLeadByEmailAndPhone = (payload) => {
 const createFollowUp = (payload) => {
   return authenticatedAxiosInstance({
     method: "post",
-    url: `api/v1/leads/${req.body.lead_id}/follow-up`,
+    url: `api/v1/leads/${payload.lead_id}/follow-up`,
     data: payload,
   });
 };
@@ -371,6 +371,9 @@ const createLeadByWebsite = (payload) => {
     method: "post",
     url: `api/v1/lead-management/lead-widget/website`,
     data: payload,
+    headers: {
+      "api-key": "ApiKeyfdfdghnfhnfhfhgfABC"
+    }
   });
 }
 
