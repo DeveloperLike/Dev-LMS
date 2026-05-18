@@ -358,6 +358,22 @@ const findLeadByEmailAndPhone = (payload) => {
   });
 };
 
+const createFollowUp = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `api/v1/leads/${req.body.lead_id}/follow-up`,
+    data: payload,
+  });
+};
+
+const createLeadByWebsite = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `api/v1/lead-management/lead-widget/website`,
+    data: payload,
+  });
+}
+
 
 export {
   deleteDripMarketingRuleService,
@@ -402,5 +418,7 @@ export {
   getLeadEmploymentDetailService,
   editLeadEmploymentDetailService,
   getLeadRealPhoneService,
-  findLeadByEmailAndPhone
+  findLeadByEmailAndPhone,
+  createFollowUp,
+  createLeadByWebsite
 };
