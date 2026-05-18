@@ -620,7 +620,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               {/* <!-- Menu Sales --> */}
 
                               {/* <!-- Menu Item Bulk Actions --> */}
-                              {/* {(modulePermission.bulk_action_management ===
+                              {(modulePermission.bulk_action_management ===
                                 "edit" ||
                                 modulePermission.bulk_action_management ===
                                 "view") && (
@@ -641,7 +641,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                       Bulk Actions
                                     </NavLink>
                                   </li>
-                                )} */}
+                                )}
                               {/* <!-- Menu Item Bulk Actions --> */}
 
 
