@@ -1,8 +1,9 @@
 import axios from "axios";
+import { baseurl } from "../../../../lib/Constants";
 
 // ================= AXIOS =================
 const api = axios.create({
-  baseURL: "https://yesgermany.org:8443/facebook",
+  baseURL: baseurl + "/facebook",
   headers: {
     "Content-Type": "application/json",
   },

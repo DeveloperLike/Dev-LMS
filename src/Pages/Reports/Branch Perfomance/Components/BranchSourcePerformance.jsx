@@ -16,6 +16,8 @@ import {
     getBranchRegisteredAtQuery,
     getCounsellorRegisteredAtQuery
 } from "../Queries/BranchPerfomanceQueries";
+import { baseurl } from "../../../../lib/Constants";
+
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -64,7 +66,7 @@ function BranchSourcePerformance({
     onTotalsChange,
 }) {
 
-    const BASE_URL = "https://yesgermany.org:8443";
+    const BASE_URL = baseurl;
 
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);

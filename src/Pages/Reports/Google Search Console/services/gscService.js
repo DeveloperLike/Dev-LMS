@@ -1,6 +1,7 @@
 import axios from "@/lib/AxiosInstance";
+import { baseurl } from "@/lib/Constants";
 
-const BASE_URL = "https://yesgermany.org:8443";
+const BASE_URL = baseurl;
 
 export const getOverview = (params) =>
   axios.get(`${BASE_URL}/google/search-console/overview`, { params });

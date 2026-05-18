@@ -9,13 +9,14 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { getBranchUserStatusQuery } from "../Queries/BranchPerfomanceQueries";
+import { baseurl } from "../../../../lib/Constants.jsx";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 function BranchUserStatusPerformance({ startDate, endDate, counsellor, leadSource, sourceGroup, branch, role }) {
 
-    const BASE_URL = "https://yesgermany.org:8443";
+    const BASE_URL = baseurl;
 
     const [loading, setLoading] = useState(false);
     const [data, setData] = useState([]);
