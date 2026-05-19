@@ -8,7 +8,8 @@ import {
     Tag,
     Spin,
     Input,
-    Alert
+    Alert,
+    Switch
 } from "antd";
 import {
     FacebookOutlined,
@@ -32,7 +33,8 @@ import {
     postLinkFacebookPageListService,
     postLinkFacebookAccountListService,
     postSyncFacebookLeadsService,
-    getFacebookLeadsService
+    getFacebookLeadsService,
+    postToggleFacebookPageService
 } from "../ApiService";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -170,6 +172,21 @@ const FaceBook = () => {
         }
     };
 
+    const handleTogglePageStatus = async (pageId, is_active) => {
+        try {
+            const response = await postToggleFacebookPageService({ page_id: pageId, is_active });
+            if (response.data.success === "1") {
+                message.success(response.data.message || "Page status updated successfully");
+                getLeadApi();
+            } else {
+                message.error(response.data.message || "Failed to update page status");
+            }
+        } catch (error) {
+            console.error("Toggle Page Status Error:", error);
+            message.error("An error occurred while updating page status.");
+        }
+    };
+
     const columns = [
         {
             title: "Index",
@@ -211,6 +228,17 @@ const FaceBook = () => {
                 <Tag color={text ? "green" : "blue"} icon={<SafetyCertificateOutlined />}>
                     {text ? `Valid until ${text.split(',')[0]}` : "Active"}
                 </Tag>
+            ),
+        },
+        {
+            title: "Sync Leads",
+            dataIndex: "is_active",
+            key: "is_active",
+            render: (isActive, record) => (
+                <Switch
+                    checked={isActive !== false}
+                    onChange={(checked) => handleTogglePageStatus(record.page_id, checked)}
+                />
             ),
         },
     ];

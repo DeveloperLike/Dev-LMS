@@ -112,6 +112,22 @@ const getGoogleGscSitesService = () => {
   });
 };
 
+const postToggleFacebookPageService = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/api/v1/integration/toggle-facebook-page",
+    data: payload,
+  });
+};
+
+const postToggleFacebookAdAccountService = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/api/v1/integration/toggle-facebook-ad-account",
+    data: payload,
+  });
+};
+
 export {
   getFacebookService,
   postFacebookPageListService,
@@ -126,7 +142,9 @@ export {
   getGoogleAuthUrlService,
   postGoogleCallbackService,
   getGooglePropertiesService,
-  getGoogleGscSitesService
+  getGoogleGscSitesService,
+  postToggleFacebookPageService,
+  postToggleFacebookAdAccountService
 };
 
 
