@@ -8,7 +8,8 @@ import {
     Tag, 
     Spin, 
     Input, 
-    Alert 
+    Alert,
+    Switch
 } from "antd";
 import { 
     FacebookOutlined, 
@@ -22,7 +23,8 @@ import FacebookLogin from "@greatsumini/react-facebook-login";
 import { 
     getFacebookAdsService, 
     postLinkFacebookAccountListService,
-    postSyncFacebookLeadsService
+    postSyncFacebookLeadsService,
+    postToggleFacebookAdAccountService
 } from "../ApiService";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -120,6 +122,21 @@ const FacebookAdsAccount = () => {
         }
     };
 
+    const handleToggleAdAccountStatus = async (adAccountId, is_active) => {
+        try {
+            const response = await postToggleFacebookAdAccountService({ ad_account_id: adAccountId, is_active });
+            if (response.data.success === "1") {
+                message.success(response.data.message || "Ad Account status updated successfully");
+                getLeadApi();
+            } else {
+                message.error(response.data.message || "Failed to update Ad Account status");
+            }
+        } catch (error) {
+            console.error("Toggle Ad Account Status Error:", error);
+            message.error("An error occurred while updating Ad Account status.");
+        }
+    };
+
     const columns = [
         {
             title: "Index",
@@ -155,6 +172,17 @@ const FacebookAdsAccount = () => {
                 <Tag color={text ? "green" : "blue"} icon={<SafetyCertificateOutlined />}>
                     {text ? `Valid until ${text.split(',')[0]}` : "Active"}
                 </Tag>
+            ),
+        },
+        {
+            title: "Sync Leads",
+            dataIndex: "is_active",
+            key: "is_active",
+            render: (isActive, record) => (
+                <Switch
+                    checked={isActive !== false}
+                    onChange={(checked) => handleToggleAdAccountStatus(record.ad_account_id, checked)}
+                />
             ),
         },
     ];
