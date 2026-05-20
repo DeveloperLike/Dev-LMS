@@ -19,8 +19,8 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 import axios from "axios";
-import { baseurl } from "../../../lib/Constants";
-
+// import { baseurl } from "../../../lib/Constants";
+const baseurl = "https://yesgermany.org:8443"; //do not changee real data
 const groupData = (data = [], type = "campaign") => {
     const map = {};
 

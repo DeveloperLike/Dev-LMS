@@ -1576,7 +1576,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
               
 {/* <!-- Menu Item Integration Management --> */}
-              {(modulePermission.user_group === "admin") && (
+              {(modulePermission.is_superuser === true) && (
                 <SidebarLinkGroup
                   activeCondition={
                     pathname.includes("integrations")
