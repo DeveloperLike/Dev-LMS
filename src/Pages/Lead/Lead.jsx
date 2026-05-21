@@ -217,7 +217,9 @@ const Leads2 = ({ mode }) => {
             state={{ from: fromPage }}
             rel="noopener noreferrer"
           >
-            <p className="hover:text-orange-500">{dayjs(text).format("DD MMM YY, hh:mma")}</p>
+            <p className="hover:text-orange-500">
+              {dayjs(`${dayjs(text).format("YYYY")}-${dayjs(text).format("MM")}-${dayjs(text).format("DD")}T${dayjs(text).format("hh")}:${dayjs(text).format("mm")}:00+00:00`).format("DD MMM YY, hh:mma")}
+            </p>
           </NavLink>
         ),
       },
@@ -338,7 +340,7 @@ const Leads2 = ({ mode }) => {
             to={`/view-lead/${record.id}`} state={{ from: fromPage }}
             rel="noopener noreferrer"
           >
-            <p className="hover:text-orange-500">{dayjs(text).format("DD MMM YY, hh:mma")}</p>
+            <p className="hover:text-orange-500">{dayjs(`${dayjs(text).format("YYYY")}-${dayjs(text).format("MM")}-${dayjs(text).format("DD")}T${dayjs(text).format("hh")}:${dayjs(text).format("mm")}:00+00:00`).format("DD MMM YY, hh:mma")}</p>
           </NavLink>
         ),
       },
@@ -388,7 +390,11 @@ const Leads2 = ({ mode }) => {
             rel="noopener noreferrer"
           >
             <p className="hover:text-orange-500">
-              {text === null || undefined ? "-" : text}
+              {
+                text === null || undefined ? "-"
+                  :
+                  dayjs(`${dayjs(text).format("YYYY")}-${dayjs(text).format("MM")}-${dayjs(text).format("DD")}T${dayjs(text).format("hh")}:${dayjs(text).format("mm")}:00+00:00`).format("DD MMM YY, hh:mma")
+              }
             </p>
           </NavLink>
         ),

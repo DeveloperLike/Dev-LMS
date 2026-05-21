@@ -12,6 +12,7 @@ import { CustomSelectInput } from "../../Components/CustomComponents/InputWithIc
 import { PrimaryButton } from "../../Components/CustomComponents/ButtonUi";
 import { getCounsellorDropdown } from "../AssignmentRule/ApiService";
 import { getProfileService } from "../Profile/ApiService";
+import dayjs from "dayjs";
 
 export const UnassignedLead = ({ mode }) => {
   const [pageSize, setPageSize] = useState(PAGESIZE);
@@ -84,7 +85,8 @@ export const UnassignedLead = ({ mode }) => {
       render: (text, record) => (
         <NavLink to={`/view-lead/${record.id}`}>
           <p className="hover:text-orange-500">
-            {text === null || text === undefined ? "-" : text}
+            {/* {text === null || text === undefined ? "-" : dayjs(text).format("dddd, DD MMM YY, hh:mma")} */}
+            {dayjs(`${dayjs(text).format("YYYY")}-${dayjs(text).format("MM")}-${dayjs(text).format("DD")}T${dayjs(text).format("hh")}:${dayjs(text).format("mm")}:00+00:00`).format("DD MMM YY, hh:mma")}
           </p>
         </NavLink>
       ),
