@@ -9,6 +9,7 @@ import { TbListDetails } from "react-icons/tb";
 import { BiSolidTimeFive } from "react-icons/bi";
 import ReactAudioPlayer from "react-audio-player";
 import { IoRecordingSharp } from "react-icons/io5";
+import dayjs from "dayjs";
 
 export const Accordian = ({ activityList }) => {
   const { token } = theme.useToken();
@@ -130,7 +131,7 @@ const AccordianDescription = ({ items }) => {
                   <BiSolidTimeFive size={20} className="text-slate-500" />
                 </div>
                 <div>
-                  <p> {data.time}</p>
+                  <p>{dayjs(`2026-05-21T${data.time.split(" ")[0]}+00:00`).format("hh:mm:ss A")}</p>
                 </div>
               </div>
 

@@ -14,4 +14,3 @@ const GET_CRM_RECORDS_API = YgApi + "/mondayMeetings/get-crm-records";
 
 const PAGESIZE = 10;
 export { baseurl, PAGESIZE, GET_CRM_RECORDS_API , YgApi};
-
