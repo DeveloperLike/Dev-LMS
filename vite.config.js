@@ -1,15 +1,22 @@
 import path from "path"
 import react from "@vitejs/plugin-react"
 import { defineConfig } from "vite"
+import basicSsl from "@vitejs/plugin-basic-ssl"
 
 export default defineConfig(({ mode }) => {
   const isProd = mode === "production";
+  const useHttps = process.env.HTTPS === "true";
+
   return {
-    plugins: [react()],
+    plugins: [
+      react(),
+      ...(useHttps ? [basicSsl()] : [])
+    ],
     server: {
       host: 'lms.yesgermany.org',
       // host: 'localhost',
-      port: 3000
+      port: 3000,
+      https: useHttps
     },
     resolve: {
       alias: {

@@ -28,6 +28,7 @@ import { getLeadSourceService } from "../Lead/ApiService";
 import { getStateDropdownService } from "../State/ApiService";
 import { getLeadStatusService } from "../LeadStatus/ApiService";
 import { getLeadSubStatusService } from "../LeadSubStatus/ApiService";
+import { getSMTPSettingsService } from "../Integration/MailSettings/ApiService";
 
 // SMS toggle
 const ENABLE_SMS = false;
@@ -49,6 +50,7 @@ export default function AddDripMarketingRule({}) {
   const [trackingUrlDropdown, setTrackingUrlDropdown] = useState([]);
   const [watiTemplateDropdown, setWatiTemplateDropdown] = useState([]);
   const [eventTypeDropdown, setEventTypeDropdown] = useState([]);
+  const [smtpDropdown, setSmtpDropdown] = useState([]);
   const [fields, setFields] = useState([
     { id: "test", event_field: "", attribute: "", event_field_value: "" },
   ]);
@@ -60,6 +62,7 @@ export default function AddDripMarketingRule({}) {
     sms_template: { value: null, errors: [] },
     whatsapp_template: { value: null, errors: [] },
     enterprise_whatsapp_template: { value: null, errors: [] },
+    smtp_setting: { value: null, errors: [] },
   });
 
   const dispatch = useDispatch();
@@ -85,18 +88,19 @@ export default function AddDripMarketingRule({}) {
   };
 
   const handleSelectInput = (value, name, id) => {
+    const finalValue = value === undefined ? null : value;
     if (name === "event_field") {
-      setSelectedEventField(value);
+      setSelectedEventField(finalValue);
       setFormData({
         ...formData,
-        [name]: { value: value, errors: [] },
+        [name]: { value: finalValue, errors: [] },
       });
     }
 
     // Handle setting the attribute per field ID
     if (name === "attribute") {
       const updatedFields = fields.map((item) =>
-        item.id === id ? { ...item, attribute: value } : item
+        item.id === id ? { ...item, attribute: finalValue } : item
       );
       setFields(updatedFields);
     }
@@ -104,7 +108,7 @@ export default function AddDripMarketingRule({}) {
     // Handle setting any other field values
     setFormData({
       ...formData,
-      [name]: { value: value, errors: [] },
+      [name]: { value: finalValue, errors: [] },
     });
   };
 
@@ -141,11 +145,22 @@ export default function AddDripMarketingRule({}) {
     sms_template: formData.sms_template.value,
     whatsapp_template: formData.whatsapp_template.value,
     enterprise_whatsapp_template: formData.enterprise_whatsapp_template.value,
+    smtp_setting_id: formData.smtp_setting.value,
+    smtp_setting: formData.smtp_setting.value,
     events: fields.map(({ id, ...rest }) => rest),
   };
 
   // add assignment rule here
   const addDripMarketingRule = () => {
+    if (
+      !formData.email_template.value &&
+      !formData.whatsapp_template.value &&
+      !formData.enterprise_whatsapp_template.value &&
+      !formData.sms_template.value
+    ) {
+      message.error("At least one template (Whatsapp, Enterprise Whatsapp, or Email Template) must be selected.");
+      return;
+    }
     setLoading(true);
     if (loading) return;
 
@@ -159,6 +174,7 @@ export default function AddDripMarketingRule({}) {
             sms_template: { value: null, errors: [] },
             whatsapp_template: { value: null, errors: [] },
             enterprise_whatsapp_template: { value: null, errors: [] },
+            smtp_setting: { value: null, errors: [] },
           });
           navigate("/drip-marketing-rule");
           message.success(response?.data?.message);
@@ -237,11 +253,17 @@ export default function AddDripMarketingRule({}) {
       setWatiTemplateDropdown(response.data.data);
     }
 
+    async function fetchSmtpData() {
+      const response = await getSMTPSettingsService();
+      setSmtpDropdown(response.data.data || []);
+    }
+
     fetchEventData();
     ENABLE_SMS && fetchSmsTemplateData();
     fetchWhatsappTemplateData();
     fetchEmailTemplateData();
     fetchWatiTemplateData();
+    fetchSmtpData();
   }
 
   useEffect(() => {
@@ -288,15 +310,16 @@ export default function AddDripMarketingRule({}) {
             />
           </div>
 
-          <div className={`grid grid-cols-3 gap-3`}>
+          <div className={`grid grid-cols-4 gap-3`}>
             {ENABLE_SMS && (
               <div className="flex flex-col gap-1">
                 <label>
-                  Sms Template<sup className="text-red-500">*</sup>
+                  Sms Template
                 </label>
                 <CustomSelectInput
                   name="sms_template"
                   placeholder="Please select Sms Template"
+                  allowClear={true}
                   value={formData.sms_template.value}
                   errors={formData.sms_template.errors}
                   handler={(value) => handleSelectInput(value, "sms_template")}
@@ -309,11 +332,12 @@ export default function AddDripMarketingRule({}) {
             )}
             <div className="flex flex-col gap-1">
               <label>
-                Whatsapp Template<sup className="text-red-500">*</sup>
+                Whatsapp Template
               </label>
               <CustomSelectInput
                 name="whatsapp_template"
                 placeholder="Please select Whatsapp Template"
+                allowClear={true}
                 value={formData.whatsapp_template.value}
                 errors={formData.whatsapp_template.errors}
                 handler={(value) =>
@@ -333,6 +357,7 @@ export default function AddDripMarketingRule({}) {
               <CustomSelectInput
                 name="enterprise_whatsapp_template"
                 placeholder="Please select Enterprise Whatsapp Template"
+                allowClear={true}
                 value={formData.enterprise_whatsapp_template.value}
                 errors={formData.enterprise_whatsapp_template.errors}
                 handler={(value) =>
@@ -347,17 +372,36 @@ export default function AddDripMarketingRule({}) {
 
             <div className="flex flex-col gap-1">
               <label>
-                Email Template<sup className="text-red-500">*</sup>
+                Email Template
               </label>
               <CustomSelectInput
                 name="email_template"
                 placeholder="Please select Email Template"
+                allowClear={true}
                 value={formData.email_template.value}
                 errors={formData.email_template.errors}
                 handler={(value) => handleSelectInput(value, "email_template")}
                 options={emailTemplateDropdown.map((item) => ({
                   value: item.id,
                   label: item.name,
+                }))}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label>
+                SMTP Setting
+              </label>
+              <CustomSelectInput
+                name="smtp_setting"
+                placeholder="Please select SMTP Setting"
+                allowClear={true}
+                value={formData.smtp_setting.value}
+                errors={formData.smtp_setting.errors}
+                handler={(value) => handleSelectInput(value, "smtp_setting")}
+                options={smtpDropdown.map((item) => ({
+                  value: item.id,
+                  label: `${item.provider_name} (${item.username})${item.is_active ? ' - [Active]' : ''}`,
                 }))}
               />
             </div>

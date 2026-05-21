@@ -44,7 +44,7 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { MdOutlineMarkEmailUnread } from "react-icons/md";
 import LeadStatusAnalytics from "../../Pages/Analytics/LeadStatusAnalytics";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { MdOutlineTrendingUp } from "react-icons/md";
+import { MdOutlineTrendingUp , MdOutlineMail } from "react-icons/md";
 import { LucideChartNoAxesCombined } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
@@ -619,30 +619,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
                               {/* <!-- Menu Sales --> */}
 
-                              {/* <!-- Menu Item Bulk Actions --> */}
-                              {(modulePermission.bulk_action_management ===
-                                "edit" ||
-                                modulePermission.bulk_action_management ===
-                                "view") && (
-                                  // modulePermission.user_group === "admin" &&
-                                  <li>
-                                    <NavLink
-                                      to="/bulk-actions"
-                                      className={({ isActive }) =>
-                                        isActive
-                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                              ${pathname.includes("calendar") &&
-                                          "bg-graydark dark:bg-meta-4"
-                                          }`
-                                      }
-                                    >
-                                      <MdOutlineImportExport />
-                                      Bulk Actions
-                                    </NavLink>
-                                  </li>
-                                )}
-                              {/* <!-- Menu Item Bulk Actions --> */}
+                              
 
 
                               {/* <!-- Menu Item WhatsAppLayout --> */}
@@ -826,28 +803,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu Item Lead Sub Status --> */}
 
-                            {/* <!-- Menu Item Customise Widget --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
-                                <li>
-                                  <NavLink
-                                    to="/customise-widget"
-                                    className={({ isActive }) =>
-                                      isActive
-                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                            ${pathname.includes("calendar") &&
-                                        "bg-graydark dark:bg-meta-4"
-                                        }`
-                                    }
-                                  >
-                                    <MdOutlineWidgets />
-                                    Customise Widget
-                                  </NavLink>
-                                </li>
-                              )}
-                            {/* <!-- Menu Item Customise Widget --> */}
+                            
                           </ul>
                         </div>
                       </React.Fragment>
@@ -1650,6 +1606,73 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 Facebook
                               </NavLink>
                             </li>
+                            {/* <!-- Menu Item Customise Widget --> */}
+                            {(modulePermission.lead_management === "edit" ||
+                              modulePermission.lead_management === "view") &&
+                              modulePermission.user_group === "admin" && (
+                                <li>
+                                  <NavLink
+                                    to="/customise-widget"
+                                    className={({ isActive }) =>
+                                      isActive
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            ${pathname.includes("calendar") &&
+                                        "bg-graydark dark:bg-meta-4"
+                                        }`
+                                    }
+                                  >
+                                    <MdOutlineWidgets />
+                                    Customise Widget
+                                  </NavLink>
+                                </li>
+                              )}
+                            {/* <!-- Menu Item Customise Widget --> */}
+                            {/* <!-- Menu Item Bulk Actions --> */}
+                              {(modulePermission.bulk_action_management ===
+                                "edit" ||
+                                modulePermission.bulk_action_management ===
+                                "view") && (
+                                  // modulePermission.user_group === "admin" &&
+                                  <li>
+                                    <NavLink
+                                      to="/bulk-actions"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                              ${pathname.includes("calendar") &&
+                                          "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <MdOutlineImportExport />
+                                      Bulk Actions
+                                    </NavLink>
+                                  </li>
+                                )}
+                              {/* <!-- Menu Item Bulk Actions --> */}
+
+                              <li>
+                                    <NavLink
+                                      to="/Mail-Settings"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                                          ${pathname.includes("Mail-Settings") &&
+                                          "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <MdOutlineMail />
+                                      Mail Settings
+                                    </NavLink>
+                                  </li>
+
+
+
+
                           </ul>
                         </div>
                         {/* <!-- Dropdown Menu End --> */}

@@ -28,6 +28,7 @@ import { getLeadSourceService } from "../Lead/ApiService";
 import { getStateDropdownService } from "../State/ApiService";
 import { getLeadStatusService } from "../LeadStatus/ApiService";
 import { getLeadSubStatusService } from "../LeadSubStatus/ApiService";
+import { getSMTPSettingsService } from "../Integration/MailSettings/ApiService";
 
 // SMS toggle
 const ENABLE_SMS = false;
@@ -49,6 +50,7 @@ export default function EditDripMarketingRule({ }) {
   const [trackingUrlDropdown, setTrackingUrlDropdown] = useState([]);
   const [watiTemplateDropdown, setWatiTemplateDropdown] = useState([]);
   const [eventTypeDropdown, setEventTypeDropdown] = useState([]);
+  const [smtpDropdown, setSmtpDropdown] = useState([]);
 
   const [fields, setFields] = useState([
     {
@@ -70,6 +72,7 @@ export default function EditDripMarketingRule({ }) {
     sms_template: { value: null, errors: [] },
     whatsapp_template: { value: null, errors: [] },
     enterprise_whatsapp_template: { value: null, errors: [] },
+    smtp_setting: { value: null, errors: [] },
   });
 
   const dispatch = useDispatch();
@@ -109,38 +112,26 @@ export default function EditDripMarketingRule({ }) {
   };
 
   const handleSelectInput = (value, name, id) => {
+    const finalValue = value === undefined ? null : value;
     if (name === "event_field") {
-      setSelectedEventField(value);
+      setSelectedEventField(finalValue);
       setFormData({
         ...formData,
-        [name]: { value: value, errors: [] },
-      });
-    }
-    if (name === "value") {
-      console.log(value);
-      setFormData({
-        ...formData,
-        [name]: { value: value, errors: [] },
+        [name]: { value: finalValue, errors: [] },
       });
     }
     setFormData({
       ...formData,
-      [name]: { value: value, errors: [] },
+      [name]: { value: finalValue, errors: [] },
     });
 
     // Handle setting the attribute per field ID
     if (name === "attribute") {
       const updatedFields = fields.map((item) =>
-        item.id === id ? { ...item, attribute: value } : item
+        item.id === id ? { ...item, attribute: finalValue } : item
       );
       setFields(updatedFields);
     }
-
-    // Handle setting any other field values
-    setFormData({
-      ...formData,
-      [name]: { value: value, errors: [] },
-    });
   };
 
   const handleChange = (id, field, value) => {
@@ -166,11 +157,21 @@ export default function EditDripMarketingRule({ }) {
     sms_template: formData.sms_template.value,
     whatsapp_template: formData.whatsapp_template.value,
     enterprise_whatsapp_template: formData.enterprise_whatsapp_template.value,
+    smtp_setting_id: formData.smtp_setting.value,
+    smtp_setting: formData.smtp_setting.value,
     events: fields.map(({ id, ...rest }) => rest),
   };
 
   const addDripMarketingRule = () => {
-    // console.log(payload,'priti check payload')
+    if (
+      !formData.email_template.value &&
+      !formData.whatsapp_template.value &&
+      !formData.enterprise_whatsapp_template.value &&
+      !formData.sms_template.value
+    ) {
+      message.error("At least one template (Whatsapp, Enterprise Whatsapp, or Email Template) must be selected.");
+      return;
+    }
     setLoading(true);
     if (loading) return;
 
@@ -202,8 +203,8 @@ export default function EditDripMarketingRule({ }) {
         email_template: { value: dripData.email_template || null, errors: [] },
         ...(ENABLE_SMS
           ? {
-              sms_template: { value: dripData.sms_template || null, errors: [] },
-            }
+            sms_template: { value: dripData.sms_template || null, errors: [] },
+          }
           : {}),
         whatsapp_template: {
           value: dripData.whatsapp_template || null,
@@ -211,6 +212,10 @@ export default function EditDripMarketingRule({ }) {
         },
         enterprise_whatsapp_template: {
           value: dripData.enterprise_whatsapp_template || null,
+          errors: [],
+        },
+        smtp_setting: {
+          value: dripData.smtp_setting || null,
           errors: [],
         },
       });
@@ -290,11 +295,17 @@ export default function EditDripMarketingRule({ }) {
       setWatiTemplateDropdown(response.data.data);
     }
 
+    async function fetchSmtpData() {
+      const response = await getSMTPSettingsService();
+      setSmtpDropdown(response.data.data || []);
+    }
+
     fetchEventData();
     ENABLE_SMS && fetchSmsTemplateData();
     fetchWhatsappTemplateData();
     fetchEmailTemplateData();
     fetchWatiTemplateData();
+    fetchSmtpData();
   }
 
   // console.log(dripDetailsData,"dripDetailsData dripDetailsData")
@@ -304,18 +315,18 @@ export default function EditDripMarketingRule({ }) {
   //   fetchData();
   // }, []);
 
- // ✅ ONLY ON LOAD
-useEffect(() => {
-  fetchData();
-  getDetailsDripMarketingRulApi();
-}, []);
+  // ✅ ONLY ON LOAD
+  useEffect(() => {
+    fetchData();
+    getDetailsDripMarketingRulApi();
+  }, []);
 
-// ✅ ONLY WHEN EVENT FIELD CHANGES
-useEffect(() => {
-  if (selectedEventField) {
-    fetchSelectedEventDropdown();
-  }
-}, [selectedEventField]);
+  // ✅ ONLY WHEN EVENT FIELD CHANGES
+  useEffect(() => {
+    if (selectedEventField) {
+      fetchSelectedEventDropdown();
+    }
+  }, [selectedEventField]);
 
   return (
     <>
@@ -351,13 +362,14 @@ useEffect(() => {
             />
           </div>
 
-          <div className={`grid grid-cols-3 gap-3`}>
+          <div className={`grid grid-cols-4 gap-3`}>
             {ENABLE_SMS && (
               <div className="flex flex-col gap-1">
                 <label>Sms Template</label>
                 <CustomSelectInput
                   name="sms_template"
                   placeholder="Please select Sms Template"
+                  allowClear={true}
                   value={formData.sms_template.value}
                   errors={formData.sms_template.errors}
                   handler={(value) => handleSelectInput(value, "sms_template")}
@@ -373,6 +385,7 @@ useEffect(() => {
               <CustomSelectInput
                 name="whatsapp_template"
                 placeholder="Please select Whatsapp Template"
+                allowClear={true}
                 value={formData.whatsapp_template.value}
                 errors={formData.whatsapp_template.errors}
                 handler={(value) =>
@@ -389,6 +402,7 @@ useEffect(() => {
               <CustomSelectInput
                 name="enterprise_whatsapp_template"
                 placeholder="Please select Enterprise Whatsapp Template"
+                allowClear={true}
                 value={formData.enterprise_whatsapp_template.value}
                 errors={formData.enterprise_whatsapp_template.errors}
                 handler={(value) =>
@@ -406,12 +420,29 @@ useEffect(() => {
               <CustomSelectInput
                 name="email_template"
                 placeholder="Please select Email Template"
+                allowClear={true}
                 value={formData.email_template.value}
                 errors={formData.email_template.errors}
                 handler={(value) => handleSelectInput(value, "email_template")}
                 options={emailTemplateDropdown.map((item) => ({
                   value: item.id,
                   label: item.name,
+                }))}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label>SMTP Setting</label>
+              <CustomSelectInput
+                name="smtp_setting"
+                placeholder="Please select SMTP Setting"
+                allowClear={true}
+                value={formData.smtp_setting.value}
+                errors={formData.smtp_setting.errors}
+                handler={(value) => handleSelectInput(value, "smtp_setting")}
+                options={smtpDropdown.map((item) => ({
+                  value: item.id,
+                  label: `${item.provider_name} (${item.username})${item.is_active ? ' - [Active]' : ''}`,
                 }))}
               />
             </div>
@@ -469,45 +500,45 @@ useEffect(() => {
                       options={
                         field.event_field === "event_type"
                           ? eventTypeDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
+                            value: item.id,
+                            label: item.name,
+                          }))
                           : field.event_field === "source"
-                          ? sourceDropdown.map((item) => ({
+                            ? sourceDropdown.map((item) => ({
                               value: item.id,
                               label: item.name,
                             }))
-                          : field.event_field === "state"
-                          ? stateDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
-                          : field.event_field === "city"
-                          ? cityDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
-                          : field.event_field === "status"
-                          ? statusDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
-                          : field.event_field === "sub_status"
-                          ? subStatusDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
-                          : field.event_field === "assigned_to"
-                          ? assignedToDropdown.map((item) => ({
-                              value: item.username,
-                              label: item.full_name,
-                            }))
-                          : field.event_field === "tracking_url"
-                          ? trackingUrlDropdown.map((item) => ({
-                              value: item.id,
-                              label: item.name,
-                            }))
-                          : []
+                            : field.event_field === "state"
+                              ? stateDropdown.map((item) => ({
+                                value: item.id,
+                                label: item.name,
+                              }))
+                              : field.event_field === "city"
+                                ? cityDropdown.map((item) => ({
+                                  value: item.id,
+                                  label: item.name,
+                                }))
+                                : field.event_field === "status"
+                                  ? statusDropdown.map((item) => ({
+                                    value: item.id,
+                                    label: item.name,
+                                  }))
+                                  : field.event_field === "sub_status"
+                                    ? subStatusDropdown.map((item) => ({
+                                      value: item.id,
+                                      label: item.name,
+                                    }))
+                                    : field.event_field === "assigned_to"
+                                      ? assignedToDropdown.map((item) => ({
+                                        value: item.username,
+                                        label: item.full_name,
+                                      }))
+                                      : field.event_field === "tracking_url"
+                                        ? trackingUrlDropdown.map((item) => ({
+                                          value: item.id,
+                                          label: item.name,
+                                        }))
+                                        : []
                       }
                     />
                   </div>

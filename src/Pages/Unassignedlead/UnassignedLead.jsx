@@ -309,11 +309,13 @@ export const UnassignedLead = ({ mode }) => {
   };
 
   useEffect(() => {
-    getUnaasignedLeadList();
-    getCounsellorDropdown().then((response) => {
-      setCounsellorDropdown(response.data.data);
-    });
-  }, [page, pageSize]);
+  getUnaasignedLeadList();
+
+  getCounsellorDropdown().then((response) => {
+    setCounsellorDropdown(response.data.data || []);
+  });
+
+}, [page, pageSize]);
 
   return (
     <>
@@ -350,6 +352,7 @@ export const UnassignedLead = ({ mode }) => {
               <label className="block">
                 Assign to<sup className="text-red-500">*</sup>
               </label>
+
               <CustomSelectInput
                 size="large"
                 name="counsellor"

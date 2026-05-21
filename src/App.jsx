@@ -105,6 +105,7 @@ import LeadSource from "./Pages/LeadSource/LeadSource.jsx";
 import FacebookPerformance from "./Pages/Reports/Facebook Performance/FacebookPerformance.jsx";
 import GoogleSearchConsole from "./Pages/Reports/Google Search Console/GoogleSearchConsole.jsx";
 import GoogleAnalytics from "./Pages/Reports/Google Analytics/GoogleAnalytics.jsx";
+import MailSettings from "./Pages/Integration/MailSettings/MailSettings.jsx";
 
 function App() {
   const [mode, setMode] = useState(
@@ -1503,6 +1504,21 @@ function App() {
                 <PageTitle title="404" />
                 <DefaultLayout>
                   <NotFound mode={mode} />
+                </DefaultLayout>
+              </>
+            }
+          />
+          <Route
+            path="/Mail-Settings"
+            element={
+              <>
+                <PageTitle title="Mail Settings" />
+                <DefaultLayout>
+                  {modulePermission.is_superuser === true || modulePermission.user_group === 'admin' ? (
+                    <MailSettings mode={mode} />
+                  ) : (
+                    <NotFound mode={mode} />
+                  )}
                 </DefaultLayout>
               </>
             }
