@@ -215,7 +215,7 @@ export default function EditDripMarketingRule({ }) {
           errors: [],
         },
         smtp_setting: {
-          value: dripData.smtp_setting || null,
+          value: dripData.smtp_setting ? Number(dripData.smtp_setting) : null,
           errors: [],
         },
       });
@@ -297,7 +297,9 @@ export default function EditDripMarketingRule({ }) {
 
     async function fetchSmtpData() {
       const response = await getSMTPSettingsService();
-      setSmtpDropdown(response.data.data || []);
+      const allSmtps = response.data.data || [];
+      const activeSmtps = allSmtps.filter(item => item.is_active);
+      setSmtpDropdown(activeSmtps);
     }
 
     fetchEventData();
@@ -440,9 +442,9 @@ export default function EditDripMarketingRule({ }) {
                 value={formData.smtp_setting.value}
                 errors={formData.smtp_setting.errors}
                 handler={(value) => handleSelectInput(value, "smtp_setting")}
-                options={smtpDropdown.map((item) => ({
-                  value: item.id,
-                  label: `${item.provider_name} (${item.username})${item.is_active ? ' - [Active]' : ''}`,
+                 options={smtpDropdown.map((item) => ({
+                  value: Number(item.id),
+                  label: `${item.provider_name} (${item.username})${item.is_primary ? ' - [Primary]' : ''}`,
                 }))}
               />
             </div>

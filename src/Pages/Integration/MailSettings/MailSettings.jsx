@@ -6,8 +6,11 @@ import {
   updateSMTPSettingService,
   deleteSMTPSettingService,
   activateSMTPSettingService,
+  toggleSMTPActiveService,
+  setSMTPPrimaryService,
   testSMTPConnectionService,
 } from "./ApiService";
+import { message } from "antd";
 
 const PRIMARY_COLOR = "rgb(255 206 0)";
 
@@ -54,6 +57,7 @@ const MailSettings = () => {
     from_name: "",
     from_email: "",
     status: true,
+    is_primary: false,
   };
 
   const [form, setForm] = useState(initialForm);
@@ -72,6 +76,7 @@ const MailSettings = () => {
     from_name: item.from_name || "",
     from_email: item.from_email || "",
     status: item.is_active,
+    is_primary: item.is_primary,
   });
 
   const mapFEToBE = (form) => ({
@@ -83,6 +88,7 @@ const MailSettings = () => {
     from_name: form.from_name,
     from_email: form.from_email,
     is_active: form.status,
+    is_primary: form.is_primary,
   });
 
   // =========================
@@ -136,7 +142,7 @@ const MailSettings = () => {
       !form.from_name ||
       !form.from_email
     ) {
-      alert("Please fill all fields");
+      message.warning("Please fill all fields");
       return;
     }
 
@@ -145,25 +151,25 @@ const MailSettings = () => {
       if (editingId) {
         const response = await updateSMTPSettingService(payload, editingId);
         if (response.data && response.data.success === "1") {
-          alert("SMTP Updated Successfully");
+          message.success("SMTP Updated Successfully");
           fetchSMTPs();
           closeModal();
         } else {
-          alert("Failed to update SMTP: " + response.data.message);
+          message.error("Failed to update SMTP: " + response.data.message);
         }
       } else {
         const response = await createSMTPSettingService(payload);
         if (response.data && response.data.success === "1") {
-          alert("SMTP Added Successfully");
+          message.success("SMTP Added Successfully");
           fetchSMTPs();
           closeModal();
         } else {
-          alert("Failed to add SMTP: " + response.data.message);
+          message.error("Failed to add SMTP: " + response.data.message);
         }
       }
     } catch (error) {
       console.error("Submit SMTP error:", error);
-      alert("Error saving SMTP: " + (error.response?.data?.message || error.message));
+      message.error("Error saving SMTP: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -183,6 +189,7 @@ const MailSettings = () => {
       from_name: item.from_name,
       from_email: item.from_email,
       status: item.status,
+      is_primary: item.is_primary,
     });
 
     setShowModal(true);
@@ -202,14 +209,14 @@ const MailSettings = () => {
     try {
       const response = await deleteSMTPSettingService(id);
       if (response.data && response.data.success === "1") {
-        alert("SMTP Deleted Successfully");
+        message.success("SMTP Deleted Successfully");
         fetchSMTPs();
       } else {
-        alert("Failed to delete SMTP: " + response.data.message);
+        message.error("Failed to delete SMTP: " + response.data.message);
       }
     } catch (error) {
       console.error("Delete SMTP error:", error);
-      alert("Error deleting SMTP: " + (error.response?.data?.message || error.message));
+      message.error("Error deleting SMTP: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -218,24 +225,48 @@ const MailSettings = () => {
   // =========================
 
   const handleToggleActivate = async (item) => {
-    if (item.status) return;
-
-    const confirmActivate = window.confirm(
-      `Are you sure you want to activate "${item.smtp_name}"? This will deactivate other SMTP settings.`
+    const confirmToggle = window.confirm(
+      `Are you sure you want to ${item.status ? "deactivate" : "activate"} "${item.smtp_name}"?`
     );
-    if (!confirmActivate) return;
+    if (!confirmToggle) return;
 
     try {
-      const response = await activateSMTPSettingService(item.id);
+      const response = await toggleSMTPActiveService(item.id);
       if (response.data && response.data.success === "1") {
-        alert(`"${item.smtp_name}" activated successfully!`);
+        message.success(`"${item.smtp_name}" status updated successfully!`);
         fetchSMTPs();
       } else {
-        alert("Failed to activate SMTP: " + response.data.message);
+        message.error("Failed to update SMTP status: " + response.data.message);
       }
     } catch (error) {
-      console.error("Activate SMTP error:", error);
-      alert("Error activating SMTP: " + (error.response?.data?.message || error.message));
+      console.error("Toggle active SMTP error:", error);
+      message.error("Error toggling SMTP status: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  // =========================
+  // SET PRIMARY
+  // =========================
+
+  const handleSetPrimary = async (item) => {
+    if (item.is_primary) return;
+
+    const confirmPrimary = window.confirm(
+      `Are you sure you want to make "${item.smtp_name}" the default primary SMTP? Common website emails will be routed through it.`
+    );
+    if (!confirmPrimary) return;
+
+    try {
+      const response = await setSMTPPrimaryService(item.id);
+      if (response.data && response.data.success === "1") {
+        message.success(`"${item.smtp_name}" is now the primary SMTP!`);
+        fetchSMTPs();
+      } else {
+        message.error("Failed to set primary SMTP: " + response.data.message);
+      }
+    } catch (error) {
+      console.error("Set primary SMTP error:", error);
+      message.error("Error setting primary SMTP: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -253,13 +284,13 @@ const MailSettings = () => {
     try {
       const response = await testSMTPConnectionService({ email: testEmail }, id);
       if (response.data && response.data.success === "1") {
-        alert(response.data.message || "Test email dispatched successfully!");
+        message.success(response.data.message || "Test email dispatched successfully!");
       } else {
-        alert("Failed to send test email: " + (response.data.message || "Unknown error"));
+        message.error("Failed to send test email: " + (response.data.message || "Unknown error"));
       }
     } catch (error) {
       console.error("Test SMTP error:", error);
-      alert(
+      message.error(
         "SMTP Test Connection Failed: " +
           (error.response?.data?.message || error.message)
       );
@@ -585,6 +616,7 @@ const MailSettings = () => {
                 <th style={styles.th}>SMTP Host</th>
                 <th style={styles.th}>Port</th>
                 <th style={styles.th}>Status</th>
+                <th style={styles.th}>Primary</th>
                 <th style={styles.th}>Actions</th>
               </tr>
             </thead>
@@ -604,21 +636,50 @@ const MailSettings = () => {
                         style={{
                           ...styles.badge,
                           background: item.status
-                            ? PRIMARY_COLOR
-                            : "transparent",
+                            ? "rgba(16, 185, 129, 0.1)"
+                            : "rgba(239, 68, 68, 0.1)",
                           color: item.status
-                            ? "#111"
-                            : colors.foreground,
-                          cursor: !item.status ? "pointer" : "default",
+                            ? "#10b981"
+                            : "#ef4444",
+                          cursor: "pointer",
                           border: `1px solid ${
                             item.status
+                              ? "#10b981"
+                              : "#ef4444"
+                          }`,
+                        }}
+                        title="Click to toggle status"
+                      >
+                        {item.status ? "Active" : "Inactive"}
+                      </span>
+                    </td>
+
+                    <td style={styles.td}>
+                      <span
+                        onClick={() => item.status && !item.is_primary && handleSetPrimary(item)}
+                        style={{
+                          ...styles.badge,
+                          background: item.is_primary
+                            ? PRIMARY_COLOR
+                            : "transparent",
+                          color: item.is_primary
+                            ? "#111"
+                            : item.status
+                            ? PRIMARY_COLOR
+                            : colors.mutedForeground,
+                          cursor: item.status && !item.is_primary ? "pointer" : "default",
+                          border: `1px solid ${
+                            item.is_primary
+                              ? PRIMARY_COLOR
+                              : item.status
                               ? PRIMARY_COLOR
                               : colors.border
                           }`,
+                          opacity: item.status ? 1 : 0.5,
                         }}
-                        title={!item.status ? "Click to Activate" : ""}
+                        title={item.is_primary ? "Primary SMTP" : item.status ? "Click to set as Primary" : "Activate SMTP first to set as Primary"}
                       >
-                        {item.status ? "Active" : "Inactive"}
+                        {item.is_primary ? "Primary" : "Set Primary"}
                       </span>
                     </td>
 
@@ -776,6 +837,17 @@ const MailSettings = () => {
                   />
 
                   <span>Active</span>
+                </div>
+
+                <div style={styles.checkboxWrap}>
+                  <input
+                    type="checkbox"
+                    name="is_primary"
+                    checked={form.is_primary}
+                    onChange={handleChange}
+                  />
+
+                  <span>Primary Default Routing</span>
                 </div>
               </div>
 

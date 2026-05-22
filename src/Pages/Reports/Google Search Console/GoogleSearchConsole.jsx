@@ -8,6 +8,8 @@ import dayjs from "dayjs";
 import { getPageWiseLeadQuery } from "./Queries/query";
 import axios from "axios";
 import GoogleAnalytics from "../Google Analytics/GoogleAnalytics";
+import { baseurl } from "@/lib/Constants";
+
 
 import {
     GscKPISkeleton,
@@ -136,7 +138,7 @@ const GoogleSearchConsole = () => {
 
                 if (params) {
                     whereClause = `
-                    WHERE created_at BETWEEN 
+                    WHERE lml.created_at BETWEEN 
                     '${params.startDate} 00:00:00'
                     AND '${params.endDate} 23:59:59'
                 `;
@@ -157,7 +159,7 @@ const GoogleSearchConsole = () => {
                 setCrmData(result);
 
             } catch (err) {
-                console.error("CRM Fetch Error:", err);
+                console.error(err);
             }
         };
 

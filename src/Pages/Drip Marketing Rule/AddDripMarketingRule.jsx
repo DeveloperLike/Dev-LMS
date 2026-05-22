@@ -255,7 +255,9 @@ export default function AddDripMarketingRule({}) {
 
     async function fetchSmtpData() {
       const response = await getSMTPSettingsService();
-      setSmtpDropdown(response.data.data || []);
+      const allSmtps = response.data.data || [];
+      const activeSmtps = allSmtps.filter(item => item.is_active);
+      setSmtpDropdown(activeSmtps);
     }
 
     fetchEventData();
@@ -400,8 +402,8 @@ export default function AddDripMarketingRule({}) {
                 errors={formData.smtp_setting.errors}
                 handler={(value) => handleSelectInput(value, "smtp_setting")}
                 options={smtpDropdown.map((item) => ({
-                  value: item.id,
-                  label: `${item.provider_name} (${item.username})${item.is_active ? ' - [Active]' : ''}`,
+                  value: Number(item.id),
+                  label: `${item.provider_name} (${item.username})${item.is_primary ? ' - [Primary]' : ''}`,
                 }))}
               />
             </div>

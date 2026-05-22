@@ -61,9 +61,17 @@ authenticatedAxiosInstance.interceptors.response.use(
     //   window.location.href = '/';
     // }
     if (error.response && error.response.status === 401) {
-      // Do not logout if it's a Google integration error
-      if (error.config.url.includes('/google/')) {
-        console.warn("Google authentication expired or invalid, but keeping CRM session.");
+      const url = error.config?.url || "";
+      const message = error.response.data?.message || "";
+      // Do not logout if it's a third-party or integration error (Google/Facebook/etc.)
+      if (
+        url.includes('/google') ||
+        url.includes('/integration') ||
+        url.includes('/facebook') ||
+        message.toLowerCase().includes("google") ||
+        message.toLowerCase().includes("facebook")
+      ) {
+        console.warn("Google/Facebook integration credentials expired or invalid, keeping CRM session:", message);
         return Promise.reject(error);
       }
       localStorage.removeItem("token");
@@ -99,9 +107,21 @@ unauthenticatedAxiosInstance.interceptors.response.use(
   },
   (error) => {
     if (
-      (error.response && error.response.status === 401) ||
-      error.response.status === 403
+      error.response &&
+      (error.response.status === 401 || error.response.status === 403)
     ) {
+      const url = error.config?.url || "";
+      const message = error.response.data?.message || "";
+      // Do not logout if it's an integration endpoint error
+      if (
+        url.includes('/google') ||
+        url.includes('/integration') ||
+        url.includes('/facebook') ||
+        message.toLowerCase().includes("google") ||
+        message.toLowerCase().includes("facebook")
+      ) {
+        return Promise.reject(error);
+      }
       localStorage.removeItem("token");
       window.location.href = "/";
     }

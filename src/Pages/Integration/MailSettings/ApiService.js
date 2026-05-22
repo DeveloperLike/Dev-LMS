@@ -44,6 +44,20 @@ const activateSMTPSettingService = (id) => {
   });
 };
 
+const toggleSMTPActiveService = (id) => {
+  return authenticatedAxiosInstance({
+    method: 'patch',
+    url: `/api/v1/mail-settings/${id}/toggle-active`,
+  });
+};
+
+const setSMTPPrimaryService = (id) => {
+  return authenticatedAxiosInstance({
+    method: 'patch',
+    url: `/api/v1/mail-settings/${id}/set-primary`,
+  });
+};
+
 const testSMTPConnectionService = (payload, id) => {
   return authenticatedAxiosInstance({
     method: 'post',
@@ -59,5 +73,7 @@ export {
   updateSMTPSettingService,
   deleteSMTPSettingService,
   activateSMTPSettingService,
+  toggleSMTPActiveService,
+  setSMTPPrimaryService,
   testSMTPConnectionService,
 };
