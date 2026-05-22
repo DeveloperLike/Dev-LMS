@@ -19,6 +19,8 @@ const MailSettings = () => {
   const [search, setSearch] = useState("");
   const [editingId, setEditingId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
 
   // =========================
   // THEME DETECTION
@@ -146,13 +148,14 @@ const MailSettings = () => {
       return;
     }
 
+    setSubmitting(true);
     try {
       const payload = mapFEToBE(form);
       if (editingId) {
         const response = await updateSMTPSettingService(payload, editingId);
         if (response.data && response.data.success === "1") {
           message.success("SMTP Updated Successfully");
-          fetchSMTPs();
+          await fetchSMTPs();
           closeModal();
         } else {
           message.error("Failed to update SMTP: " + response.data.message);
@@ -161,7 +164,7 @@ const MailSettings = () => {
         const response = await createSMTPSettingService(payload);
         if (response.data && response.data.success === "1") {
           message.success("SMTP Added Successfully");
-          fetchSMTPs();
+          await fetchSMTPs();
           closeModal();
         } else {
           message.error("Failed to add SMTP: " + response.data.message);
@@ -170,6 +173,8 @@ const MailSettings = () => {
     } catch (error) {
       console.error("Submit SMTP error:", error);
       message.error("Error saving SMTP: " + (error.response?.data?.message || error.message));
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -200,23 +205,27 @@ const MailSettings = () => {
   // =========================
 
   const handleDelete = async (id) => {
+    if (actionLoadingId) return;
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this SMTP?"
     );
 
     if (!confirmDelete) return;
 
+    setActionLoadingId(id);
     try {
       const response = await deleteSMTPSettingService(id);
       if (response.data && response.data.success === "1") {
         message.success("SMTP Deleted Successfully");
-        fetchSMTPs();
+        await fetchSMTPs();
       } else {
         message.error("Failed to delete SMTP: " + response.data.message);
       }
     } catch (error) {
       console.error("Delete SMTP error:", error);
       message.error("Error deleting SMTP: " + (error.response?.data?.message || error.message));
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -225,22 +234,26 @@ const MailSettings = () => {
   // =========================
 
   const handleToggleActivate = async (item) => {
+    if (actionLoadingId) return;
     const confirmToggle = window.confirm(
       `Are you sure you want to ${item.status ? "deactivate" : "activate"} "${item.smtp_name}"?`
     );
     if (!confirmToggle) return;
 
+    setActionLoadingId(item.id);
     try {
       const response = await toggleSMTPActiveService(item.id);
       if (response.data && response.data.success === "1") {
         message.success(`"${item.smtp_name}" status updated successfully!`);
-        fetchSMTPs();
+        await fetchSMTPs();
       } else {
         message.error("Failed to update SMTP status: " + response.data.message);
       }
     } catch (error) {
       console.error("Toggle active SMTP error:", error);
       message.error("Error toggling SMTP status: " + (error.response?.data?.message || error.message));
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -249,6 +262,7 @@ const MailSettings = () => {
   // =========================
 
   const handleSetPrimary = async (item) => {
+    if (actionLoadingId) return;
     if (item.is_primary) return;
 
     const confirmPrimary = window.confirm(
@@ -256,17 +270,20 @@ const MailSettings = () => {
     );
     if (!confirmPrimary) return;
 
+    setActionLoadingId(item.id);
     try {
       const response = await setSMTPPrimaryService(item.id);
       if (response.data && response.data.success === "1") {
         message.success(`"${item.smtp_name}" is now the primary SMTP!`);
-        fetchSMTPs();
+        await fetchSMTPs();
       } else {
         message.error("Failed to set primary SMTP: " + response.data.message);
       }
     } catch (error) {
       console.error("Set primary SMTP error:", error);
       message.error("Error setting primary SMTP: " + (error.response?.data?.message || error.message));
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -275,12 +292,14 @@ const MailSettings = () => {
   // =========================
 
   const handleTest = async (id) => {
+    if (actionLoadingId) return;
     const testEmail = window.prompt(
       "Enter recipient email address for SMTP test connection:",
       "support@yesgermany.org"
     );
     if (!testEmail) return;
 
+    setActionLoadingId(id);
     try {
       const response = await testSMTPConnectionService({ email: testEmail }, id);
       if (response.data && response.data.success === "1") {
@@ -294,6 +313,8 @@ const MailSettings = () => {
         "SMTP Test Connection Failed: " +
           (error.response?.data?.message || error.message)
       );
+    } finally {
+      setActionLoadingId(null);
     }
   };
 
@@ -632,7 +653,7 @@ const MailSettings = () => {
 
                     <td style={styles.td}>
                       <span
-                        onClick={() => handleToggleActivate(item)}
+                        onClick={() => !actionLoadingId && handleToggleActivate(item)}
                         style={{
                           ...styles.badge,
                           background: item.status
@@ -641,7 +662,8 @@ const MailSettings = () => {
                           color: item.status
                             ? "#10b981"
                             : "#ef4444",
-                          cursor: "pointer",
+                          cursor: actionLoadingId ? "not-allowed" : "pointer",
+                          opacity: actionLoadingId && actionLoadingId === item.id ? 0.6 : 1,
                           border: `1px solid ${
                             item.status
                               ? "#10b981"
@@ -650,13 +672,13 @@ const MailSettings = () => {
                         }}
                         title="Click to toggle status"
                       >
-                        {item.status ? "Active" : "Inactive"}
+                        {actionLoadingId && actionLoadingId === item.id ? "Updating..." : (item.status ? "Active" : "Inactive")}
                       </span>
                     </td>
 
                     <td style={styles.td}>
                       <span
-                        onClick={() => item.status && !item.is_primary && handleSetPrimary(item)}
+                        onClick={() => !actionLoadingId && item.status && !item.is_primary && handleSetPrimary(item)}
                         style={{
                           ...styles.badge,
                           background: item.is_primary
@@ -667,7 +689,7 @@ const MailSettings = () => {
                             : item.status
                             ? PRIMARY_COLOR
                             : colors.mutedForeground,
-                          cursor: item.status && !item.is_primary ? "pointer" : "default",
+                          cursor: actionLoadingId ? "not-allowed" : item.status && !item.is_primary ? "pointer" : "default",
                           border: `1px solid ${
                             item.is_primary
                               ? PRIMARY_COLOR
@@ -675,35 +697,50 @@ const MailSettings = () => {
                               ? PRIMARY_COLOR
                               : colors.border
                           }`,
-                          opacity: item.status ? 1 : 0.5,
+                          opacity: actionLoadingId && actionLoadingId === item.id ? 0.6 : item.status ? 1 : 0.5,
                         }}
                         title={item.is_primary ? "Primary SMTP" : item.status ? "Click to set as Primary" : "Activate SMTP first to set as Primary"}
                       >
-                        {item.is_primary ? "Primary" : "Set Primary"}
+                        {actionLoadingId && actionLoadingId === item.id ? "Updating..." : (item.is_primary ? "Primary" : "Set Primary")}
                       </span>
                     </td>
 
                     <td style={styles.td}>
                       <div style={styles.actionWrap}>
                         <button
-                          style={styles.editBtn}
+                          style={{
+                            ...styles.editBtn,
+                            opacity: actionLoadingId ? 0.5 : 1,
+                            cursor: actionLoadingId ? "not-allowed" : "pointer"
+                          }}
+                          disabled={!!actionLoadingId}
                           onClick={() => handleEdit(item)}
                         >
                           Edit
                         </button>
 
                         <button
-                          style={styles.testBtn}
+                          style={{
+                            ...styles.testBtn,
+                            opacity: actionLoadingId ? 0.5 : 1,
+                            cursor: actionLoadingId ? "not-allowed" : "pointer"
+                          }}
+                          disabled={!!actionLoadingId}
                           onClick={() => handleTest(item.id)}
                         >
-                          Test
+                          {actionLoadingId && actionLoadingId === item.id ? "Testing..." : "Test"}
                         </button>
 
                         <button
-                          style={styles.deleteBtn}
+                          style={{
+                            ...styles.deleteBtn,
+                            opacity: actionLoadingId ? 0.5 : 1,
+                            cursor: actionLoadingId ? "not-allowed" : "pointer"
+                          }}
+                          disabled={!!actionLoadingId}
                           onClick={() => handleDelete(item.id)}
                         >
-                          Delete
+                          {actionLoadingId && actionLoadingId === item.id ? "Deleting..." : "Delete"}
                         </button>
                       </div>
                     </td>
@@ -852,14 +889,27 @@ const MailSettings = () => {
               </div>
 
               <div style={styles.buttonWrap}>
-                <button type="submit" style={styles.primaryBtn}>
-                  {editingId ? "Update SMTP" : "Save SMTP"}
+                <button
+                  type="submit"
+                  style={{
+                    ...styles.primaryBtn,
+                    opacity: submitting ? 0.7 : 1,
+                    cursor: submitting ? "not-allowed" : "pointer"
+                  }}
+                  disabled={submitting}
+                >
+                  {submitting ? (editingId ? "Updating..." : "Saving...") : (editingId ? "Update SMTP" : "Save SMTP")}
                 </button>
 
                 <button
                   type="button"
-                  style={styles.secondaryBtn}
+                  style={{
+                    ...styles.secondaryBtn,
+                    opacity: submitting ? 0.5 : 1,
+                    cursor: submitting ? "not-allowed" : "pointer"
+                  }}
                   onClick={closeModal}
+                  disabled={submitting}
                 >
                   Cancel
                 </button>
