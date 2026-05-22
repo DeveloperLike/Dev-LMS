@@ -129,7 +129,7 @@ export default function EditUser({ mode }) {
               ? userData.branch.map((element) => element.id)
               : [],
         },
-        role: { value: userData.role || "" },
+        role: { value: userData.role ? userData.role.id : null },
         reporting_manager: {
           value:
             userData.reporting_manager.length > 0
