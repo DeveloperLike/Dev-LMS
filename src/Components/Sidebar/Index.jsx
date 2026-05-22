@@ -815,7 +815,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
               {/* <!-- Menu Item Lead Management --> */}
               {/* <!-- Menu Item Registered Users --> */}
-              {(modulePermission.finance_management === "edit" ||
+              {/*(modulePermission.finance_management === "edit" ||
                 modulePermission.finance_management === "view" ||
                 modulePermission.registered_students_management === "edit" ||
                 modulePermission.registered_students_management === "view") && (
@@ -835,7 +835,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                       Registered Student
                     </NavLink>
                   </li>
-                )}
+                )*/}
               {/* <!-- Menu Item Registered Users --> */}
 
               {/* <!-- Menu Item Marketing Management --> */}
