@@ -8,6 +8,7 @@ import DefaultLayout from "./lib/Layout/DefaultLayout";
 import RoleList from "./Pages/Role/RoleList";
 import UserList from "./Pages/User/UserList";
 import AddUser from "./Pages/User/AddUser";
+import DIDNumbers from "./Pages/User/DIDNumbers";
 import AddRole from "./Pages/Role/AddRole";
 import { ConfigProvider, message, Modal, theme } from "antd";
 import OtpLogin from "./Pages/Authentication/OtpLogin";
@@ -405,6 +406,21 @@ function App() {
                         <NotFound />
                       ) : (
                         <EditUser mode={mode} />
+                      )}
+                    </DefaultLayout>
+                  </>
+                }
+              />
+              <Route
+                path="/did-numbers"
+                element={
+                  <>
+                    <PageTitle title="DID Numbers" />
+                    <DefaultLayout>
+                      {modulePermission.staff_management === "no_access" ? (
+                        <NotFound />
+                      ) : (
+                        <DIDNumbers mode={mode} />
                       )}
                     </DefaultLayout>
                   </>

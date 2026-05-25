@@ -4,7 +4,7 @@ import SidebarLinkGroup from "./SidebarLinkGroup";
 import { AiFillFunnelPlot, AiOutlineUser } from "react-icons/ai";
 import { FaFacebook, FaGoogle, FaUserFriends } from "react-icons/fa";
 import { TbTableExport } from "react-icons/tb";
-import { FaKey } from "react-icons/fa";
+import { FaKey, FaHashtag } from "react-icons/fa";
 import { BsBank2 } from "react-icons/bs";
 import { GrTemplate, GrIntegration } from "react-icons/gr";
 import { FaCity } from "react-icons/fa";
@@ -112,6 +112,21 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
   ];
 
   const isActiveRoutes = checkingActiveRoutes.some((route) =>
+    pathname.includes(route)
+  );
+
+  const integrationRoutes = [
+    "integrations",
+    "facebook-page",
+    "customise-widget",
+    "bulk-actions",
+    "Mail-Settings",
+    "lead-status",
+    "lead-sub-status",
+    "lead-source"
+  ];
+
+  const isIntegrationActive = integrationRoutes.some((route) =>
     pathname.includes(route)
   );
 
@@ -389,27 +404,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                 )}
               {/* <!-- Menu Item State --> */}
 
-              {/* <!-- Menu Item State --> */}
-              {(modulePermission.state_management === "edit" ||
-                modulePermission.state_management === "view") && (
-                  <li>
-                    <NavLink
-                      to="/lead-source"
-                      className={({ isActive }) =>
-                        isActive
-                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                  ${pathname.includes("calendar") &&
-                          "bg-graydark dark:bg-meta-4"
-                          }`
-                      }
-                    >
-                      <MdOutlineExplore />
-                      Lead Source
-                    </NavLink>
-                  </li>
-                )}
-              {/* <!-- Menu Item State --> */}
 
               {/* <!-- Menu Item Lead Management --> */}
 
@@ -757,51 +751,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu Item Assignment Rule --> */}
 
-                            {/* <!-- Menu Item Lead Status --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
-                                <li>
-                                  <NavLink
-                                    to="/lead-status"
-                                    className={({ isActive }) =>
-                                      isActive
-                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                            ${pathname.includes("calendar") &&
-                                        "bg-graydark dark:bg-meta-4"
-                                        }`
-                                    }
-                                  >
-                                    <FaBarsProgress />
-                                    Lead Status
-                                  </NavLink>
-                                </li>
-                              )}
-                            {/* <!-- Menu Item Lead Status --> */}
-
-                            {/* <!-- Menu Item Lead Sub Status --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
-                                <li>
-                                  <NavLink
-                                    to="/lead-sub-status"
-                                    className={({ isActive }) =>
-                                      isActive
-                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                            ${pathname.includes("calendar") &&
-                                        "bg-graydark dark:bg-meta-4"
-                                        }`
-                                    }
-                                  >
-                                    <FaBarsProgress />
-                                    Lead Sub Status
-                                  </NavLink>
-                                </li>
-                              )}
-                            {/* <!-- Menu Item Lead Sub Status --> */}
+                            
 
                             
                           </ul>
@@ -1497,8 +1447,6 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     </NavLink>
                                   </li>
                                 )}
-                              {/* <!-- Menu Item Roles --> */}
-
                               {/* <!-- Menu Item Users --> */}
                               {(modulePermission.staff_management === "edit" ||
                                 modulePermission.staff_management === "view") && (
@@ -1509,7 +1457,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                         isActive
                                           ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
                                           : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                              ${pathname.includes("calendar") &&
+                               ${pathname.includes("calendar") &&
                                           "bg-graydark dark:bg-meta-4"
                                           }`
                                       }
@@ -1520,6 +1468,28 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                   </li>
                                 )}
                               {/* <!-- Menu Item Users --> */}
+
+                              {/* <!-- Menu Item DID Numbers --> */}
+                              {(modulePermission.staff_management === "edit" ||
+                                modulePermission.staff_management === "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/did-numbers"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                               ${pathname.includes("calendar") &&
+                                          "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <FaHashtag />
+                                      DID Numbers
+                                    </NavLink>
+                                  </li>
+                                )}
+                              {/* <!-- Menu Item DID Numbers --> */}
                             </ul>
                           </div>
                           {/* <!-- Dropdown Menu End --> */}
@@ -1529,21 +1499,16 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   </SidebarLinkGroup>
                 )}
               {/* <!-- Menu Item User Management --> */}
-
-              
-{/* <!-- Menu Item Integration Management --> */}
+{/* <!-- Menu Item Integration Management --> */}
               {(modulePermission.is_superuser === true) && (
                 <SidebarLinkGroup
-                  activeCondition={
-                    pathname.includes("integrations")
-                  }
+                  activeCondition={isIntegrationActive}
                 >
                   {(handleClick, open) => {
                     return (
                       <React.Fragment>
                         <div
-                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] ${pathname.includes("integrations") &&
-                            "bg-graydark dark:bg-meta-4"
+                          className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] ${isIntegrationActive ? "bg-[#ffce00] text-black" : ""
                             }`}
                           onClick={(e) => {
                             e.preventDefault();
@@ -1564,10 +1529,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                              fillRule="evenodd"
-                              clipRule="evenodd"
-                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                              fill=""
+                               fillRule="evenodd"
+                               clipRule="evenodd"
+                               d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                               fill=""
                             />
                           </svg>
                         </div>
@@ -1660,7 +1625,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                         isActive
                                           ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
                                           : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                                          ${pathname.includes("Mail-Settings") &&
+                                           ${pathname.includes("Mail-Settings") &&
                                           "bg-graydark dark:bg-meta-4"
                                           }`
                                       }
@@ -1670,8 +1635,73 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     </NavLink>
                                   </li>
 
+                                  {/* <!-- Menu Item Lead Status --> */}
+                            {(modulePermission.lead_management === "edit" ||
+                              modulePermission.lead_management === "view") &&
+                              modulePermission.user_group === "admin" && (
+                                <li>
+                                  <NavLink
+                                    to="/lead-status"
+                                    className={({ isActive }) =>
+                                      isActive
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            ${pathname.includes("calendar") &&
+                                        "bg-graydark dark:bg-meta-4"
+                                        }`
+                                    }
+                                  >
+                                    <FaBarsProgress />
+                                    Lead Status
+                                  </NavLink>
+                                </li>
+                              )}
+                            {/* <!-- Menu Item Lead Status --> */}
 
+                            {/* <!-- Menu Item Lead Sub Status --> */}
+                            {(modulePermission.lead_management === "edit" ||
+                              modulePermission.lead_management === "view") &&
+                              modulePermission.user_group === "admin" && (
+                                <li>
+                                  <NavLink
+                                    to="/lead-sub-status"
+                                    className={({ isActive }) =>
+                                      isActive
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            ${pathname.includes("calendar") &&
+                                        "bg-graydark dark:bg-meta-4"
+                                        }`
+                                    }
+                                  >
+                                    <FaBarsProgress />
+                                    Lead Sub Status
+                                  </NavLink>
+                                </li>
+                              )}
+                            {/* <!-- Menu Item Lead Sub Status --> */}
 
+                            {/* <!-- Menu Item Lead Source --> */}
+                            {(modulePermission.state_management === "edit" ||
+                              modulePermission.state_management === "view") && (
+                                <li>
+                                  <NavLink
+                                    to="/lead-source"
+                                    className={({ isActive }) =>
+                                      isActive
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            ${pathname.includes("calendar") &&
+                                        "bg-graydark dark:bg-meta-4"
+                                        }`
+                                    }
+                                  >
+                                    <MdOutlineExplore />
+                                    Lead Source
+                                  </NavLink>
+                                </li>
+                              )}
+                            {/* <!-- Menu Item Lead Source --> */}
 
                           </ul>
                         </div>

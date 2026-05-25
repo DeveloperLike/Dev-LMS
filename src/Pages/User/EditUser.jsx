@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { message, Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import {
@@ -18,6 +18,7 @@ import {
   getRolesService,
   getStrongPasswordervice,
 } from "./ApiService";
+import { getDIDNumbersService } from "./DIDNumbersApiService";
 
 export default function EditUser({ mode }) {
   const [reportingManagers, setReportingManagers] = useState([]);
@@ -25,6 +26,7 @@ export default function EditUser({ mode }) {
   const [countryCodes, setCountryCodes] = useState([]);
   const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(false); // Track API call state
+  const [activeDIDs, setActiveDIDs] = useState([]);
 
   const [formData, setFormData] = useState({
     full_name: { value: "", errors: [] },
@@ -182,6 +184,43 @@ export default function EditUser({ mode }) {
     });
   };
 
+  // Fetch Active DID numbers
+  const fetchActiveDIDs = async () => {
+    try {
+      const response = await getDIDNumbersService({ is_active: true, count_per_page: 200 });
+      if (response.data && response.data.success === "1") {
+        setActiveDIDs(response.data.data || []);
+      }
+    } catch (error) {
+      console.error("Error loading active DID numbers:", error);
+    }
+  };
+
+  // Options configuration list for DID number select dropdown
+  const didOptions = useMemo(() => {
+    const list = [
+      { value: "", label: "No DID Number (None)" }
+    ];
+    
+    // Add all active DIDs
+    activeDIDs.forEach((d) => {
+      list.push({
+        value: d.did_number,
+        label: `${d.did_number} (${d.provider}${d.truecaller_name ? ` - ${d.truecaller_name}` : ""})`
+      });
+    });
+
+    // Safeguard current user's assigned DID if it's inactive or missing in the active list
+    const currentDID = formData.did_number.value;
+    if (currentDID && !list.some((opt) => opt.value === currentDID)) {
+      list.push({
+        value: currentDID,
+        label: `${currentDID} (Current Selected)`
+      });
+    }
+    return list;
+  }, [activeDIDs, formData.did_number.value]);
+
   // Fetch dropdown list
   useEffect(() => {
     fetcheditUserService(id);
@@ -189,6 +228,7 @@ export default function EditUser({ mode }) {
     fetchCountryCode();
     fetchBranches();
     fetchRoles();
+    fetchActiveDIDs();
   }, [id]);
 
   return (
@@ -232,7 +272,15 @@ export default function EditUser({ mode }) {
               <InputWithIcon name="email" type="email" placeholder="Email" value={formData.email.value} errors={formData.email.errors} handler={handleInput} mode={mode} className="w-full bg-white dark:bg-[#0F172A] border border-gray-300 dark:border-[#334155] text-gray-900 dark:text-white rounded-lg" />
               <InputWithIcon name="phone" type="text" placeholder="Phone Number" value={formData.phone.value} errors={formData.phone.errors} handler={handleInput} mode={mode} className="w-full bg-white dark:bg-[#0F172A] border border-gray-300 dark:border-[#334155] text-gray-900 dark:text-white rounded-lg" />
               <InputWithIcon name="full_name" type="text" placeholder="Full Name" value={formData.full_name.value} errors={formData.full_name.errors} handler={handleInput} mode={mode} className="w-full bg-white dark:bg-[#0F172A] border border-gray-300 dark:border-[#334155] text-gray-900 dark:text-white rounded-lg" />
-              <InputWithIcon name="did_number" type="text" placeholder="DID Number" value={formData.did_number.value} errors={formData.did_number.errors} handler={handleInput} mode={mode} className="w-full bg-white dark:bg-[#0F172A] border border-gray-300 dark:border-[#334155] text-gray-900 dark:text-white rounded-lg" />
+              <CustomSelectInput
+                name="did_number"
+                placeholder="Select DID Number"
+                value={formData.did_number.value}
+                errors={formData.did_number.errors}
+                handler={(value) => handleSelectInput(value, "did_number")}
+                options={didOptions}
+                className="w-full bg-white dark:bg-[#0F172A] border border-gray-300 dark:border-[#334155] text-gray-900 dark:text-white rounded-lg"
+              />
             </div>
           </div>
 

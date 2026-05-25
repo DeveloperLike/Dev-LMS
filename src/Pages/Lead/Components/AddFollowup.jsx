@@ -156,29 +156,41 @@ export const AddFollowup = ({
 
 
       // ############################################### META Audience PUSH #####################################################################
-      console.log(dataForMetaPush)
-      const phone = dataForMetaPush.find((data) => { return data.code === "phone" }).value
-      const email = dataForMetaPush.find((data) => { return data.code === "email" }).value
+      try {
+        console.log("Meta Audience Push started with data:", dataForMetaPush);
+        if (Array.isArray(dataForMetaPush)) {
+          const phoneObj = dataForMetaPush.find((data) => data.code === "phone");
+          const emailObj = dataForMetaPush.find((data) => data.code === "email");
 
-      const userList = {
-        "users": [
-          {
-            "email": email,
-            "phone": phone
+          const phone = phoneObj ? phoneObj.value : "";
+          const email = emailObj ? emailObj.value : "";
+
+          if (phone || email) {
+            const userList = {
+              "users": [
+                {
+                  "email": email,
+                  "phone": phone
+                }
+              ],
+              "FB_CUSTOM_AUDIENCE_ID": "120243338931080581"
+            };
+
+            console.log("Sending Meta Audience Push user list:", userList);
+            const pushToMetaAdd = await axios.post(baseurl + "/crmCallbacks/addAudienceToMetaAdd", userList);
+            if (pushToMetaAdd.status === 200) {
+              console.log("Meta Push Success:", pushToMetaAdd.data);
+            } else {
+              console.warn("Meta Push returned non-200 status:", pushToMetaAdd.status, pushToMetaAdd.data);
+            }
+          } else {
+            console.warn("Meta Push skipped: Both phone and email are empty.");
           }
-        ],
-        "FB_CUSTOM_AUDIENCE_ID": "120243338931080581"
-      }
-
-      console.log(userList)
-
-      const pushToMetaAdd = await axios.post(baseurl + "/crmCallbacks/addAudienceToMetaAdd", userList)
-      if (pushToMetaAdd.status === 200) {
-        console.log(pushToMetaAdd.data)
-        // message.success(pushToMetaAdd.data);
-
-      } else {
-        console.log(pushToMetaAdd.data)
+        } else {
+          console.warn("Meta Push skipped: dataForMetaPush is not a valid array.");
+        }
+      } catch (metaError) {
+        console.error("META AUDIENCE PUSH ERROR (NON-BLOCKING):", metaError);
       }
       // ############################################### META Audience PUSH #####################################################################
 

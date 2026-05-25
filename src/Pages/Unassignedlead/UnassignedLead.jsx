@@ -85,8 +85,7 @@ export const UnassignedLead = ({ mode }) => {
       render: (text, record) => (
         <NavLink to={`/view-lead/${record.id}`}>
           <p className="hover:text-orange-500">
-            {/* {text === null || text === undefined ? "-" : dayjs(text).format("dddd, DD MMM YY, hh:mma")} */}
-            {dayjs(`${dayjs(text).format("YYYY")}-${dayjs(text).format("MM")}-${dayjs(text).format("DD")}T${dayjs(text).format("hh")}:${dayjs(text).format("mm")}:00+00:00`).format("DD MMM YY, hh:mma")}
+            {text ? dayjs(text).format("DD MMM YY, hh:mma") : "-"}
           </p>
         </NavLink>
       ),

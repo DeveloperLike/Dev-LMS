@@ -59,10 +59,25 @@ export const EditLeadDrawer = ({
         const optionsMap = {};
 
         data.lead_fields.forEach((f) => {
-            if (f.code === "preferred_intake_of_pursuing" && f.value) {
-                values[f.code] = dayjs(f.value);
+            let val = f.value;
+
+            // Normalize invalid or string-represented undefined/null values
+            if (
+                val === undefined ||
+                val === null ||
+                val === "" ||
+                val === "undefined" ||
+                val === "null" ||
+                val === "Invalid Date"
+            ) {
+                val = undefined;
+            }
+
+            if (f.code === "preferred_intake_of_pursuing" && val) {
+                const parsed = dayjs(val);
+                values[f.code] = parsed.isValid() ? parsed : undefined;
             } else {
-                values[f.code] = f.value;
+                values[f.code] = val;
             }
 
             if (f.options?.length) {
@@ -138,7 +153,22 @@ export const EditLeadDrawer = ({
             }
 
             if (field.code === "preferred_intake_of_pursuing") {
-                fieldValue = dayjs(fieldValue).format("YYYY-MM-DD");
+                if (fieldValue) {
+                    const parsed = dayjs(fieldValue);
+                    fieldValue = parsed.isValid() ? parsed.format("YYYY-MM-DD") : null;
+                } else {
+                    fieldValue = null;
+                }
+            }
+
+            if (
+                fieldValue === null ||
+                fieldValue === undefined ||
+                fieldValue === "" ||
+                fieldValue === "undefined" ||
+                fieldValue === "Invalid Date"
+            ) {
+                return null;
             }
 
             return {

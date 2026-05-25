@@ -163,9 +163,11 @@ export const EditLeadField = ({ mode, leadId, onSuccess }) => {
         value === undefined ||
         value === null ||
         value === "undefined" ||
+        value === "null" ||
+        value === "Invalid Date" ||
         value === ""
       ) {
-        value = null;
+        value = undefined;
       }
 
       if (field.type === "date") {
@@ -174,9 +176,9 @@ export const EditLeadField = ({ mode, leadId, onSuccess }) => {
 
           initialFormValues[field.code] = parsedDate.isValid()
             ? parsedDate
-            : null;
+            : undefined;
         } else {
-          initialFormValues[field.code] = null;
+          initialFormValues[field.code] = undefined;
         }
       } else {
         initialFormValues[field.code] = value;
@@ -234,9 +236,11 @@ export const EditLeadField = ({ mode, leadId, onSuccess }) => {
           if (field.type === "date") {
             if (dayjs.isDayjs(fieldValue)) {
               fieldValue = fieldValue.format("YYYY-MM-DD");
-            } else {
+            } else if (fieldValue) {
               const parsed = dayjs(fieldValue);
               fieldValue = parsed.isValid() ? parsed.format("YYYY-MM-DD") : null;
+            } else {
+              fieldValue = null;
             }
           }
 
@@ -244,6 +248,7 @@ export const EditLeadField = ({ mode, leadId, onSuccess }) => {
             fieldValue === null ||
             fieldValue === undefined ||
             fieldValue === "undefined" ||
+            fieldValue === "Invalid Date" ||
             (typeof fieldValue === "string" && fieldValue.trim() === "")
           ) {
             return null;

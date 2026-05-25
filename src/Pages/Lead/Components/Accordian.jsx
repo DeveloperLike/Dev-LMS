@@ -131,7 +131,7 @@ const AccordianDescription = ({ items }) => {
                   <BiSolidTimeFive size={20} className="text-slate-500" />
                 </div>
                 <div>
-                  <p>{dayjs(`2026-05-21T${data.time.split(" ")[0]}+00:00`).format("hh:mm:ss A")}</p>
+                  <p>{dayjs(`2026-05-21T${data.time.split(" ")[0]}`).format("hh:mm:ss A")}</p>
                 </div>
               </div>
 

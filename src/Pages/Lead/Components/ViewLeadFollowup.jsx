@@ -18,20 +18,19 @@ export const ViewLeadFollowup = ({
 
   let columns = [
     {
-      title: "Email",
+      title: "Followup Time",
       fixed: screens?.md ? "left" : false,
-      dataIndex: "lead",
-      key: "lead",
-      width: "25%",
-      render: (text, record) => (
-        <p className="font-medium hover:text-orange-500">{text}</p>
-      ),
+      dataIndex: "datetime",
+      key: "datetime",
+      width: "15%",
+      minWidth: "200px",
+      render: (text, record) => <p className="font-semibold text-black hover:text-orange-500">{text}</p>,
     },
     {
       title: "Created By",
       dataIndex: "user_name",
       key: "user_name",
-      width: "20%",
+      width: "15%",
       render: (text, record) => (
         <p className="font-medium hover:text-orange-500">{text}</p>
       ),
@@ -40,26 +39,26 @@ export const ViewLeadFollowup = ({
       title: "Remarks",
       dataIndex: "remark",
       key: "remark",
-      width: "20%",
+      width: "30%",
       render: (text, record) => (
-        <p className="font-medium hover:text-orange-500">{text}</p>
+        <p className="font-medium hover:text-orange-500 whitespace-pre-wrap">{text}</p>
       ),
     },
     {
-      title: "Date",
-      dataIndex: "datetime",
-      key: "date",
+      title: "Created On",
+      dataIndex: "created_at",
+      key: "created_at",
       width: "15%",
       minWidth: "200px",
-      render: (text, record) => <p className="hover:text-orange-500">{text}</p>,
+      render: (text, record) => <p className="hover:text-orange-500">{text ? text : "-"}</p>,
     },
     {
-      title: "Lead Status",
-      dataIndex: "lead_status",
-      key: "date",
-      width: "10%",
+      title: "Completed On",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      width: "15%",
       minWidth: "200px",
-      render: (text, record) => <p className="hover:text-orange-500">{text}</p>,
+      render: (text, record) => <p className="hover:text-orange-500">{text ? text : "-"}</p>,
     },
     {
       title: "Status",
