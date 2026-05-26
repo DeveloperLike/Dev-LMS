@@ -61,6 +61,7 @@ export default function LeadStatusChart({
         "total_mql",
         "total_sql",
         "Junk",
+        "stale_fresh_leads",
     ];
 
     const rawStatusData = Object.entries(

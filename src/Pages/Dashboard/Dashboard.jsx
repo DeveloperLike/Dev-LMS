@@ -54,12 +54,23 @@ export const Dashboard = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="w-full px-3 sm:px-4 md:px-6 xl:px-8 py-4 sm:py-6">
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
-        className="grid grid-cols-1 sm:grid-cols-2 sm:mx-30 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-4 gap-6 max-w-[1400px] mx-auto auto-rows-[1fr]"
+        className="
+   grid
+   grid-cols-[repeat(auto-fit,minmax(260px,1fr))]
+   sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]
+   xl:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]
+   2xl:grid-cols-[repeat(auto-fit,minmax(340px,1fr))]
+   gap-5
+   sm:gap-6
+   w-full
+   max-w-[1800px]
+   mx-auto
+   "
       >
         {dashboardConfig
           .filter((config) => {

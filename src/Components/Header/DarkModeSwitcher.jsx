@@ -76,11 +76,8 @@ const DarkModeSwitcher = () => {
         flex items-center justify-center
         w-9 h-9
         rounded-full
-        bg-white/10
-        hover:bg-white/20
         text-white
         transition
-        dark:bg-white/10
       "
       title="Toggle Dark Mode"
     >

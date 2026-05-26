@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from "react";
-import { 
-    Card, 
-    Button, 
-    Typography, 
-    Space, 
-    message, 
-    Tag, 
-    Spin, 
-    Input, 
+import {
+    Card,
+    Button,
+    Typography,
+    Space,
+    message,
+    Tag,
+    Spin,
+    Input,
     Alert,
     Switch
 } from "antd";
-import { 
-    FacebookOutlined, 
-    SyncOutlined, 
+import {
+    FacebookOutlined,
+    SyncOutlined,
     SettingOutlined,
     InfoCircleOutlined,
     SafetyCertificateOutlined,
     AreaChartOutlined
 } from "@ant-design/icons";
 import FacebookLogin from "@greatsumini/react-facebook-login";
-import { 
-    getFacebookAdsService, 
+import {
+    getFacebookAdsService,
     postLinkFacebookAccountListService,
     postSyncFacebookLeadsService,
     postToggleFacebookAdAccountService
@@ -41,7 +41,7 @@ const FacebookAdsAccount = () => {
     const [data, setData] = useState({});
     const [registeredUserData, setRegisteredUserData] = useState([]);
     const [showSettings, setShowSettings] = useState(false);
-    
+
     // Dynamic App Settings state (Sync with localStorage used in FaceBook.jsx)
     const [appId, setAppId] = useState(localStorage.getItem("fb_app_id") || import.meta.env.VITE_FACEBOOK_APP_ID || "1419171219814595");
     const [appSecret, setAppSecret] = useState(localStorage.getItem("fb_app_secret") || "");
@@ -95,7 +95,7 @@ const FacebookAdsAccount = () => {
         setLoading(true);
         try {
             // Send token to backend to link ad accounts (ONE-CLICK SYNC)
-            const response = await postLinkFacebookAccountListService({ 
+            const response = await postLinkFacebookAccountListService({
                 access_token: resp.accessToken,
                 app_id: appId,
                 app_secret: appSecret,
@@ -106,7 +106,7 @@ const FacebookAdsAccount = () => {
                 message.success("Successfully linked Facebook Ad Accounts!");
                 dispatch(facebookTokenUpdate(resp.accessToken));
                 dispatchEmail(updateFacebookEmail(resp.email || ""));
-                
+
                 // Immediate refresh of data and lead sync
                 getLeadApi();
                 postSyncFacebookLeadsService().catch(err => console.error("Auto Sync Error:", err));
@@ -144,7 +144,7 @@ const FacebookAdsAccount = () => {
             dataIndex: "id",
             key: "id",
             width: "80px",
-            render: (text) => <Text className="text-white font-medium">{text}</Text>,
+            render: (text) => <Text className="dark:text-white text-black font-medium">{text}</Text>,
         },
         {
             title: "Ad Account ID",
@@ -188,141 +188,236 @@ const FacebookAdsAccount = () => {
     ];
 
     return (
-        <div className="p-4 md:p-6 bg-[#1A222C] min-h-screen">
-            <Card 
-                className="bg-[#24303F] border-[#2E3A47] shadow-xl rounded-lg overflow-hidden mb-6"
+        <div className="mt-6 mb-6">
+            <Card
+                className="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden mb-6"
+                bodyStyle={{ padding: 0 }}
                 title={
-                    <Space size="middle">
-                        <div className="p-2 bg-blue-600 rounded-lg">
-                            <AreaChartOutlined style={{ fontSize: '24px', color: 'white' }} />
+                    <div className="flex items-center gap-3 py-2">
+                        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 shadow-lg">
+                            <AreaChartOutlined className="text-white text-2xl" />
                         </div>
-                        <Title level={4} style={{ margin: 0, color: 'white' }}>Facebook Ad Account Integration</Title>
-                    </Space>
+
+                        <div>
+                            <Title level={4} className="!mb-0 !text-black dark:!text-white">
+                                Facebook Ad Account Integration
+                            </Title>
+
+                            <Text className="text-gray-600 dark:text-gray-400 text-sm">
+                                Manage Facebook Ads & Campaign Sync
+                            </Text>
+                        </div>
+                    </div>
                 }
                 extra={
-                    <Button 
-                        type="text" 
-                        icon={<SettingOutlined style={{ color: showSettings ? '#3C50E0' : '#8A99AF' }} />} 
+                    <Button
+                        type="text"
+                        icon={
+                            <SettingOutlined
+                                className={`text-lg transition-all duration-300 ${showSettings
+                                    ? "text-blue-500 rotate-90"
+                                    : "text-gray-500 dark:text-gray-400"
+                                    }`}
+                            />
+                        }
                         onClick={() => setShowSettings(!showSettings)}
-                        className="hover:bg-[#1A222C]"
+                        className="hover:!bg-gray-100 dark:hover:!bg-slate-800 rounded-xl"
                     />
                 }
             >
-                <div className="max-w-4xl mx-auto py-2">
+                <div className="max-w-5xl mx-auto py-4 px-4 md:px-6">
+
+                    {/* SETTINGS */}
                     {showSettings && (
-                        <div className="mb-8 p-6 bg-[#1A222C] border border-[#2E3A47] rounded-lg animate-fade-in">
-                            <Title level={5} className="text-white mb-4 flex items-center gap-2">
-                                <SettingOutlined /> Advanced Developer Settings
+                        <div className="mb-8 p-6 bg-gray-50 dark:bg-[#111827] border border-slate-200 dark:border-slate-700 rounded-2xl animate-slide-up">
+                            <Title level={5} className="!text-black dark:!text-white !mb-4 flex items-center gap-2">
+                                <SettingOutlined className="text-blue-500" />
+                                Advanced Developer Settings
                             </Title>
-                            <Paragraph className="text-gray-400 mb-6 text-sm">
+
+                            <Paragraph className="!text-gray-600 dark:!text-gray-400 mb-6 text-sm">
                                 These settings are shared with the Facebook Pages integration.
                             </Paragraph>
-                            <div className="flex flex-col md:flex-row gap-4 items-end">
-                                <div className="flex-1">
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Facebook App ID</label>
-                                    <Input 
-                                        placeholder="Enter App ID" 
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase mb-2 text-gray-500 dark:text-gray-400">
+                                        Facebook App ID
+                                    </label>
+
+                                    <Input
+                                        placeholder="Enter App ID"
                                         value={appId}
                                         onChange={handleAppIdChange}
-                                        className="bg-[#24303F] border-[#2E3A47] text-white hover:border-primary focus:border-primary h-10"
+                                        className="!h-11 !bg-white dark:!bg-slate-900 !border-slate-300 dark:!border-slate-700 !text-black dark:!text-white rounded-xl"
                                     />
                                 </div>
-                                <div className="flex-1">
-                                    <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Facebook App Secret</label>
+
+                                <div>
+                                    <label className="block text-xs font-semibold uppercase mb-2 text-gray-500 dark:text-gray-400">
+                                        Facebook App Secret
+                                    </label>
+
                                     <Input.Password
-                                        placeholder="Enter App Secret" 
+                                        placeholder="Enter App Secret"
                                         value={appSecret}
                                         onChange={handleAppSecretChange}
-                                        className="bg-[#24303F] border-[#2E3A47] text-white hover:border-primary focus:border-primary h-10"
+                                        className="!h-11 !bg-white dark:!bg-slate-900 !border-slate-300 dark:!border-slate-700 !text-black dark:!text-white rounded-xl"
                                     />
                                 </div>
                             </div>
+
+                            <Alert
+                                className="mt-5 rounded-xl border border-blue-200 dark:border-blue-500/30 bg-blue-50 dark:bg-blue-500/10"
+                                message={
+                                    <span className="text-black dark:text-white font-medium">
+                                        Facebook Developer Setup
+                                    </span>
+                                }
+                                description={
+                                    <span className="text-gray-700 dark:text-gray-300">
+                                        Make sure localhost is added inside your Facebook Developer Console settings.
+                                    </span>
+                                }
+                                type="info"
+                                showIcon
+                            />
                         </div>
                     )}
 
-                    <div className="flex flex-col items-center py-8 text-center">
-                        <div className="mb-6 relative">
-                            <div className="absolute inset-0 bg-blue-500 blur-2xl opacity-10 animate-pulse"></div>
-                            <AreaChartOutlined style={{ fontSize: '72px', color: '#1877F2' }} />
+                    {/* HERO */}
+                    <div className="relative overflow-hidden rounded-3xl border border-slate-200 dark:border-slate-700 bg-gradient-to-br from-gray-50 to-white dark:from-[#111827] dark:to-[#0B1120] px-6 py-14 md:px-12 md:py-16 mb-8">
+
+                        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-500/10 blur-3xl rounded-full"></div>
+
+                        <div className="relative z-10 flex flex-col items-center text-center">
+
+                            <div className="flex items-center justify-center w-28 h-28 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
+                                <AreaChartOutlined className="text-[64px] text-blue-500" />
+                            </div>
+
+                            <Title level={2} className="!mb-3 !text-black dark:!text-white">
+                                Manage your Facebook Ad Accounts
+                            </Title>
+
+                            <Paragraph className="max-w-2xl text-base md:text-lg !text-gray-600 dark:!text-gray-400 mb-8">
+                                Connect your Facebook Ad Accounts to monitor campaign performance and manage lead syncing directly from your CRM dashboard.
+                            </Paragraph>
+
+                            <FacebookLogin
+                                appId={appId || "0"}
+                                onSuccess={handleResponse}
+                                onFail={(error) => {
+                                    console.error("Login Failed!", error);
+
+                                    if (error.status === "not_authorized") {
+                                        message.warning("Please authorize the app to continue.");
+                                    }
+                                }}
+                                style={{
+                                    background: "linear-gradient(135deg,#1877F2,#2563EB)",
+                                    color: "white",
+                                    padding: "14px 34px",
+                                    borderRadius: "14px",
+                                    fontSize: "16px",
+                                    fontWeight: "600",
+                                    border: "none",
+                                    cursor: appId ? "pointer" : "not-allowed",
+                                    boxShadow: "0 10px 25px rgba(37,99,235,0.35)",
+                                    transition: "all 0.3s ease"
+                                }}
+                                scope="pages_show_list,ads_management,ads_read,business_management,leads_retrieval,pages_read_engagement,pages_manage_metadata,pages_manage_ads"
+                            >
+                                <Space size="middle">
+                                    <FacebookOutlined />
+                                    {registeredUserData.length > 0
+                                        ? "Sync Ad Accounts"
+                                        : "Connect with Facebook"}
+                                </Space>
+                            </FacebookLogin>
+
+                            {!appId && (
+                                <Text className="text-red-500 mt-4">
+                                    Please set an App ID in Settings to enable login.
+                                </Text>
+                            )}
                         </div>
-                        <Title level={3} className="text-white mb-2">
-                            Manage your Facebook Ad Accounts
-                        </Title>
-                        <Paragraph className="text-gray-400 mb-8 max-w-md">
-                            Connect your ad accounts to track campaign performance and lead costs directly inside the CRM.
-                        </Paragraph>
-                        
-                        <FacebookLogin
-                            appId={appId || "0"}
-                            onSuccess={handleResponse}
-                            onFail={(error) => {
-                                console.error('Login Failed!', error);
-                                if (error.status === 'not_authorized') message.warning("Please authorize the app to continue.");
-                            }}
-                            style={{
-                                backgroundColor: '#1877F2',
-                                color: 'white',
-                                padding: '12px 32px',
-                                borderRadius: '6px',
-                                fontSize: '16px',
-                                fontWeight: '600',
-                                border: 'none',
-                                cursor: appId ? 'pointer' : 'not-allowed',
-                                transition: 'all 0.3s',
-                                boxShadow: '0 4px 12px rgba(24, 119, 242, 0.3)'
-                            }}
-                            scope="pages_show_list,ads_management,ads_read,business_management,leads_retrieval,pages_read_engagement,pages_manage_metadata,pages_manage_ads"
-                        >
-                            <Space>
-                                <FacebookOutlined />
-                                {registeredUserData.length > 0 ? "Sync Ad Accounts" : "Connect with Facebook"}
-                            </Space>
-                        </FacebookLogin>
-                        
-                        {!appId && <Text type="danger" className="mt-4">Please set an App ID in Settings to enable login.</Text>}
                     </div>
                 </div>
             </Card>
 
+            {/* TABLE SECTION */}
             {registeredUserData.length > 0 ? (
                 <div className="animate-slide-up">
+
                     <div className="flex items-center justify-between mb-4 mx-2">
-                        <Title level={5} className="text-white m-0">Linked Ad Accounts ({registeredUserData.length})</Title>
-                        <Button 
-                            icon={<SyncOutlined spin={loading} />} 
+                        <Title level={5} className="!text-black dark:!text-white !m-0">
+                            Linked Ad Accounts ({registeredUserData.length})
+                        </Title>
+
+                        <Button
+                            icon={<SyncOutlined spin={loading} />}
                             onClick={getLeadApi}
-                            className="bg-[#24303F] border-[#2E3A47] text-gray-400 hover:text-white"
+                            className="!bg-white dark:!bg-[#111827] !border-slate-300 dark:!border-slate-700 !text-gray-700 dark:!text-gray-300 hover:!text-blue-500 rounded-xl"
                         >
                             Refresh List
                         </Button>
                     </div>
-                    <TabTables
-                        tableData={registeredUserData}
-                        rowHoverable={true}
-                        tableColumns={columns}
-                        paginationData={data}
-                        paginationHandler={setPage}
-                        islead={leadModulePermission.lead_management === "edit" && "lead"}
-                        rowKey="id"
-                    />
+
+                    <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A]">
+                        <TabTables
+                            tableData={registeredUserData}
+                            rowHoverable={true}
+                            tableColumns={columns}
+                            paginationData={data}
+                            paginationHandler={setPage}
+                            islead={leadModulePermission.lead_management === "edit" && "lead"}
+                            rowKey="id"
+                        />
+                    </div>
                 </div>
             ) : (
-                !loading && appId && (
-                    <div className="mx-2 p-12 bg-[#24303F] border border-[#2E3A47] rounded-lg text-center shadow-inner">
-                        <Paragraph className="text-gray-500 mb-0">
-                            No Facebook Ad Accounts are currently linked.<br />
+                !loading &&
+                appId && (
+                    <div className="p-14 bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-800 rounded-2xl text-center shadow-inner">
+                        <Paragraph className="!text-gray-600 dark:!text-gray-400 !mb-0 text-base">
+                            No Facebook Ad Accounts are currently linked.
+                            <br />
                             Click the button above to sync your accounts.
                         </Paragraph>
                     </div>
                 )
             )}
 
+            {/* LOADER */}
             {loading && (
-                <div className="fixed inset-0 bg-[#1A222C] bg-opacity-70 flex flex-col items-center justify-center z-[9999]">
-                    <Spin size="large" />
-                    <Text className="text-white mt-4 font-medium tracking-wider">Syncing Ad Accounts...</Text>
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex flex-col items-center justify-center z-[9999]">
+                    <div className="bg-white dark:bg-[#0F172A] border border-slate-200 dark:border-slate-700 rounded-2xl px-10 py-8 shadow-2xl flex flex-col items-center">
+                        <Spin size="large" />
+
+                        <Text className="text-black dark:text-white mt-5 font-semibold tracking-wide">
+                            Syncing Ad Accounts...
+                        </Text>
+                    </div>
                 </div>
             )}
+
+            <style>{`
+              .animate-slide-up {
+                  animation: slideUp 0.4s ease;
+              }
+  
+              @keyframes slideUp {
+                  from {
+                      opacity: 0;
+                      transform: translateY(20px);
+                  }
+                  to {
+                      opacity: 1;
+                      transform: translateY(0px);
+                  }
+              }
+          `}</style>
         </div>
     );
 };

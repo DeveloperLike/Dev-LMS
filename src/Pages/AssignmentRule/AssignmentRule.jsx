@@ -257,7 +257,7 @@ export default function AssignmentRule({ mode }) {
               setSelectedData(null); // Clear for new
               setOpen(true);
             }}
-            className="bg-[#ffce00] hover:bg-orange-500 px-4 py-2 rounded font-medium shadow"
+            className="text-black bg-[#ffce00] hover:bg-orange-500 px-4 py-2 rounded font-medium shadow"
           >
             Add New Rule
           </button>

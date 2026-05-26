@@ -44,7 +44,7 @@ import { MdOutlineSchedule } from "react-icons/md";
 import { MdOutlineMarkEmailUnread } from "react-icons/md";
 import LeadStatusAnalytics from "../../Pages/Analytics/LeadStatusAnalytics";
 import { IoLogoWhatsapp } from "react-icons/io";
-import { MdOutlineTrendingUp , MdOutlineMail } from "react-icons/md";
+import { MdOutlineTrendingUp, MdOutlineMail } from "react-icons/md";
 import { LucideChartNoAxesCombined } from "lucide-react";
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
@@ -613,7 +613,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
                               {/* <!-- Menu Sales --> */}
 
-                              
+
 
 
                               {/* <!-- Menu Item WhatsAppLayout --> */}
@@ -751,9 +751,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu Item Assignment Rule --> */}
 
-                            
 
-                            
+
+
                           </ul>
                         </div>
                       </React.Fragment>
@@ -1499,7 +1499,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   </SidebarLinkGroup>
                 )}
               {/* <!-- Menu Item User Management --> */}
-{/* <!-- Menu Item Integration Management --> */}
+
+              {/* <!-- Menu Item Integration Management --> */}
               {(modulePermission.is_superuser === true) && (
                 <SidebarLinkGroup
                   activeCondition={isIntegrationActive}
@@ -1529,10 +1530,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <path
-                               fillRule="evenodd"
-                               clipRule="evenodd"
-                               d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                               fill=""
+                              fillRule="evenodd"
+                              clipRule="evenodd"
+                              d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                              fill=""
                             />
                           </svg>
                         </div>
@@ -1549,9 +1550,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                   isActive
                                     ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
                                     : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                                ${pathname.includes("integrations/google") &&
-                                      "bg-graydark dark:bg-meta-4"
-                                      }`
+                               ${pathname.includes("calendar") &&
+                                    "bg-graydark dark:bg-meta-4"
+                                    }`
                                 }
                               >
                                 <FaGoogle />
@@ -1563,8 +1564,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 to="/facebook-page"
                                 className={({ isActive }) =>
                                   isActive
-                                    ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-white duration-300 ease-in-out"
-                                    : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-bodydark2 duration-300 ease-in-out hover:bg-graydark hover:text-white"
+                                    ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                    : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                                 ${pathname.includes("calendar") &&
+                                    "bg-graydark dark:bg-meta-4"
+                                    }`
                                 }
                               >
                                 <FaFacebook />
@@ -1594,48 +1598,48 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu Item Customise Widget --> */}
                             {/* <!-- Menu Item Bulk Actions --> */}
-                              {(modulePermission.bulk_action_management ===
-                                "edit" ||
-                                modulePermission.bulk_action_management ===
-                                "view") && (
-                                  // modulePermission.user_group === "admin" &&
-                                  <li>
-                                    <NavLink
-                                      to="/bulk-actions"
-                                      className={({ isActive }) =>
-                                        isActive
-                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            {(modulePermission.bulk_action_management ===
+                              "edit" ||
+                              modulePermission.bulk_action_management ===
+                              "view") && (
+                                // modulePermission.user_group === "admin" &&
+                                <li>
+                                  <NavLink
+                                    to="/bulk-actions"
+                                    className={({ isActive }) =>
+                                      isActive
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                        : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
                               ${pathname.includes("calendar") &&
-                                          "bg-graydark dark:bg-meta-4"
-                                          }`
-                                      }
-                                    >
-                                      <MdOutlineImportExport />
-                                      Bulk Actions
-                                    </NavLink>
-                                  </li>
-                                )}
-                              {/* <!-- Menu Item Bulk Actions --> */}
+                                        "bg-graydark dark:bg-meta-4"
+                                        }`
+                                    }
+                                  >
+                                    <MdOutlineImportExport />
+                                    Bulk Actions
+                                  </NavLink>
+                                </li>
+                              )}
+                            {/* <!-- Menu Item Bulk Actions --> */}
 
-                              <li>
-                                    <NavLink
-                                      to="/Mail-Settings"
-                                      className={({ isActive }) =>
-                                        isActive
-                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                            <li>
+                              <NavLink
+                                to="/Mail-Settings"
+                                className={({ isActive }) =>
+                                  isActive
+                                    ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                    : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
                                            ${pathname.includes("Mail-Settings") &&
-                                          "bg-graydark dark:bg-meta-4"
-                                          }`
-                                      }
-                                    >
-                                      <MdOutlineMail />
-                                      Mail Settings
-                                    </NavLink>
-                                  </li>
+                                    "bg-graydark dark:bg-meta-4"
+                                    }`
+                                }
+                              >
+                                <MdOutlineMail />
+                                Mail Settings
+                              </NavLink>
+                            </li>
 
-                                  {/* <!-- Menu Item Lead Status --> */}
+                            {/* <!-- Menu Item Lead Status --> */}
                             {(modulePermission.lead_management === "edit" ||
                               modulePermission.lead_management === "view") &&
                               modulePermission.user_group === "admin" && (

@@ -11,15 +11,15 @@ const FacebookMainPage = () => {
   const column = [
     {
       key: "1",
-      label: "Facebook",
+      label: <strong>Facebook</strong>,
       children: (
-        <FaceBook  />
+        <FaceBook />
       ),
       icon: <FaFacebook className="inline-block" />,
     },
     {
       key: "2",
-      label: "Facebook Ad Account ",
+      label: <strong>Facebook Ad Account</strong>,
       children: (
         <FacebookAdsAccount />
       ),
@@ -30,7 +30,8 @@ const FacebookMainPage = () => {
 
   return (
     <>
-      <div className="mx-6 pb-5 bg-white px-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700">
+      {/* <div className="mx-6 pb-5 bg-white px-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700"> */}
+      <div>
         <div className="relative">
           <Tabs
             className="mt-4 p-0"

@@ -1,53 +1,80 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+
 import DropdownUser from './DropdownUser';
 import Notifications from './Notifications';
 import DarkModeSwitcher from './DarkModeSwitcher';
+
 import { setLeadFilters } from '../../lib/redux/leadFilterSlice';
 import authenticatedAxiosInstance from '../../lib/AxiosInstance';
-import { MdOutlineMarkEmailUnread } from 'react-icons/md';
-import { RiChatFollowUpLine } from 'react-icons/ri';
-import { HiOutlineInboxStack } from 'react-icons/hi2';
+
+import { useCountUp } from '../../Pages/Reports/hook';
 
 const Header = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const [counts, setCounts] = useState({ fresh: 0, backlog: 0, followup: 0 });
+  const [counts, setCounts] = useState({
+    fresh: 0,
+    backlog: 0,
+    followup: 0,
+  });
+
   const [freshLeadId, setFreshLeadId] = useState(null);
 
+  const freshCount = useCountUp(counts.fresh);
+  const followupCount = useCountUp(counts.followup);
+  const backlogCount = useCountUp(counts.backlog);
+
   useEffect(() => {
-    // Emit add user to socket
-    props.socket.emit("addUser", {
+    props.socket.emit('addUser', {
       userData: props?.userData,
       username: props?.userData?.username,
     });
 
     const fetchCounts = () => {
       authenticatedAxiosInstance({
-        method: "get",
-        url: "/api/v1/common/dashboard",
-      }).then((response) => {
-        const data = response?.data?.data || [];
-        const normalize = (str) => str?.toLowerCase().trim();
-        
-        const freshItem = data.find(d => normalize(d.name) === "fresh lead");
-        const backlogItem = data.find(d => normalize(d.name) === "backlog");
-        const followupItem = data.find(d => normalize(d.name) === "followup");
-        
-        setCounts({
-          fresh: freshItem?.count || 0,
-          backlog: backlogItem?.count || 0,
-          followup: followupItem?.count || 0
-        });
-        setFreshLeadId(response?.data?.fresh_lead_source_id);
-      }).catch(err => console.error("Error fetching dashboard counts for header:", err));
+        method: 'get',
+        url: '/api/v1/common/dashboard',
+      })
+        .then((response) => {
+          const data = response?.data?.data || [];
+
+          const normalize = (str) => str?.toLowerCase().trim();
+
+          const freshItem = data.find(
+            (d) => normalize(d.name) === 'fresh lead'
+          );
+
+          const backlogItem = data.find(
+            (d) => normalize(d.name) === 'backlog'
+          );
+
+          const followupItem = data.find(
+            (d) => normalize(d.name) === 'followup'
+          );
+
+          setCounts({
+            fresh: freshItem?.count || 0,
+            backlog: backlogItem?.count || 0,
+            followup: followupItem?.count || 0,
+          });
+
+          setFreshLeadId(response?.data?.fresh_lead_source_id);
+        })
+        .catch((err) =>
+          console.error(
+            'Error fetching dashboard counts for header:',
+            err
+          )
+        );
     };
 
     fetchCounts();
-    // Refresh header counts every 30 seconds to keep it perfectly in sync
+
     const interval = setInterval(fetchCounts, 30000);
+
     return () => clearInterval(interval);
   }, []);
 
@@ -58,94 +85,116 @@ const Header = (props) => {
           leads_status: freshLeadId,
         })
       );
+
       navigate(`/lead-filter/${freshLeadId}`);
     }
   };
 
   const handleFollowupClick = () => {
-    navigate("/follow-up");
+    navigate('/follow-up');
   };
 
   const handleBacklogClick = () => {
-    navigate("/follow-up", { state: { resetDate: "EMPTY" } });
+    navigate('/follow-up', {
+      state: { resetDate: 'EMPTY' },
+    });
   };
 
   return (
-    <header className="sticky top-0 z-999 flex w-full bg-black drop-shadow-1 dark:bg-boxdark dark:drop-shadow-none">
-      <div className="relative flex flex-grow items-center px-2 py-3 shadow-2 md:px-6 2xl:px-11">
+    <header className="sticky top-0 z-50 min-h-[68px] border-b border-white/5 bg-[#111827]">
+      <div className="flex min-h-[68px] items-center justify-between px-2 sm:px-3 md:px-6">
 
-        {/* Left: Hamburger */}
-        <div className="flex items-center gap-2 sm:gap-4 lg:hidden">
+        {/* LEFT */}
+        <div className="flex items-center gap-2 shrink-0">
+
+          {/* Mobile Menu */}
           <button
-            aria-controls="sidebar"
             onClick={(e) => {
               e.stopPropagation();
               props.setSidebarOpen(!props.sidebarOpen);
             }}
-            className="z-99999 block rounded-sm border border-stroke bg-white p-1.5 shadow-sm dark:border-strokedark dark:bg-boxdark lg:hidden"
+            className="flex h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 items-center justify-center rounded-lg hover:bg-white/5 lg:hidden"
           >
-            {/* Hamburger Icon (same as before) */}
-            <span className="relative block h-5.5 w-5.5 cursor-pointer">
-              <span className="du-block absolute right-0 h-full w-full">
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-[0] duration-200 ease-in-out dark:bg-white ${!props.sidebarOpen && '!w-full delay-300'
-                    }`}
-                ></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-150 duration-200 ease-in-out dark:bg-white ${!props.sidebarOpen && 'delay-400 !w-full'
-                    }`}
-                ></span>
-                <span
-                  className={`relative left-0 top-0 my-1 block h-0.5 w-0 rounded-sm bg-black delay-200 duration-200 ease-in-out dark:bg-white ${!props.sidebarOpen && '!w-full delay-500'
-                    }`}
-                ></span>
-              </span>
-            </span>
+            <svg
+              className="h-5 w-5 text-white"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16"
+              />
+            </svg>
           </button>
+
         </div>
 
-        {/* Centered Premium Stats */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 flex items-center gap-2 sm:gap-4 select-none whitespace-nowrap text-xs sm:text-sm md:text-[15px] font-normal">
+        {/* CENTER STATS */}
+        <div className="flex flex-1 items-end justify-end gap-2 sm:gap-4 md:gap-6 overflow-x-auto scrollbar-hide px-2 md:px-4 min-w-0">
+
           <button
             onClick={handleFreshClick}
-            className="text-gray-300 hover:text-blue-400 transition-colors duration-200 focus:outline-none flex items-center gap-1"
+            className="flex items-center gap-1 sm:gap-2 whitespace-nowrap text-[11px] sm:text-xs md:text-sm text-slate-300 hover:text-blue-400 transition-colors shrink-0"
           >
-            <span className="text-white">{counts.fresh}</span>
+            <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0"></span>
+
             <span>Fresh Leads</span>
+
+            <span className="font-semibold tabular-nums text-white">
+              {freshCount}
+            </span>
           </button>
-          <div className="h-7 w-[1px] bg-gray-600"></div>
+
           <button
             onClick={handleFollowupClick}
-            className="text-gray-300 hover:text-red-400 transition-colors duration-200 focus:outline-none flex items-center gap-1"
+            className="flex items-center gap-1 sm:gap-2 whitespace-nowrap text-[11px] sm:text-xs md:text-sm text-slate-300 hover:text-rose-400 transition-colors shrink-0"
           >
-            <span className="text-white">{counts.followup}</span>
+            <span className="h-2 w-2 rounded-full bg-rose-500 shrink-0"></span>
+
             <span>FollowUp</span>
+
+            <span className="font-semibold tabular-nums text-white">
+              {followupCount}
+            </span>
           </button>
-          <div className="h-7 w-[1px] bg-gray-600"></div>
+
           <button
             onClick={handleBacklogClick}
-            className="text-gray-300 hover:text-red-600 transition-colors duration-200 focus:outline-none flex items-center gap-1"
+            className="flex items-center gap-1 sm:gap-2 whitespace-nowrap text-[11px] sm:text-xs md:text-sm text-slate-300 hover:text-orange-400 transition-colors shrink-0"
           >
-            <span className="text-white">{counts.backlog}</span>
+            <span className="h-2 w-2 rounded-full bg-orange-500 shrink-0"></span>
+
             <span>Backlog</span>
+
+            <span className="font-semibold tabular-nums text-white">
+              {backlogCount}
+            </span>
           </button>
+
         </div>
 
-        {/* Right: Actions */}
-        <div className="ml-auto flex items-center gap-4">
+        {/* RIGHT */}
+        <div className="flex items-center gap-1 sm:gap-2 md:gap-3 shrink-0 pl-2">
 
-          {/* Notification */}
-          <span className="text-white dark:text-white text-xl relative">
+          {/* Notifications */}
+          <div className="flex shrink-0 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 items-center justify-center rounded-xl bg-[#1e293b] hover:bg-[#334155] transition-colors">
             <Notifications socket={props.socket} />
-          </span>
-
-          {/* User */}
-          <DropdownUser />
+          </div>
 
           {/* Dark Mode */}
-          <DarkModeSwitcher />
-        </div>
+          <div className="flex shrink-0 h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 items-center justify-center rounded-xl bg-[#1e293b] hover:bg-[#334155] transition-colors">
+            <DarkModeSwitcher />
+          </div>
 
+          {/* User */}
+          <div className="shrink-0 rounded-xl bg-[#1e293b] px-2 sm:px-3 md:px-4 py-2.5 transition-colors hover:bg-[#334155]">
+            <DropdownUser />
+          </div>
+
+        </div>
       </div>
     </header>
   );

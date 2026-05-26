@@ -155,124 +155,124 @@ export default function AddAssignmentRule({ initialData, onClose, onSuccess }) {
       <Form layout="vertical" form={form} onFinish={onFinish}>
         <Form.Item name="uid" hidden><Input /></Form.Item>
 
-      <Row gutter={24}>
-        {/* Left Column - Rule Filters */}
-        <Col xs={24} md={12}>
-          <div className="p-4 rounded mb-4">
-            <h3 className="font-semibold text-lg mb-3">Filter Criteria</h3>
+        <Row gutter={24}>
+          {/* Left Column - Rule Filters */}
+          <Col xs={24} md={12}>
+            <div className="p-4 rounded mb-4">
+              <h3 className="font-semibold text-lg mb-3">Filter Criteria</h3>
 
-            <Form.Item name="name" rules={[{ required: true }]}>
-              <Input placeholder="Rule Name *" />
-            </Form.Item>
+              <Form.Item name="name" rules={[{ required: true }]}>
+                <Input placeholder="Rule Name *" />
+              </Form.Item>
 
-            {/* <Form.Item name="status" valuePropName="checked">
+              {/* <Form.Item name="status" valuePropName="checked">
               <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
             </Form.Item> */}
 
-            <Form.Item name="source">
-              <Select
-                mode="multiple"
-                showSearch
-                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                placeholder="Source"
-                options={dropdownData.leadSources}
-              />
-            </Form.Item>
+              <Form.Item name="source">
+                <Select
+                  mode="multiple"
+                  showSearch
+                  filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                  placeholder="Source"
+                  options={dropdownData.leadSources}
+                />
+              </Form.Item>
 
-            <Form.Item name="city">
-              <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="City" options={cities} />
-            </Form.Item>
+              <Form.Item name="city">
+                <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="City" options={cities} />
+              </Form.Item>
 
-            <Form.Item name="state">
-              <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="State" options={states} />
-            </Form.Item>
+              <Form.Item name="state">
+                <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="State" options={states} />
+              </Form.Item>
 
-            <Form.Item name="branch">
-              <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="Branch Filter" options={dropdownData.allBranches} />
-            </Form.Item>
+              <Form.Item name="branch">
+                <Select mode="multiple" showSearch filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())} placeholder="Branch Filter" options={dropdownData.allBranches} />
+              </Form.Item>
 
-            <Form.Item name="levelOfEducation">
-              <Select allowClear placeholder="Level of Education">
-                <Option value="">Level of Education</Option>
-                <Option value="master">Master</Option>
-                <Option value="bachelor">Bachelor</Option>
-              </Select>
-            </Form.Item>
+              <Form.Item name="levelOfEducation">
+                <Select allowClear placeholder="Level of Education">
+                  <Option value="">Level of Education</Option>
+                  <Option value="master">Master</Option>
+                  <Option value="bachelor">Bachelor</Option>
+                </Select>
+              </Form.Item>
 
-            <Form.Item name="UTMCampaign">
-              <Input placeholder="UTM Campaign" />
-            </Form.Item>
-            <Form.Item name="UTMSource">
-              <Input placeholder="UTM Source" />
-            </Form.Item>
-            <Form.Item name="UTMMedium">
-              <Input placeholder="UTM Medium" />
-            </Form.Item>
+              <Form.Item name="UTMCampaign">
+                <Input placeholder="UTM Campaign" />
+              </Form.Item>
+              <Form.Item name="UTMSource">
+                <Input placeholder="UTM Source" />
+              </Form.Item>
+              <Form.Item name="UTMMedium">
+                <Input placeholder="UTM Medium" />
+              </Form.Item>
 
-            <Form.Item name="campaign">
-              <Input placeholder="Campaign" />
-            </Form.Item>
+              <Form.Item name="campaign">
+                <Input placeholder="Campaign" />
+              </Form.Item>
 
-            <Form.Item name="formName">
-              <Input placeholder="Form Name" />
-            </Form.Item>
+              <Form.Item name="formName">
+                <Input placeholder="Form Name" />
+              </Form.Item>
 
-            <Form.Item name="trackingURL">
-              <Input placeholder="Tracking URL" />
-            </Form.Item>
-          </div>
-        </Col>
+              <Form.Item name="trackingURL">
+                <Input placeholder="Tracking URL" />
+              </Form.Item>
+            </div>
+          </Col>
 
-        {/* Right Column - Assignment Targets */}
-        <Col xs={24} md={12}>
-          <div className="p-4 rounded">
-            <h3 className="font-semibold text-lg mb-3">Assign To</h3>
+          {/* Right Column - Assignment Targets */}
+          <Col xs={24} md={12}>
+            <div className="p-4 rounded">
+              <h3 className="font-semibold text-lg mb-3">Assign To</h3>
 
-            <Form.Item name="assignToBranch">
-              <Select
-                mode="multiple"
-                showSearch
-                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                placeholder="Target Branches"
-                options={dropdownData.allBranches}
-              />
-            </Form.Item>
+              <Form.Item name="assignToBranch">
+                <Select
+                  mode="multiple"
+                  showSearch
+                  filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                  placeholder="Target Branches"
+                  options={dropdownData.allBranches}
+                />
+              </Form.Item>
 
-            <Form.Item name="userGroup">
-              <Select
-                mode="multiple"
-                placeholder="User Group (Staff / Manager)"
-                options={USER_GROUP_LIST}
-              />
-            </Form.Item>
+              <Form.Item name="userGroup">
+                <Select
+                  mode="multiple"
+                  placeholder="User Group (Staff / Manager)"
+                  options={USER_GROUP_LIST}
+                />
+              </Form.Item>
 
-            <Form.Item name="role">
-              <Select
-                mode="multiple"
-                showSearch
-                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                placeholder="Target Roles"
-                options={dropdownData.roles}
-              />
-            </Form.Item>
+              <Form.Item name="role">
+                <Select
+                  mode="multiple"
+                  showSearch
+                  filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                  placeholder="Target Roles"
+                  options={dropdownData.roles}
+                />
+              </Form.Item>
 
-            <Form.Item name="counsellor" extra="Leave empty to auto-assign to all matching staff (round-robin)">
-              <Select
-                mode="multiple"
-                showSearch
-                filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
-                placeholder="Select specific users"
-                options={filteredCounsellors}
-              />
-            </Form.Item>
-          </div>
-        </Col>
-      </Row>
+              <Form.Item name="counsellor" extra="Leave empty to auto-assign to all matching staff (round-robin)">
+                <Select
+                  mode="multiple"
+                  showSearch
+                  filterOption={(input, option) => option.label.toLowerCase().includes(input.toLowerCase())}
+                  placeholder="Select specific users"
+                  options={filteredCounsellors}
+                />
+              </Form.Item>
+            </div>
+          </Col>
+        </Row>
 
-      <div className="flex justify-end mt-4 pb-4">
-        <PrimaryButton type="primary" htmlType="submit" title={initialData ? "Update Rule" : "Create Rule"} disabled={loading} block={false} />
-      </div>
-    </Form>
+        <div className="flex justify-end mt-4 pb-4">
+          <PrimaryButton type="primary" htmlType="submit" title={initialData ? "Update Rule" : "Create Rule"} className="text-black" disabled={loading} block={false} />
+        </div>
+      </Form>
     </>
   );
 }
