@@ -305,7 +305,7 @@ function SourceGroupJunk({
                 render: (_, row) => {
 
                     return (
-                        <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                        <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                             {row?.lead_status_counts?.[status] || 0}
                         </span>
                     );
@@ -321,7 +321,7 @@ function SourceGroupJunk({
 
                 fixed: "left",
                 render: (text, row) => (
-                    <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                    <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                         {text}
                     </span>
                 ),
@@ -332,7 +332,7 @@ function SourceGroupJunk({
                 dataIndex: "lead_source",
                 fixed: "left",
                 render: (text, row) => (
-                    <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                    <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                         {text}
                     </span>
                 ),
@@ -344,7 +344,7 @@ function SourceGroupJunk({
                 align: "center",
                 fixed: "left",
                 render: (text, row) => (
-                    <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                    <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                         {text}
                     </span>
                 ),
@@ -356,7 +356,7 @@ function SourceGroupJunk({
                 align: "center",
                 fixed: "left",
                 render: (text, row) => (
-                    <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                    <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                         {text}
                     </span>
                 ),
@@ -376,7 +376,7 @@ function SourceGroupJunk({
                             : 0;
 
                     return (
-                        <span className={row.isSubtotal ? "font-bold text-white" : ""}>
+                        <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
                             {percent}%
                         </span>
                     );
