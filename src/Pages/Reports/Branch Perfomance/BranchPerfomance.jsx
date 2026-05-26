@@ -35,6 +35,7 @@ import {
     getLeadSourceDropdownService,
 } from "../../Lead/ApiService";
 import { baseurl } from "../../../lib/Constants";
+import SourceGroupJunk from "./Components/SourceGroupJunk";
 function BranchPerfomance() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -419,18 +420,33 @@ function BranchPerfomance() {
 
                 </div>
 
+                {/* BRANCH JUNK TABLE */}
+                <div className="rounded-2xl overflow-hidden border border-white/10 bg-white dark:bg-black p-5">
+                    <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+                        <h2 className="text-xl font-bold dark:text-white text-black">
+                            Junk Analysis
+                        </h2>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                        <SourceGroupJunk
+                            startDate={appliedDateRange?.[0]?.format(
+                                "YYYY-MM-DD"
+                            )}
+                            endDate={appliedDateRange?.[1]?.format(
+                                "YYYY-MM-DD"
+                            )}
+                            counsellor={appliedFilters.counsellor}
+                            leadSource={appliedFilters.leadSource}
+                            sourceGroup={appliedFilters.sourceGroup}
+                            branch={appliedFilters.branch}
+                            role={appliedFilters.role}
+                        />
+                    </div>
+                </div>
+
                 {/* SOURCE PERFORMANCE TABLE */}
-                <div
-                    className="
-                    rounded-2xl
-                    overflow-hidden
-                    border
-                    border-white/10
-                    bg-white
-                    dark:bg-black
-                    p-5
-                "
-                >
+                <div className="rounded-2xl overflow-hidden border border-white/10 bg-white dark:bg-black p-5">
                     <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
                         <h2 className="text-xl font-bold dark:text-white text-black">
                             Branch Source Group Performance

@@ -460,3 +460,114 @@ GROUP BY COALESCE(umu.full_name,'Unassigned')
 
 ORDER BY total_lead DESC
 `;
+
+export const getBranchJunkQuery = ({ whereClause, pageSize, offset }) => `
+
+SELECT * FROM (
+
+WITH base AS (
+
+    SELECT
+        lml.id,
+
+        COALESCE(lmls.source_group, 'Others') AS source_group,
+
+        COALESCE(ls.name, 'Others') AS lead_source,
+
+        COALESCE(lmss.name, 'Others') AS lead_sub_status,
+
+        COALESCE(lmst.name, 'Others') AS lead_status
+
+    FROM lead_management_lead lml
+
+    LEFT JOIN lead_management_leadsource lmls
+        ON lml.lead_source_id = lmls.id
+
+    LEFT JOIN lead_management_leadsource ls
+        ON lml.lead_source_id = ls.id
+
+    LEFT JOIN lead_management_leadstatus lmst
+        ON lml.lead_status_id = lmst.id
+
+    LEFT JOIN lead_management_leadsubstatus lmss
+        ON lml.last_sub_status_id = lmss.id
+
+    ${whereClause}
+
+),
+
+substatus_counts AS (
+
+    SELECT
+        source_group,
+
+        lead_source,
+
+        lead_sub_status,
+
+        COUNT(*) AS sub_status_count
+
+    FROM base
+
+    GROUP BY
+        source_group,
+        lead_source,
+        lead_sub_status
+
+),
+
+agg AS (
+
+    SELECT
+
+        b.source_group,
+
+        b.lead_source,
+
+        COUNT(*) OVER() AS total_count,
+
+        COUNT(DISTINCT b.id) AS totalleads,
+
+        COUNT(DISTINCT CASE
+            WHEN LOWER(b.lead_status) = 'junk'
+            THEN b.id
+        END) AS junk,
+
+        jsonb_object_agg(
+            sc.lead_sub_status,
+            sc.sub_status_count
+        ) FILTER (
+            WHERE sc.lead_sub_status IS NOT NULL
+        ) AS lead_status_counts
+
+    FROM base b
+
+    LEFT JOIN substatus_counts sc
+        ON b.source_group = sc.source_group
+        AND b.lead_source = sc.lead_source
+
+    GROUP BY
+        b.source_group,
+        b.lead_source
+
+),
+
+paginated_rows AS (
+
+    SELECT *
+
+    FROM agg
+
+    ORDER BY junk DESC
+
+    LIMIT ${pageSize}
+    OFFSET ${offset}
+
+)
+
+SELECT *
+
+FROM paginated_rows
+
+) t
+`;
