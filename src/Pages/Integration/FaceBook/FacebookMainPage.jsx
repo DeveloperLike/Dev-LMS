@@ -30,8 +30,7 @@ const FacebookMainPage = () => {
 
   return (
     <>
-      {/* <div className="mx-6 pb-5 bg-white px-4 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700"> */}
-      <div>
+      <div className="mx-6 pb-5 px-4">
         <div className="relative">
           <Tabs
             className="mt-4 p-0"
