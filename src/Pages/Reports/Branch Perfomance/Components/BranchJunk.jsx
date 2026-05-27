@@ -9,14 +9,14 @@ import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import { YgApi } from "../../../../lib/Constants";
-import { getBranchJunkQuery } from "../Queries/BranchPerfomanceQueries";
+import { getCounsellorBranchJunkQuery } from "../Queries/BranchPerfomanceQueries";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const BASE_URL = YgApi;
 
-function SourceGroupJunk({
+function BranchJunk({
     leadType,
     startDate,
     endDate,
@@ -45,7 +45,6 @@ function SourceGroupJunk({
         mql: 0,
         sql: 0,
     });
-
     const startUTC = startDate
         ? dayjs(startDate)
             .tz("Asia/Kolkata")
@@ -213,7 +212,7 @@ function SourceGroupJunk({
 
             const offset = (page - 1) * pageSize;
 
-            const query = getBranchJunkQuery({
+            const query = getCounsellorBranchJunkQuery({
                 whereClause,
                 pageSize,
                 offset,
@@ -266,7 +265,6 @@ function SourceGroupJunk({
     }, [
         leadType,
         startUTC,
-        endUTC,
         leadSource,
         sourceGroup,
         counsellor,
@@ -324,8 +322,8 @@ function SourceGroupJunk({
         return [
 
             {
-                title: "Source Group",
-                dataIndex: "source_group",
+                title: "Branch",
+                dataIndex: "branch",
 
                 fixed: "left",
                 render: (text, row) => (
@@ -336,8 +334,8 @@ function SourceGroupJunk({
             },
 
             {
-                title: "Lead Source",
-                dataIndex: "lead_source",
+                title: "Counsellor",
+                dataIndex: "counsellor",
                 fixed: "left",
                 render: (text, row) => (
                     <span className={row.isSubtotal ? "font-bold dark:text-white text-black" : ""}>
@@ -397,12 +395,7 @@ function SourceGroupJunk({
 
         ];
 
-    }, [
-        dynamicStatuses,
-        rows,
-        grandTotals,
-        leadType,
-    ]);
+    }, [dynamicStatuses, rows, grandTotals]);
 
     useEffect(() => {
 
@@ -442,15 +435,15 @@ function SourceGroupJunk({
 
                         rows.forEach((row) => {
 
-                            const group = row.source_group;
+                            const group = row.branch;
 
                             if (!groupTotals[group]) {
 
                                 groupTotals[group] = {
                                     key: `subtotal-${group}`,
                                     isSubtotal: true,
-                                    source_group: `${group} Total`,
-                                    lead_source: "",
+                                    branch: `${group} Total`,
+                                    counsellor: "",
                                     totalleads: 0,
                                     junk: 0,
                                     lead_status_counts: {},
@@ -484,7 +477,7 @@ function SourceGroupJunk({
 
                         rows.forEach((row) => {
 
-                            const group = row.source_group;
+                            const group = row.branch;
 
                             if (!groupedRows[group]) {
                                 groupedRows[group] = [];
@@ -528,7 +521,7 @@ function SourceGroupJunk({
                     size="small"
                     scroll={{ x: "max-content" }}
                     rowKey={(r, index) =>
-                        r.key || `${r.source_group}-${r.lead_source}-${index}`
+                        r.key || `${r.branch}-${r.counsellor}-${index}`
                     }
                     locale={{
                         emptyText: (
@@ -544,14 +537,6 @@ function SourceGroupJunk({
 
                             junk: Number(
                                 grandTotals.junk || 0
-                            ),
-
-                            mql: Number(
-                                grandTotals.mql || 0
-                            ),
-
-                            sql: Number(
-                                grandTotals.sql || 0
                             ),
                         };
 
@@ -573,7 +558,7 @@ function SourceGroupJunk({
 
                                     {columns.map((col, index) => {
 
-                                        if (col.dataIndex === "source_group") {
+                                        if (col.dataIndex === "branch") {
 
                                             return (
                                                 <Table.Summary.Cell
@@ -588,7 +573,7 @@ function SourceGroupJunk({
                                             );
                                         }
 
-                                        if (col.dataIndex === "lead_source") {
+                                        if (col.dataIndex === "counsellor") {
 
                                             return (
                                                 <Table.Summary.Cell
@@ -637,7 +622,8 @@ function SourceGroupJunk({
                                                 denominator > 0
                                                     ? (
                                                         (
-                                                            totals.junk / denominator
+                                                            totals.junk /
+                                                            denominator
                                                         ) * 100
                                                     ).toFixed(1)
                                                     : 0;
@@ -708,4 +694,4 @@ function SourceGroupJunk({
     );
 }
 
-export default SourceGroupJunk;
+export default BranchJunk;

@@ -36,6 +36,8 @@ import {
 } from "../../Lead/ApiService";
 import { baseurl } from "../../../lib/Constants";
 import SourceGroupJunk from "./Components/SourceGroupJunk";
+import BranchJunk from "./Components/BranchJunk";
+import MqlSqlDropdown from "./Components/MqlSqlDropdown";
 function BranchPerfomance() {
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -56,6 +58,7 @@ function BranchPerfomance() {
     const [leadSourceDropdown, setLeadSourceDropdown] = useState([]);
     const [isDashboardLoading, setIsDashboardLoading] = useState(true);
     const [dashboardStats, setDashboardStats] = useState({});
+    const [leadType, setLeadType] = useState("totallead");
 
     const [appliedFilters, setAppliedFilters] = useState({
         counsellor: [],
@@ -420,34 +423,105 @@ function BranchPerfomance() {
 
                 </div>
 
-                {/* BRANCH JUNK TABLE */}
+                {/* JUNK ANALYSIS */}
                 <div className="rounded-2xl overflow-hidden border border-white/10 bg-white dark:bg-black p-5">
-                    <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+
+                    <div className="flex items-center justify-between flex-wrap gap-4 mb-2">
                         <h2 className="text-xl font-bold dark:text-white text-black">
                             Junk Analysis
                         </h2>
                     </div>
 
-                    <div className="overflow-x-auto">
-                        <SourceGroupJunk
-                            startDate={appliedDateRange?.[0]?.format(
-                                "YYYY-MM-DD"
-                            )}
-                            endDate={appliedDateRange?.[1]?.format(
-                                "YYYY-MM-DD"
-                            )}
-                            counsellor={appliedFilters.counsellor}
-                            leadSource={appliedFilters.leadSource}
-                            sourceGroup={appliedFilters.sourceGroup}
-                            branch={appliedFilters.branch}
-                            role={appliedFilters.role}
+                    <div className="w-full">
+                        <Tabs
+                            defaultActiveKey="source-group-junk"
+                            className="dark:text-white text-black"
+
+                            tabBarExtraContent={{
+                                right: (
+                                    <div className="min-w-[180px]">
+                                        <MqlSqlDropdown
+                                            value={leadType}
+                                            onChange={setLeadType}
+                                        />
+                                    </div>
+                                ),
+                            }}
+
+                            items={[
+
+                                {
+                                    key: "source-group-junk",
+
+                                    label: (
+                                        <span className="font-semibold">
+                                            Source Group Junk
+                                        </span>
+                                    ),
+
+                                    children: (
+                                        <div className="overflow-x-auto pt-2">
+
+                                            <SourceGroupJunk
+                                                leadType={leadType}
+                                                startDate={appliedDateRange?.[0]?.format(
+                                                    "YYYY-MM-DD"
+                                                )}
+                                                endDate={appliedDateRange?.[1]?.format(
+                                                    "YYYY-MM-DD"
+                                                )}
+                                                counsellor={appliedFilters.counsellor}
+                                                leadSource={appliedFilters.leadSource}
+                                                sourceGroup={appliedFilters.sourceGroup}
+                                                branch={appliedFilters.branch}
+                                                role={appliedFilters.role}
+                                            />
+
+                                        </div>
+                                    ),
+                                },
+
+                                {
+                                    key: "branch-junk",
+
+                                    label: (
+                                        <span className="font-semibold">
+                                            Branch Junk
+                                        </span>
+                                    ),
+
+                                    children: (
+                                        <div className="overflow-x-auto pt-2">
+
+                                            <BranchJunk
+                                                leadType={leadType}
+                                                startDate={appliedDateRange?.[0]?.format(
+                                                    "YYYY-MM-DD"
+                                                )}
+                                                endDate={appliedDateRange?.[1]?.format(
+                                                    "YYYY-MM-DD"
+                                                )}
+                                                counsellor={appliedFilters.counsellor}
+                                                leadSource={appliedFilters.leadSource}
+                                                sourceGroup={appliedFilters.sourceGroup}
+                                                branch={appliedFilters.branch}
+                                                role={appliedFilters.role}
+                                            />
+
+                                        </div>
+                                    ),
+                                },
+
+                            ]}
                         />
+
                     </div>
+
                 </div>
 
                 {/* SOURCE PERFORMANCE TABLE */}
                 <div className="rounded-2xl overflow-hidden border border-white/10 bg-white dark:bg-black p-5">
-                    <div className="flex items-center justify-between flex-wrap gap-4 mb-4">
+                    <div className="flex items-center justify-between flex-wrap gap-4">
                         <h2 className="text-xl font-bold dark:text-white text-black">
                             Branch Source Group Performance
                         </h2>
