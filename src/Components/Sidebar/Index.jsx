@@ -1814,7 +1814,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
               {/* <!-- Menu Item Support Management --> */}
 
               {/* <!-- Menu Item Profile --> */}
-              {
+              {/* {
                 <li>
                   <NavLink
                     to="/profile"
@@ -1831,7 +1831,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                     Profile
                   </NavLink>
                 </li>
-              }
+              } */}
               {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Integration Partners --> */}

@@ -24,7 +24,7 @@ export const ViewLeadFollowup = ({
       key: "datetime",
       width: "15%",
       minWidth: "200px",
-      render: (text, record) => <p className="font-semibold text-black hover:text-orange-500">{text}</p>,
+      render: (text, record) => <p className="font-semibold text-black dark:text-white hover:text-orange-500">{text}</p>,
     },
     {
       title: "Created By",

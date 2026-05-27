@@ -316,6 +316,13 @@ const VeiwLeadReminder = ({ laedreminderList, handleStatusChange }) => {
       dataIndex: "comment",
       key: "comment",
       width: "35%",
+      render: (text) => (
+        <div
+          className="whitespace-pre-wrap break-words max-w-[500px]"
+        >
+          {text}
+        </div>
+      ),
     },
     {
       title: "Date",
@@ -335,7 +342,7 @@ const VeiwLeadReminder = ({ laedreminderList, handleStatusChange }) => {
             onClick={() => handleStatusChange(record.id, text)}
             className={`inline-flex py-1 px-3 text-sm shadow ${text === true
               ? "bg-green-200 text-green-700 rounded-md hover:bg-green-300"
-              : "bg-[#ffce00] text-white rounded-md hover:bg-orange-500 "
+              : "bg-[#ffce00] text-black rounded-md hover:bg-orange-500 "
               }`}
           >
             {text === true ? "Done" : "Mark As Done"}
@@ -347,10 +354,7 @@ const VeiwLeadReminder = ({ laedreminderList, handleStatusChange }) => {
 
   return (
     <Table
-      columns={columns.map((col) => ({
-        ...col,
-        className: "whitespace-nowrap",
-      }))}
+      columns={columns}
       scroll={{ x: "max-content" }}
       dataSource={laedreminderList}
       pagination={false}

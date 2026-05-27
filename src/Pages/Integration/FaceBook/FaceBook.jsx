@@ -194,31 +194,31 @@ const FaceBook = () => {
             dataIndex: "id",
             key: "id",
             width: "80px",
-            render: (text) => <Text className="text-white font-medium">{text}</Text>,
+            render: (text) => <Text className="dark:text-white text-black font-medium">{text}</Text>,
         },
         {
             title: "Page ID",
             dataIndex: "page_id",
             key: "page_id",
-            render: (text) => <Text code className="bg-[#1A222C] text-[#FFA500] border-none">{text}</Text>,
+            render: (text) => <Text code className="dark:bg-black bg-blue-300 text-black dark:text-[#FFA500] border-none">{text}</Text>,
         },
         {
             title: "Name",
             dataIndex: "name",
             key: "name",
-            render: (text) => <Text strong className="text-white">{text}</Text>,
+            render: (text) => <Text strong className="dark:text-white text-black">{text}</Text>,
         },
         {
             title: "Connected Email",
             dataIndex: "email",
             key: "email",
-            render: (text) => <Text className="text-gray-300">{text || "-"}</Text>,
+            render: (text) => <Text className="dark:text-white text-black">{text || "-"}</Text>,
         },
         {
             title: "Created At",
             dataIndex: "datetime",
             key: "datetime",
-            render: (text) => <Text className="text-gray-400 text-xs">{text}</Text>,
+            render: (text) => <Text className="dark:text-white text-black text-xs">{text}</Text>,
         },
         {
             title: "Status",
@@ -339,6 +339,7 @@ const FaceBook = () => {
                                 paginationHandler={setPage}
                                 islead={leadModulePermission.lead_management === "edit" && "lead"}
                                 rowKey="id"
+                                containerClassName="mx-0 bg-none dark:bg-none"
                             />
                         </div>
                     ) : (
@@ -385,6 +386,7 @@ const FaceBook = () => {
                             paginationHandler={setLeadsPage}
                             islead={leadModulePermission.lead_management === "edit" && "lead"}
                             rowKey="id"
+                            containerClassName="mx-0 bg-none dark:bg-none"
                         />
                     ) : (
                         !loading && (

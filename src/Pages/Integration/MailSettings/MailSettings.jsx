@@ -10,7 +10,8 @@ import {
   setSMTPPrimaryService,
   testSMTPConnectionService,
 } from "./ApiService";
-import { message } from "antd";
+import { Badge, message } from "antd";
+import { CustomSelectInput } from "../../../Components/CustomComponents/InputWithIcon";
 
 const PRIMARY_COLOR = "rgb(255 206 0)";
 
@@ -21,18 +22,9 @@ const MailSettings = () => {
   const [showModal, setShowModal] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [actionLoadingId, setActionLoadingId] = useState(null);
-
-  // =========================
-  // THEME DETECTION
-  // =========================
-
   const isDark =
     typeof document !== "undefined" &&
     document.documentElement.classList.contains("dark");
-
-  // =========================
-  // COLORS
-  // =========================
 
   const colors = {
     background: isDark ? "rgb(26 34 44)" : "#f1f5f9",
@@ -45,10 +37,6 @@ const MailSettings = () => {
       ? "rgba(255,255,255,0.05)"
       : "hsl(var(--background))",
   };
-
-  // =========================
-  // INITIAL FORM
-  // =========================
 
   const initialForm = {
     smtp_name: "",
@@ -63,10 +51,6 @@ const MailSettings = () => {
   };
 
   const [form, setForm] = useState(initialForm);
-
-  // =========================
-  // MAP HELPERS
-  // =========================
 
   const mapBEToFE = (item) => ({
     id: item.id,
@@ -93,10 +77,6 @@ const MailSettings = () => {
     is_primary: form.is_primary,
   });
 
-  // =========================
-  // API FETCH
-  // =========================
-
   const fetchSMTPs = async () => {
     try {
       const response = await getSMTPSettingsService();
@@ -115,10 +95,6 @@ const MailSettings = () => {
     fetchSMTPs();
   }, []);
 
-  // =========================
-  // INPUT CHANGE
-  // =========================
-
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
 
@@ -127,10 +103,6 @@ const MailSettings = () => {
       [name]: type === "checkbox" ? checked : value,
     }));
   };
-
-  // =========================
-  // SUBMIT (CREATE / UPDATE)
-  // =========================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -178,10 +150,6 @@ const MailSettings = () => {
     }
   };
 
-  // =========================
-  // EDIT
-  // =========================
-
   const handleEdit = (item) => {
     setEditingId(item.id);
 
@@ -199,10 +167,6 @@ const MailSettings = () => {
 
     setShowModal(true);
   };
-
-  // =========================
-  // DELETE
-  // =========================
 
   const handleDelete = async (id) => {
     if (actionLoadingId) return;
@@ -229,10 +193,6 @@ const MailSettings = () => {
     }
   };
 
-  // =========================
-  // ACTIVATE / STATUS TOGGLE
-  // =========================
-
   const handleToggleActivate = async (item) => {
     if (actionLoadingId) return;
     const confirmToggle = window.confirm(
@@ -256,10 +216,6 @@ const MailSettings = () => {
       setActionLoadingId(null);
     }
   };
-
-  // =========================
-  // SET PRIMARY
-  // =========================
 
   const handleSetPrimary = async (item) => {
     if (actionLoadingId) return;
@@ -287,10 +243,6 @@ const MailSettings = () => {
     }
   };
 
-  // =========================
-  // TEST SMTP CONNECTION
-  // =========================
-
   const handleTest = async (id) => {
     if (actionLoadingId) return;
     const testEmail = window.prompt(
@@ -311,16 +263,12 @@ const MailSettings = () => {
       console.error("Test SMTP error:", error);
       message.error(
         "SMTP Test Connection Failed: " +
-          (error.response?.data?.message || error.message)
+        (error.response?.data?.message || error.message)
       );
     } finally {
       setActionLoadingId(null);
     }
   };
-
-  // =========================
-  // OPEN MODAL
-  // =========================
 
   const openAddModal = () => {
     setEditingId(null);
@@ -328,19 +276,11 @@ const MailSettings = () => {
     setShowModal(true);
   };
 
-  // =========================
-  // CLOSE MODAL
-  // =========================
-
   const closeModal = () => {
     setShowModal(false);
     setEditingId(null);
     setForm(initialForm);
   };
-
-  // =========================
-  // SEARCH FILTER
-  // =========================
 
   const filteredSMTPs = useMemo(() => {
     return smtpList.filter(
@@ -349,10 +289,6 @@ const MailSettings = () => {
         item.smtp_user.toLowerCase().includes(search.toLowerCase())
     );
   }, [smtpList, search]);
-
-  // =========================
-  // STYLES
-  // =========================
 
   const styles = {
     page: {
@@ -597,10 +533,6 @@ const MailSettings = () => {
     },
   };
 
-  // =========================
-  // UI
-  // =========================
-
   return (
     <div style={styles.page}>
       <div style={styles.container}>
@@ -652,28 +584,30 @@ const MailSettings = () => {
                     <td style={styles.td}>{item.smtp_port}</td>
 
                     <td style={styles.td}>
-                      <span
-                        onClick={() => !actionLoadingId && handleToggleActivate(item)}
-                        style={{
-                          ...styles.badge,
-                          background: item.status
-                            ? "rgba(16, 185, 129, 0.1)"
-                            : "rgba(239, 68, 68, 0.1)",
-                          color: item.status
-                            ? "#10b981"
-                            : "#ef4444",
-                          cursor: actionLoadingId ? "not-allowed" : "pointer",
-                          opacity: actionLoadingId && actionLoadingId === item.id ? 0.6 : 1,
-                          border: `1px solid ${
-                            item.status
-                              ? "#10b981"
-                              : "#ef4444"
-                          }`,
-                        }}
-                        title="Click to toggle status"
-                      >
-                        {actionLoadingId && actionLoadingId === item.id ? "Updating..." : (item.status ? "Active" : "Inactive")}
-                      </span>
+                      <div style={{ display: "flex", gap: "10px" }}>
+                        {item.status ? (
+                          <Badge status="success" />
+                        ) : (
+                          <Badge status="error" />
+                        )}
+
+                        <CustomSelectInput
+                          className="w-full min-w-[100px]"
+                          size="small"
+                          value={item.status ? "Active" : "Inactive"}
+                          options={[
+                            {
+                              value: true,
+                              label: <Badge status="success" text="Active" />,
+                            },
+                            {
+                              value: false,
+                              label: <Badge status="error" text="Inactive" />,
+                            },
+                          ]}
+                          handler={() => handleToggleActivate(item)}
+                        />
+                      </div>
                     </td>
 
                     <td style={styles.td}>
@@ -687,16 +621,15 @@ const MailSettings = () => {
                           color: item.is_primary
                             ? "#111"
                             : item.status
-                            ? PRIMARY_COLOR
-                            : colors.mutedForeground,
-                          cursor: actionLoadingId ? "not-allowed" : item.status && !item.is_primary ? "pointer" : "default",
-                          border: `1px solid ${
-                            item.is_primary
                               ? PRIMARY_COLOR
-                              : item.status
+                              : colors.mutedForeground,
+                          cursor: actionLoadingId ? "not-allowed" : item.status && !item.is_primary ? "pointer" : "default",
+                          border: `1px solid ${item.is_primary
+                            ? PRIMARY_COLOR
+                            : item.status
                               ? PRIMARY_COLOR
                               : colors.border
-                          }`,
+                            }`,
                           opacity: actionLoadingId && actionLoadingId === item.id ? 0.6 : item.status ? 1 : 0.5,
                         }}
                         title={item.is_primary ? "Primary SMTP" : item.status ? "Click to set as Primary" : "Activate SMTP first to set as Primary"}

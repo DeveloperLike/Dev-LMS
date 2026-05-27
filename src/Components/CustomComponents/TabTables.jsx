@@ -1,6 +1,6 @@
 import { Pagination, Table } from "antd";
 import LoadSkeleton from "./Skeleton";
-
+import { useEffect } from "react";
 
 export const TabTables = ({
   loading,
@@ -14,20 +14,29 @@ export const TabTables = ({
   bordered,
   pageSize,
   setPageSize,
+
+  containerClassName = "",
+  tableClassName = "",
 }) => {
 
   const onShowSizeChange = (current, newPageSize) => {
     setPageSize(newPageSize);
     paginationHandler(1, newPageSize);
   };
+
+  useEffect(() => {
+    console.log(containerClassName)
+  }, []);
+
   return (
     <>
-      <div className="mx-6 rounded-lg p-4 shadow-default bg-white dark:bg-boxdark transition-colors duration-200">
+      <div
+        className={`
+          ${containerClassName === "mx-0 bg-none dark:bg-none" ? "" : "mx-6 bg-white dark:bg-boxdark"} rounded-lg p-4 shadow-default
+          transition-colors duration-200
+        `}
+      >
         <div className="max-w-full overflow-x-auto">
-
-          {/* {tableData === undefined || tableData === null ? (
-        <LoadSkeleton />
-      ) : ( */}
 
           <Table
             loading={loading}
@@ -51,18 +60,19 @@ export const TabTables = ({
                 "No records found"
               ),
             }}
-            className="
-  dark:text-white
-  bg-white dark:bg-boxdark
-  [&_.ant-table-tbody>tr>td]:bg-white
-  dark:[&_.ant-table-tbody>tr>td]:bg-boxdark
-  [&_.ant-table-empty]:bg-white
-  dark:[&_.ant-table-empty]:bg-boxdark
-"
+            className={`
+              dark:text-white
+              bg-white dark:bg-boxdark
+              [&_.ant-table-tbody>tr>td]:bg-white
+              dark:[&_.ant-table-tbody>tr>td]:bg-boxdark
+              [&_.ant-table-empty]:bg-white
+              dark:[&_.ant-table-empty]:bg-boxdark
+              ${tableClassName}
+            `}
           />
 
-
         </div>
+
         <div className="flex justify-between items-center mt-4">
           <Pagination
             defaultCurrent={paginationData.page}
@@ -77,6 +87,7 @@ export const TabTables = ({
               paginationHandler(page, pageSize);
             }}
           />
+
           <div className="text-sm text-black dark:text-yellow-500">
             {paginationData.current_page_data_count} of{" "}
             {paginationData.data_count} records
@@ -85,5 +96,4 @@ export const TabTables = ({
       </div>
     </>
   );
-}
-
+};

@@ -150,19 +150,19 @@ const FacebookAdsAccount = () => {
             title: "Ad Account ID",
             dataIndex: "ad_account_id",
             key: "ad_account_id",
-            render: (text) => <Text code className="bg-[#1A222C] text-[#FFA500] border-none">{text}</Text>,
+            render: (text) => <Text code className="dark:bg-black bg-blue-300 text-black dark:text-[#FFA500] border-none">{text}</Text>,
         },
         {
             title: "Connected Email",
             dataIndex: "email",
             key: "email",
-            render: (text) => <Text className="text-gray-300">{text || "-"}</Text>,
+            render: (text) => <Text className="dark:text-white text-black">{text || "-"}</Text>,
         },
         {
             title: "Created At",
             dataIndex: "datetime",
             key: "datetime",
-            render: (text) => <Text className="text-gray-400 text-xs">{text}</Text>,
+            render: (text) => <Text className="dark:text-white text-black text-xs">{text}</Text>,
         },
         {
             title: "Status",
@@ -364,7 +364,7 @@ const FacebookAdsAccount = () => {
                         </Button>
                     </div>
 
-                    <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A]">
+                    <div >
                         <TabTables
                             tableData={registeredUserData}
                             rowHoverable={true}
@@ -373,6 +373,7 @@ const FacebookAdsAccount = () => {
                             paginationHandler={setPage}
                             islead={leadModulePermission.lead_management === "edit" && "lead"}
                             rowKey="id"
+                            containerClassName="mx-0"
                         />
                     </div>
                 </div>
