@@ -158,26 +158,20 @@ function BranchJunk({
                 `);
             }
 
-            if (leadSource?.length) {
-
-                conditions.push(
-                    buildCondition(
-                        "lml.lead_source_id",
-                        leadSource,
-                        false
-                    )
-                );
-            }
-
             if (sourceGroup?.length) {
 
-                conditions.push(
-                    buildCondition(
-                        "lmls.source_group",
-                        sourceGroup,
-                        false
-                    )
-                );
+                const values = sourceGroup
+                    .map((s) => `'${s}'`)
+                    .join(",");
+
+                conditions.push(`
+                lml.lead_source_id IN (
+                    SELECT id
+                    FROM lead_management_leadsource
+                    WHERE source_group IN (${values})
+                )
+            `);
+
             }
 
             if (branchCondition) {
