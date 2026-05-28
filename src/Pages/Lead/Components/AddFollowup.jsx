@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { CustomTextArea } from "../../../Components/CustomComponents/CustomTextArea";
 import { CustomSelectInput } from "../../../Components/CustomComponents/InputWithIcon";
 import { CustomTimerPicker } from "./TimePicker";
 import { addFollowupService } from "../ApiService";
@@ -204,106 +203,184 @@ export const AddFollowup = ({
 
 
   return (
-    <div>
+    <div className="h-full flex flex-col">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           callPostApi();
         }}
+        className="h-full flex flex-col"
       >
-        {/* <FormItem>
-          <div className="flex flex-col gap-1">
-            <label>
-              Add/Update Followup Type<sup className="text-red-500">*</sup>
+
+        {/* Form Body */}
+        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
+
+          {/* Next Action */}
+          <div>
+
+            <label className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              Next Action Date
+              <sup className="text-red-500 ml-1">*</sup>
             </label>
-            <CustomSelectInput
-              placeholder="Select Followup Type"
-              required={true}
-              name="type"
-              value={formData.type.value || undefined}
-              errors={formData.type.errors}
-              handler={handleInputChange("type")}
-              options={[
-                {
-                  value: "appointment",
-                  label: "Appointment",
-                },
-                { value: "follow_up_call", label: "Follow Up Call" },
-                { value: "payment_link_sent", label: "Payment Link Sent" },
-                {
-                  value: "push_lead_to_other_domain",
-                  label: "Push Lead To Other Domain",
-                },
-                {
-                  value: "send_whatsapp_failed",
-                  label: "Send Whatsapp Failed",
-                },
-              ]}
+
+            <div className="flex gap-3">
+
+              {/* Date */}
+              <div className="flex-1">
+                <DatePicker
+                  required
+                  name="date"
+                  format="DD-MM-YYYY"
+                  placeholder="Select date"
+                  value={formData.date.value}
+                  onChange={(date) =>
+                    handleInputChange("date")(date)
+                  }
+                  disabledDate={(current) =>
+                    current &&
+                    current < dayjs().startOf("day")
+                  }
+                  className="
+                  !h-[48px]
+                  !w-full
+                  !rounded-xl
+                  !border-gray-200
+                  dark:!border-gray-700
+                  dark:!bg-[#111827]
+                  hover:!border-yellow-400
+                  focus:!border-yellow-500
+                  !shadow-none
+                "
+                />
+              </div>
+
+              {/* Time */}
+              <div className="w-[120px]">
+                <CustomTimerPicker
+                  value={formData.time.value}
+                  onChange={handleInputChange("time")}
+                  className="
+                 !h-[48px]
+                 !w-full
+                 !rounded-xl
+                 !border-gray-200
+                 dark:!border-gray-700
+                 dark:!bg-[#111827]
+                 hover:!border-yellow-400
+                 focus:!border-yellow-500
+                 !shadow-none
+               "
+                  disabledTime={() => ({
+                    disabledHours: () => {
+                      if (
+                        dayjs(formData.date.value).isSame(
+                          dayjs(),
+                          "day"
+                        )
+                      ) {
+                        return [
+                          ...Array(dayjs().hour()).keys(),
+                        ];
+                      }
+                      return [];
+                    },
+
+                    disabledMinutes: (
+                      selectedHour
+                    ) => {
+                      if (
+                        dayjs(
+                          formData.date.value
+                        ).isSame(dayjs(), "day") &&
+                        selectedHour ===
+                        dayjs().hour()
+                      ) {
+                        return [
+                          ...Array(
+                            dayjs().minute()
+                          ).keys(),
+                        ];
+                      }
+
+                      return [];
+                    },
+                  })}
+                />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Remark */}
+          <div>
+
+            <label className="block mb-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+              Remark
+            </label>
+
+            <textarea
+              rows={5}
+              value={formData.comment.value}
+              onChange={handleInputChange("comment")}
+              placeholder="Write followup remarks..."
+              className="
+              w-full
+              rounded-2xl
+              border
+              border-gray-200
+              dark:border-gray-700
+              bg-white
+              dark:bg-[#111827]
+              px-4
+              py-3
+              text-sm
+              text-gray-800
+              dark:text-white
+              placeholder:text-gray-400
+              focus:outline-none
+              focus:border-yellow-400
+              focus:ring-4
+              focus:ring-yellow-400/10
+              transition-all
+              resize-none
+            "
             />
-          </div>
-        </FormItem> */}
 
-        <div className="mt-[-1rem]">
-          <label>
-            Next Action Date<sup className="text-red-500">*</sup>
-          </label>
-          <div className="flex items-center w-full gap-3 mb-4">
-            <div className="w-[65%]">
-              <DatePicker
-                required={true}
-                name={"date"}
-                className="py-2"
-                format="DD-MM-YYYY"
-                style={{ width: "100%" }}
-                value={formData.date.value}
-                onChange={(date) => handleInputChange("date")(date)}
-                disabledDate={(current) =>
-                  current && current < dayjs().startOf("day")
-                }
-              />
-            </div>
+            {/* Errors */}
+            {formData.comment.errors &&
+              formData.comment.errors.map((err, index) => (
+                <p
+                  key={index}
+                  className="mt-1 text-sm text-red-500"
+                >
+                  {err}
+                </p>
+              ))}
 
-            <div>
-              <CustomTimerPicker
-                value={formData.time.value}
-                onChange={handleInputChange("time")}
-                disabledTime={() => ({
-                  disabledHours: () => {
-                    if (dayjs(formData.date.value).isSame(dayjs(), "day")) {
-                      return [...Array(dayjs().hour()).keys()]; // Disable past hours if today
-                    }
-                    return [];
-                  },
-                  disabledMinutes: (selectedHour) => {
-                    if (
-                      dayjs(formData.date.value).isSame(dayjs(), "day") &&
-                      selectedHour === dayjs().hour()
-                    ) {
-                      return [...Array(dayjs().minute()).keys()]; // Disable past minutes for the current hour
-                    }
-                    return [];
-                  },
-                })}
-              />
-            </div>
           </div>
+
         </div>
 
-        <CustomTextArea
-          value={formData.comment.value}
-          onChange={handleInputChange("comment")}
-        />
-        {formData.comment.errors &&
-          formData?.comment?.errors.map((err) => {
-            return <p className=" text-sm text-red-500">{err}</p>;
-          })}
-        <br />
-        <div className="pt-4 border-t mt-4 flex justify-center">
+        {/* Footer */}
+        <div className="border-t border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-[#0B1120]">
 
           <PrimaryButton
             type="primary"
-            title="Submit"
-            className="w-full !bg-yellow-400 hover:!bg-yellow-500 !text-black"
+            title={loading ? "Submitting..." : "Submit"}
+            className="
+            w-full
+            !h-[48px]
+            !rounded-xl
+            !bg-yellow-400
+            hover:!bg-yellow-500
+            !border-none
+            !text-black
+            !font-semibold
+            !shadow-lg
+            hover:!shadow-yellow-500/20
+            transition-all
+          "
             htmlType="submit"
             disabled={loading}
           />

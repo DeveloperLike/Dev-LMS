@@ -52,7 +52,7 @@ import {
   getRegisteredUserTransactionService,
 } from "../Registered Users/ApiService";
 
-import { ArrowLeftOutlined, TagFilled, SwapOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined, TagFilled, SwapOutlined, SearchOutlined } from "@ant-design/icons";
 import { EditOutlined } from "@ant-design/icons";
 
 import { getCounsellorDropdown } from "../AssignmentRule/ApiService";
@@ -178,6 +178,7 @@ export const Viewlead = ({ mode }) => {
 
   // Selected Sub Status
   const [selectedSubStatus, setSelectedSubStatus] = useState(null);
+  const [subStatusSearch, setSubStatusSearch] = useState("");
 
   const isPrivilegedUser = ["admin", "manager"].includes(
     loggedInUser?.user_group
@@ -665,6 +666,12 @@ export const Viewlead = ({ mode }) => {
     getViewLeadCardDetailsServiceApiCall();
   };
 
+  const filteredSubStatusList = sortedSubStatusList.filter((status) =>
+    status.lead_sub_status_name
+      ?.toLowerCase()
+      .includes(subStatusSearch.toLowerCase())
+  );
+
   return (
     <>
       <div className="p-0 rounded-lg mx-0 relative mb-[60px]">
@@ -1011,7 +1018,7 @@ export const Viewlead = ({ mode }) => {
 
           {/* Current Status */}
           <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
-            <div className="flex items-center justify-between rounded-2xl bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 px-4 py-3">
+            <div className="flex items-center justify-between rounded-2xl bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 px-2 py-2">
               <div>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
                   Current Status
@@ -1026,11 +1033,52 @@ export const Viewlead = ({ mode }) => {
             </div>
           </div>
 
-          {/* Status List */}
-          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+          {/* Search */}
+          <div className="px-4 pt-4">
 
-            {leadSubStatusDropdown?.length > 0 ? (
-              sortedSubStatusList.map((status) => {
+            <div className="relative">
+
+              <input
+                type="text"
+                placeholder="Search sub status..."
+                value={subStatusSearch}
+                onChange={(e) => setSubStatusSearch(e.target.value)}
+                className="
+                  w-full
+                  h-[44px]
+                  rounded-2xl
+                  border
+                  border-gray-200
+                  dark:border-gray-800
+                  bg-gray-50
+                  dark:bg-[#111827]
+                  pl-11
+                  pr-4
+                  text-sm
+                  text-gray-800
+                  dark:text-white
+                  placeholder:text-gray-400
+                  focus:outline-none
+                  focus:border-yellow-400
+                  focus:ring-4
+                  focus:ring-yellow-400/10
+                  transition-all
+                "
+              />
+
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                <SearchOutlined className="text-sm" />
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Status List */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-2">
+
+            {filteredSubStatusList?.length > 0 ? (
+              filteredSubStatusList.map((status) => {
                 const isActive =
                   subleadstatus?.lead_sub_status_id ===
                   status.lead_sub_status_id;
@@ -1047,8 +1095,8 @@ export const Viewlead = ({ mode }) => {
                      w-full
                      rounded-2xl
                      border
-                     px-4
-                     py-4
+                     px-2
+                     py-2
                      text-left
                      transition-all
                      duration-200

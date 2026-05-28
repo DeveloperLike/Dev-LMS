@@ -35,16 +35,22 @@ export const ViewLeadTransactionDetails = ({
     setIsProofViewModal(false);
   };
 
-  useEffect(async () => {
-    console.log('transaction list api trigger');
-    const res = await getTransactionListByLead(id);
-    console.log({res});
-    if (res.success) {
-      setTransactions(res.data);
+  const getTransactionData = async () => {
+    console.log("transaction list api trigger");
+    try {
+      const res = await getTransactionListByLead(id);
+      console.log({ res });
+      if (res?.success) {
+        setTransactions(res.data || []);
+      }
+    } catch (error) {
+      console.error("Transaction fetch error:", error);
     }
+  };
 
-    // console.log(proofImgUrl, "proofImgUrl");
-  }, []);
+  useEffect(() => {
+    getTransactionData();
+  }, [id]);
 
   const columns = [
     {

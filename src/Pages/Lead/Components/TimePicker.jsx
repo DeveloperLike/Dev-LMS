@@ -6,18 +6,22 @@ const CustomTimerPicker = ({
   value,
   onChange,
   disabledTime,
+  className = "",
 }) => {
-  const dayjsValue  = value ? dayjs(value, "HH:mm A") : null;
+
+  const dayjsValue = value
+    ? dayjs(value, "HH:mm A")
+    : null;
 
   return (
     <TimePicker
       required
       format="hh:mm A"
       size="large"
-      // defaultOpenValue={dayjs("00:00", "HH:mm")}
       onChange={onChange}
-      value={dayjsValue }
+      value={dayjsValue}
       disabledTime={disabledTime}
+      className={className}
     />
   );
 };
