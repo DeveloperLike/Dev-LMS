@@ -166,7 +166,7 @@ function BranchStatusPerformance({ setDashboardLoading, onStatusTotalsChange, st
                     title: "Branch",
                     dataIndex: "branch_name",
                     fixed: "left",
-                    width: 250,
+                    width: 200,
                     align: "left",
                 },
                 {
@@ -174,11 +174,36 @@ function BranchStatusPerformance({ setDashboardLoading, onStatusTotalsChange, st
                     dataIndex: "total_lead",
                     align: "center",
                     fixed: "left",
-                    width: 150,
+                    width: 100,
+                },
+                {
+                    title: "Fresh Lead",
+                    dataIndex: "Fresh_Lead",
+                    align: "center",
+                    width: 130,
+                    render: (_, record) => {
+                        const freshLead = Number(record.Fresh_Lead || 0);
+                        const staleLead = Number(record.stale_fresh_leads || 0);
+
+                        return (
+                            <div className="whitespace-nowrap">
+                                {freshLead}
+
+                                {staleLead > 0 && (
+                                    <span className="text-red-500 font-semibold ml-1">
+                                        ({staleLead})
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    },
                 },
             ];
 
             statuses.forEach((status) => {
+
+                if (status.name === "Fresh Lead") return;
+
                 const key = status.name
                     .replace(/\s+/g, "_")
                     .replace(/[^a-zA-Z0-9_]/g, "");
@@ -298,9 +323,28 @@ function BranchStatusPerformance({ setDashboardLoading, onStatusTotalsChange, st
                                         index={index}
                                         align={col.align || "center"}
                                     >
-                                        {col.dataIndex === "branch_name"
-                                            ? <strong>Total</strong>
-                                            : <strong>{totals[col.dataIndex] || 0}</strong>}
+                                        {col.dataIndex === "branch_name" ? (
+                                            <strong>Total</strong>
+
+                                        ) : col.dataIndex === "Fresh_Lead" ? (
+
+                                            <strong className="whitespace-nowrap">
+                                                {totals?.Fresh_Lead || 0}
+
+                                                {(totals?.stale_fresh_leads || 0) > 0 && (
+                                                    <span className="text-red-500 font-semibold ml-1">
+                                                        ({totals?.stale_fresh_leads})
+                                                    </span>
+                                                )}
+                                            </strong>
+
+                                        ) : (
+
+                                            <strong>
+                                                {totals[col.dataIndex] || 0}
+                                            </strong>
+
+                                        )}
                                     </Table.Summary.Cell>
                                 ))}
                             </Table.Summary.Row>

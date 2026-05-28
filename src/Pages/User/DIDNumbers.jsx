@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useSelector } from "react-redux";
-import { message, Tooltip, Spin, Modal, Switch, Pagination } from "antd";
+import { message, Tooltip, Spin, Modal, Pagination, Badge, Drawer } from "antd";
 import { MdOutlineEdit, MdAdd, MdSearch } from "react-icons/md";
 import {
   getDIDNumbersService,
@@ -8,6 +8,7 @@ import {
   updateDIDNumberService,
   toggleDIDNumberActiveService,
 } from "./DIDNumbersApiService";
+import { CustomSelectInput } from "../../Components/CustomComponents/InputWithIcon";
 
 const PRIMARY_COLOR = "rgb(255 206 0)";
 
@@ -29,7 +30,7 @@ const DIDNumbers = () => {
   const userModulePermission = useSelector(
     (state) => state.permissions.permissionsData || {}
   );
-  
+
   // Dynamic theme detection
   const isDark = typeof document !== "undefined" && document.documentElement.classList.contains("dark");
   const mode = isDark ? "dark" : "light";
@@ -179,9 +180,8 @@ const DIDNumbers = () => {
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-stroke dark:border-strokedark">
         <div>
           <h1
-            className={`font-semibold text-2xl ${
-              mode === "dark" ? "text-yellow-500" : "text-black"
-            }`}
+            className={`font-semibold text-2xl ${mode === "dark" ? "text-yellow-500" : "text-black"
+              }`}
           >
             DID Numbers
           </h1>
@@ -269,17 +269,43 @@ const DIDNumbers = () => {
                   <td className="py-4 px-6 text-center">
                     {actionLoadingId === item.id ? (
                       <Spin size="small" />
+                    ) : canEdit ? (
+                      <div className="flex items-center justify-center gap-2">
+                        {item.is_active ? (
+                          <Badge status="success" />
+                        ) : (
+                          <Badge status="error" />
+                        )}
+
+                        <CustomSelectInput
+                          className="min-w-[110px]"
+                          size="small"
+                          value={item.is_active ? "Active" : "Inactive"}
+                          options={[
+                            {
+                              value: true,
+                              label: <Badge status="success" text="Active" />,
+                            },
+                            {
+                              value: false,
+                              label: <Badge status="error" text="Inactive" />,
+                            },
+                          ]}
+                          handler={(value) => {
+                            if (value !== item.is_active) {
+                              handleToggleActive(item.id);
+                            }
+                          }}
+                        />
+                      </div>
                     ) : (
-                      <Switch
-                        checked={item.is_active}
-                        disabled={!canEdit || actionLoadingId !== null}
-                        onChange={() => handleToggleActive(item.id)}
-                        checkedChildren="Active"
-                        unCheckedChildren="Inactive"
-                        style={{
-                          backgroundColor: item.is_active ? "#10b981" : "#ef4444",
-                        }}
-                      />
+                      <div className="flex items-center justify-center gap-2">
+                        {item.is_active ? (
+                          <Badge status="success" text="Active" />
+                        ) : (
+                          <Badge status="error" text="Inactive" />
+                        )}
+                      </div>
                     )}
                   </td>
                   {canEdit && (
@@ -304,9 +330,7 @@ const DIDNumbers = () => {
 
           {/* Pagination Footer */}
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border-t border-stroke dark:border-strokedark bg-slate-50/50 dark:bg-slate-800/20">
-            <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-              Showing {total === 0 ? 0 : (page - 1) * pageSize + 1} to {Math.min(page * pageSize, total)} of {total} entries
-            </div>
+
             <Pagination
               current={page}
               pageSize={pageSize}
@@ -317,45 +341,50 @@ const DIDNumbers = () => {
               size="small"
               className="dark:text-white"
             />
+
+            <div className="text-sm text-black dark:text-yellow-500 font-medium">
+              {Math.min(page * pageSize, total)} of {total} records
+            </div>
+
           </div>
         </div>
       )}
 
-      {/* Add / Edit Antd Modal */}
-      <Modal
+      {/* Add / Edit Antd Drawer */}
+      <Drawer
         title={
-          <span className="font-bold text-xl tracking-tight dark:text-white block mt-1">
+          <span className="font-bold text-xl tracking-tight dark:text-white block">
             {editingId ? "Update DID Number" : "Add DID Number"}
           </span>
         }
-        visible={showModal}
-        onCancel={() => {
+        placement="right"
+        open={showModal}
+        onClose={() => {
           if (!submitting) {
             setShowModal(false);
             setEditingId(null);
             setForm(initialForm);
           }
         }}
-        footer={null}
+        maskClosable={!submitting}
+        closable={!submitting}
         destroyOnClose
-        centered
         width={500}
+        footer={null}
         styles={{
           body: {
-            padding: "10px 0 0 0",
+            padding: "24px 28px",
+            backgroundColor: mode === "dark" ? "#1b2432" : "#ffffff",
+          },
+          header: {
+            backgroundColor: mode === "dark" ? "#1b2432" : "#ffffff",
+            borderBottom: mode === "dark"
+              ? "1px solid #2d3a4f"
+              : "1px solid #e2e8f0",
           },
           content: {
             backgroundColor: mode === "dark" ? "#1b2432" : "#ffffff",
-            borderRadius: "16px",
-            border: mode === "dark" ? "1px solid #2d3a4f" : "1px solid #e2e8f0",
-            padding: "24px 28px",
-            boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
           },
-          header: {
-            backgroundColor: "transparent",
-            borderBottom: "none",
-            marginBottom: "20px",
-          }
         }}
       >
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -455,7 +484,7 @@ const DIDNumbers = () => {
             </button>
           </div>
         </form>
-      </Modal>
+      </Drawer>
     </div>
   );
 };

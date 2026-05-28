@@ -170,7 +170,7 @@ function BranchUserStatusPerformance({ startDate, endDate, counsellor, leadSourc
                     title: "Counsellor",
                     dataIndex: "user_name",
                     fixed: "left",
-                    width: 250,
+                    width: 200,
                     align: "left",
                 },
                 {
@@ -178,11 +178,36 @@ function BranchUserStatusPerformance({ startDate, endDate, counsellor, leadSourc
                     dataIndex: "total_lead",
                     align: "center",
                     fixed: "left",
-                    width: 120,
+                    width: 100,
+                },
+                {
+                    title: "Fresh Lead",
+                    dataIndex: "Fresh_Lead",
+                    align: "center",
+                    width: 130,
+                    render: (_, record) => {
+                        const freshLead = Number(record.Fresh_Lead || 0);
+                        const staleLead = Number(record.stale_fresh_leads || 0);
+
+                        return (
+                            <div className="whitespace-nowrap">
+                                {freshLead}
+
+                                {staleLead > 0 && (
+                                    <span className="text-red-500 font-semibold ml-1">
+                                        ({staleLead})
+                                    </span>
+                                )}
+                            </div>
+                        );
+                    },
                 },
             ];
 
             statuses.forEach((status) => {
+
+                if (status.name === "Fresh Lead") return;
+
                 const key = status.name
                     .replace(/\s+/g, "_")
                     .replace(/[^a-zA-Z0-9_]/g, "");
@@ -243,17 +268,25 @@ function BranchUserStatusPerformance({ startDate, endDate, counsellor, leadSourc
     );
 
     const totals = useMemo(() => {
+
         const totalObj = {};
-        columns.forEach(col => {
-            if (col.dataIndex !== "user_name") {
-                totalObj[col.dataIndex] = data.reduce(
-                    (sum, row) => sum + Number(row[col.dataIndex] || 0),
-                    0
-                );
-            }
+
+        data.forEach((row) => {
+
+            Object.keys(row).forEach((key) => {
+
+                if (key !== "user_name") {
+
+                    totalObj[key] =
+                        (totalObj[key] || 0) +
+                        Number(row[key] || 0);
+                }
+            });
         });
+
         return totalObj;
-    }, [data, columns]);
+
+    }, [data]);
 
     return (
         <div className="rounded-lg p-4">
@@ -279,10 +312,29 @@ function BranchUserStatusPerformance({ startDate, endDate, counsellor, leadSourc
                                         index={index}
                                         align={col.align || "center"}
                                     >
-                                        {col.dataIndex === "user_name"
-                                            ? <strong>Total</strong>
-                                            : <strong>{totals[col.dataIndex] || 0}</strong>
-                                        }
+                                        {col.dataIndex === "user_name" ? (
+
+                                            <strong>Total</strong>
+
+                                        ) : col.dataIndex === "Fresh_Lead" ? (
+
+                                            <strong className="whitespace-nowrap">
+                                                {totals?.Fresh_Lead || 0}
+
+                                                {(totals?.stale_fresh_leads || 0) > 0 && (
+                                                    <span className="text-red-500 font-semibold ml-1">
+                                                        ({totals?.stale_fresh_leads})
+                                                    </span>
+                                                )}
+                                            </strong>
+
+                                        ) : (
+
+                                            <strong>
+                                                {totals[col.dataIndex] || 0}
+                                            </strong>
+
+                                        )}
                                     </Table.Summary.Cell>
                                 ))}
                             </Table.Summary.Row>

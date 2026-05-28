@@ -429,13 +429,20 @@ SELECT
 
     COUNT(*) AS total_lead,
 
+    COUNT(*) FILTER (
+        WHERE bl.lead_status_id = '0233cefc-fb3e-49d5-9ee1-5f8adadf143a'
+        AND bl.last_updated <= NOW() - INTERVAL '30 minutes'
+    ) AS "stale_fresh_leads",
+
     ${statuses
       .map((s) => {
         const safeName = s.name.replace(/'/g, "''");
         const key = s.name.replace(/\s+/g, "_").replace(/[^a-zA-Z0-9_]/g, "");
 
         return `
-        COUNT(*) FILTER (WHERE lms.name='${safeName}') AS "${key}"
+        COUNT(*) FILTER (
+            WHERE lms.name='${safeName}'
+        ) AS "${key}"
         `;
       })
       .join(",")}
@@ -445,7 +452,8 @@ FROM (
         lml.id,
         lml.assign_to_id,
         lml.lead_status_id,
-        lml.lead_source_id
+        lml.lead_source_id,
+        lml.last_updated
     FROM lead_management_lead lml
     ${whereClause}
 ) bl

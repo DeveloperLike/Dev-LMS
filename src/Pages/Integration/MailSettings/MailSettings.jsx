@@ -10,8 +10,10 @@ import {
   setSMTPPrimaryService,
   testSMTPConnectionService,
 } from "./ApiService";
-import { Badge, message } from "antd";
+import { Badge, message, Drawer, Tooltip } from "antd";
 import { CustomSelectInput } from "../../../Components/CustomComponents/InputWithIcon";
+import { MdDeleteOutline, MdOutlineEdit, MdOutlineFactCheck } from "react-icons/md";
+import { color } from "framer-motion";
 
 const PRIMARY_COLOR = "rgb(255 206 0)";
 
@@ -323,6 +325,7 @@ const MailSettings = () => {
       fontWeight: "700",
       letterSpacing: "-0.5px",
       margin: "0 0 4px 0",
+      color: "#ffce00"
     },
 
     subHeading: {
@@ -569,8 +572,21 @@ const MailSettings = () => {
                 <th style={styles.th}>SMTP Host</th>
                 <th style={styles.th}>Port</th>
                 <th style={styles.th}>Status</th>
-                <th style={styles.th}>Primary</th>
-                <th style={styles.th}>Actions</th>
+                <th
+                  style={{
+                    ...styles.th,
+                    textAlign: "center",
+                  }}
+                >
+                  Primary
+                </th>
+                <th
+                  style={{
+                    ...styles.th,
+                    textAlign: "center",
+                  }}
+                >Actions
+                </th>
               </tr>
             </thead>
 
@@ -610,71 +626,133 @@ const MailSettings = () => {
                       </div>
                     </td>
 
-                    <td style={styles.td}>
-                      <span
-                        onClick={() => !actionLoadingId && item.status && !item.is_primary && handleSetPrimary(item)}
+                    <td
+                      style={{
+                        ...styles.td,
+                        textAlign: "center",
+                        verticalAlign: "middle",
+                      }}
+                    >
+                      <div
+                        onClick={() => {
+                          if (!actionLoadingId && item.status && !item.is_primary) {
+                            handleSetPrimary(item);
+                          }
+                        }}
                         style={{
-                          ...styles.badge,
+                          width: "42px",
+                          height: "22px",
+                          borderRadius: "999px",
                           background: item.is_primary
                             ? PRIMARY_COLOR
-                            : "transparent",
-                          color: item.is_primary
-                            ? "#111"
-                            : item.status
-                              ? PRIMARY_COLOR
-                              : colors.mutedForeground,
-                          cursor: actionLoadingId ? "not-allowed" : item.status && !item.is_primary ? "pointer" : "default",
-                          border: `1px solid ${item.is_primary
-                            ? PRIMARY_COLOR
-                            : item.status
-                              ? PRIMARY_COLOR
-                              : colors.border
-                            }`,
-                          opacity: actionLoadingId && actionLoadingId === item.id ? 0.6 : item.status ? 1 : 0.5,
+                            : isDark
+                              ? "#374151"
+                              : "#d1d5db",
+                          position: "relative",
+                          margin: "0 auto",
+                          cursor:
+                            actionLoadingId || !item.status || item.is_primary
+                              ? "not-allowed"
+                              : "pointer",
+                          opacity:
+                            actionLoadingId && actionLoadingId === item.id
+                              ? 0.6
+                              : item.status
+                                ? 1
+                                : 0.5,
+                          transition: "0.25s ease",
                         }}
-                        title={item.is_primary ? "Primary SMTP" : item.status ? "Click to set as Primary" : "Activate SMTP first to set as Primary"}
                       >
-                        {actionLoadingId && actionLoadingId === item.id ? "Updating..." : (item.is_primary ? "Primary" : "Set Primary")}
-                      </span>
+                        <div
+                          style={{
+                            width: "16px",
+                            height: "16px",
+                            borderRadius: "50%",
+                            background: item.is_primary ? "#111" : "#fff",
+                            position: "absolute",
+                            top: "3px",
+                            left: item.is_primary ? "22px" : "4px",
+                            transition: "0.25s ease",
+                            boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+                          }}
+                        />
+                      </div>
                     </td>
-
-                    <td style={styles.td}>
+                    <td
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        padding: "14px 16px",
+                        borderBottom: `1px solid ${colors.border}`,
+                        fontSize: "14px",
+                      }}>
                       <div style={styles.actionWrap}>
-                        <button
-                          style={{
-                            ...styles.editBtn,
-                            opacity: actionLoadingId ? 0.5 : 1,
-                            cursor: actionLoadingId ? "not-allowed" : "pointer"
-                          }}
-                          disabled={!!actionLoadingId}
-                          onClick={() => handleEdit(item)}
-                        >
-                          Edit
-                        </button>
+                        <Tooltip title="Edit SMTP">
+                          <button
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              width: "34px",
+                              height: "34px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: 0,
+                              boxShadow: "none",
+                              opacity: actionLoadingId ? 0.5 : 1,
+                              cursor: actionLoadingId ? "not-allowed" : "pointer",
+                            }}
+                            disabled={!!actionLoadingId}
+                            onClick={() => handleEdit(item)}
+                          >
+                            <MdOutlineEdit size={20} />
+                          </button>
+                        </Tooltip>
 
-                        <button
-                          style={{
-                            ...styles.testBtn,
-                            opacity: actionLoadingId ? 0.5 : 1,
-                            cursor: actionLoadingId ? "not-allowed" : "pointer"
-                          }}
-                          disabled={!!actionLoadingId}
-                          onClick={() => handleTest(item.id)}
-                        >
-                          {actionLoadingId && actionLoadingId === item.id ? "Testing..." : "Test"}
-                        </button>
+                        <Tooltip title="Test SMTP Connection">
+                          <button
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              width: "34px",
+                              height: "34px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: 0,
+                              boxShadow: "none",
+                              opacity: actionLoadingId ? 0.5 : 1,
+                              cursor: actionLoadingId ? "not-allowed" : "pointer",
+                            }}
+                            disabled={!!actionLoadingId}
+                            onClick={() => handleTest(item.id)}
+                          >
+                            <MdOutlineFactCheck size={20} />
+                          </button>
+                        </Tooltip>
 
-                        <button
-                          style={{
-                            ...styles.deleteBtn,
-                            opacity: actionLoadingId ? 0.5 : 1,
-                            cursor: actionLoadingId ? "not-allowed" : "pointer"
-                          }}
-                          disabled={!!actionLoadingId}
-                          onClick={() => handleDelete(item.id)}
-                        >
-                          {actionLoadingId && actionLoadingId === item.id ? "Deleting..." : "Delete"}
-                        </button>
+                        <Tooltip title="Delete SMTP">
+                          <button
+                            style={{
+                              background: "transparent",
+                              border: "none",
+                              width: "34px",
+                              height: "34px",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              padding: 0,
+                              boxShadow: "none",
+                              opacity: actionLoadingId ? 0.5 : 1,
+                              cursor: actionLoadingId ? "not-allowed" : "pointer",
+                            }}
+                            disabled={!!actionLoadingId}
+                            onClick={() => handleDelete(item.id)}
+                          >
+                            <MdDeleteOutline size={20} />
+                          </button>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>
@@ -692,165 +770,179 @@ const MailSettings = () => {
       </div>
 
       {/* MODAL */}
-      {showModal && (
-        <div style={styles.modalOverlay}>
-          <div style={styles.modal}>
-            <div style={styles.modalHeader}>
-              <h3 style={styles.modalTitle}>
-                {editingId ? "Update SMTP" : "Add SMTP"}
-              </h3>
+      <Drawer
+        title={editingId ? "Update SMTP" : "Add SMTP"}
+        placement="right"
+        width={600}
+        onClose={closeModal}
+        open={showModal}
+        destroyOnClose
+        maskClosable
+        styles={{
+          body: {
+            background: colors.card,
+            padding: "24px",
+          },
+          header: {
+            background: colors.card,
+            borderBottom: `1px solid ${colors.border}`,
+            color: colors.foreground,
+          },
+          content: {
+            background: colors.card,
+          },
+        }}
+      >
+        <form onSubmit={handleSubmit}>
+          <div style={styles.grid}>
+            <div>
+              <label style={styles.label}>SMTP Name</label>
 
-              <button style={styles.closeBtn} onClick={closeModal}>
-                ✕
-              </button>
+              <input
+                type="text"
+                name="smtp_name"
+                value={form.smtp_name}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="Enter SMTP Name"
+              />
             </div>
 
-            <form onSubmit={handleSubmit}>
-              <div style={styles.grid}>
-                <div>
-                  <label style={styles.label}>SMTP Name</label>
+            <div>
+              <label style={styles.label}>SMTP Host</label>
 
-                  <input
-                    type="text"
-                    name="smtp_name"
-                    value={form.smtp_name}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter SMTP Name"
-                  />
-                </div>
+              <input
+                type="text"
+                name="smtp_host"
+                value={form.smtp_host}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="smtp.gmail.com"
+              />
+            </div>
 
-                <div>
-                  <label style={styles.label}>SMTP Host</label>
+            <div>
+              <label style={styles.label}>SMTP Port</label>
 
-                  <input
-                    type="text"
-                    name="smtp_host"
-                    value={form.smtp_host}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="smtp.gmail.com"
-                  />
-                </div>
+              <input
+                type="number"
+                name="smtp_port"
+                value={form.smtp_port}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="587"
+              />
+            </div>
 
-                <div>
-                  <label style={styles.label}>SMTP Port</label>
+            <div>
+              <label style={styles.label}>SMTP User</label>
 
-                  <input
-                    type="number"
-                    name="smtp_port"
-                    value={form.smtp_port}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="587"
-                  />
-                </div>
+              <input
+                type="text"
+                name="smtp_user"
+                value={form.smtp_user}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="Enter SMTP User"
+              />
+            </div>
 
-                <div>
-                  <label style={styles.label}>SMTP User</label>
+            <div>
+              <label style={styles.label}>From Name</label>
 
-                  <input
-                    type="text"
-                    name="smtp_user"
-                    value={form.smtp_user}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter SMTP User"
-                  />
-                </div>
+              <input
+                type="text"
+                name="from_name"
+                value={form.from_name}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="Sender Name"
+              />
+            </div>
 
-                <div>
-                  <label style={styles.label}>From Name</label>
+            <div>
+              <label style={styles.label}>From Email</label>
 
-                  <input
-                    type="text"
-                    name="from_name"
-                    value={form.from_name}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Sender Name"
-                  />
-                </div>
+              <input
+                type="email"
+                name="from_email"
+                value={form.from_email}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="sender@example.com"
+              />
+            </div>
 
-                <div>
-                  <label style={styles.label}>From Email</label>
+            <div style={{ gridColumn: "1 / -1" }}>
+              <label style={styles.label}>SMTP Password</label>
 
-                  <input
-                    type="email"
-                    name="from_email"
-                    value={form.from_email}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="sender@example.com"
-                  />
-                </div>
+              <input
+                type="password"
+                name="smtp_password"
+                value={form.smtp_password}
+                onChange={handleChange}
+                style={styles.input}
+                placeholder="Enter SMTP Password"
+              />
+            </div>
 
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <label style={styles.label}>SMTP Password</label>
+            <div style={styles.checkboxWrap}>
+              <input
+                type="checkbox"
+                name="status"
+                checked={form.status}
+                onChange={handleChange}
+              />
 
-                  <input
-                    type="password"
-                    name="smtp_password"
-                    value={form.smtp_password}
-                    onChange={handleChange}
-                    style={styles.input}
-                    placeholder="Enter SMTP Password"
-                  />
-                </div>
+              <span>Active</span>
+            </div>
 
-                <div style={styles.checkboxWrap}>
-                  <input
-                    type="checkbox"
-                    name="status"
-                    checked={form.status}
-                    onChange={handleChange}
-                  />
+            <div style={styles.checkboxWrap}>
+              <input
+                type="checkbox"
+                name="is_primary"
+                checked={form.is_primary}
+                onChange={handleChange}
+              />
 
-                  <span>Active</span>
-                </div>
-
-                <div style={styles.checkboxWrap}>
-                  <input
-                    type="checkbox"
-                    name="is_primary"
-                    checked={form.is_primary}
-                    onChange={handleChange}
-                  />
-
-                  <span>Primary Default Routing</span>
-                </div>
-              </div>
-
-              <div style={styles.buttonWrap}>
-                <button
-                  type="submit"
-                  style={{
-                    ...styles.primaryBtn,
-                    opacity: submitting ? 0.7 : 1,
-                    cursor: submitting ? "not-allowed" : "pointer"
-                  }}
-                  disabled={submitting}
-                >
-                  {submitting ? (editingId ? "Updating..." : "Saving...") : (editingId ? "Update SMTP" : "Save SMTP")}
-                </button>
-
-                <button
-                  type="button"
-                  style={{
-                    ...styles.secondaryBtn,
-                    opacity: submitting ? 0.5 : 1,
-                    cursor: submitting ? "not-allowed" : "pointer"
-                  }}
-                  onClick={closeModal}
-                  disabled={submitting}
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
+              <span>Primary Default Routing</span>
+            </div>
           </div>
-        </div>
-      )}
+
+          <div style={styles.buttonWrap}>
+            <button
+              type="submit"
+              style={{
+                ...styles.primaryBtn,
+                opacity: submitting ? 0.7 : 1,
+                cursor: submitting ? "not-allowed" : "pointer",
+              }}
+              disabled={submitting}
+            >
+              {submitting
+                ? editingId
+                  ? "Updating..."
+                  : "Saving..."
+                : editingId
+                  ? "Update SMTP"
+                  : "Save SMTP"}
+            </button>
+
+            <button
+              type="button"
+              style={{
+                ...styles.secondaryBtn,
+                opacity: submitting ? 0.5 : 1,
+                cursor: submitting ? "not-allowed" : "pointer",
+              }}
+              onClick={closeModal}
+              disabled={submitting}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </Drawer>
     </div>
   );
 };

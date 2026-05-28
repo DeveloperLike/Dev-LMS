@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+
 import { setLeadFilters } from "../../lib/redux/leadFilterSlice";
 
 import { dashboardConfig } from "./dashboardConfig";
@@ -10,6 +11,7 @@ import { DashboardCard } from "./DashboardCard";
 
 export const Dashboard = () => {
   const { data, meta } = useDashboardData();
+
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -24,6 +26,7 @@ export const Dashboard = () => {
           leads_status: meta?.fresh_lead_source_id,
         })
       );
+
       navigate(`/lead-filter/${meta?.fresh_lead_source_id}`);
       return;
     }
@@ -35,42 +38,50 @@ export const Dashboard = () => {
 
   const container = {
     hidden: {},
+
     show: {
       transition: {
         staggerChildren: 0.08,
-        delayChildren: 0.2,
+        delayChildren: 0.12,
       },
     },
   };
 
   const cardAnimation = {
-    hidden: { opacity: 0, y: 40, scale: 0.9 },
+    hidden: {
+      opacity: 0,
+      y: 30,
+      scale: 0.94,
+      filter: "blur(8px)",
+    },
+
     show: {
       opacity: 1,
       y: 0,
       scale: 1,
-      transition: { duration: 0.4, ease: [0.25, 1, 0.5, 1] },
+      filter: "blur(0px)",
+
+      transition: {
+        duration: 0.55,
+        ease: [0.22, 1, 0.36, 1],
+      },
     },
   };
 
   return (
-    <div className="w-full px-3 sm:px-4 md:px-6 xl:px-8 py-4 sm:py-6">
+    <div className="w-full px-4 md:px-5 xl:px-6 py-5">
       <motion.div
         variants={container}
         initial="hidden"
         animate="show"
         className="
-   grid
-   grid-cols-[repeat(auto-fit,minmax(260px,1fr))]
-   sm:grid-cols-[repeat(auto-fit,minmax(280px,1fr))]
-   xl:grid-cols-[repeat(auto-fit,minmax(320px,1fr))]
-   2xl:grid-cols-[repeat(auto-fit,minmax(340px,1fr))]
-   gap-5
-   sm:gap-6
-   w-full
-   max-w-[1800px]
-   mx-auto
-   "
+        grid
+        grid-cols-1
+        sm:grid-cols-2
+        xl:grid-cols-3
+        2xl:grid-cols-4
+        gap-5
+      "
       >
         {dashboardConfig
           .filter((config) => {
@@ -80,6 +91,7 @@ export const Dashboard = () => {
               (d) => normalize(d.name) === normalize(config.key)
             );
           })
+
           .map((config, index) => {
             const matchedItem = data?.find(
               (d) => normalize(d.name) === normalize(config.key)
@@ -90,24 +102,20 @@ export const Dashboard = () => {
             return (
               <motion.div
                 key={index}
-                className="w-full"
                 variants={cardAnimation}
                 whileHover={{
-                  scale: 1.05,
-                  transition: {
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                  },
+                  y: -6,
+                  scale: 1.02,
                 }}
                 whileTap={{
-                  scale: 0.95,
-                  transition: {
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 20,
-                  },
+                  scale: 0.98,
                 }}
+                transition={{
+                  type: "spring",
+                  stiffness: 260,
+                  damping: 18,
+                }}
+                className="group"
               >
                 <DashboardCard
                   config={config}
@@ -119,18 +127,6 @@ export const Dashboard = () => {
             );
           })}
       </motion.div>
-
-      <style>
-        {`
-        @keyframes shimmer {
-          0% { transform: translateX(-120%); }
-          100% { transform: translateX(120%); }
-        }
-        .animate-shimmer {
-          animation: shimmer 1.6s ease-in-out infinite;
-        }
-        `}
-      </style>
     </div>
   );
 };
