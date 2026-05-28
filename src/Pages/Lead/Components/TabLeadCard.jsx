@@ -1,26 +1,20 @@
 import React from "react";
-import { AndroidOutlined, AppleOutlined } from "@ant-design/icons";
-import { Card, Tabs } from "antd";
+import { Tabs } from "antd";
 import TabChildComponent from "./TabChildComponent";
 import { UserList } from "./UserList";
 import { ActivityReport } from "./ActivityReport";
 import { ViewLeadFollowup } from "./ViewLeadFollowup";
-import { GoPackage } from "react-icons/go";
 import { ViewLeadTransactionDetails } from "./ViewLeadTransactionDetails";
-import { OutLineButton } from "../../../Components/CustomComponents/ButtonUi";
 import { CgNotes } from "react-icons/cg";
-import { GrTransaction } from "react-icons/gr";
 import { RxActivityLog } from "react-icons/rx";
 import { TfiPackage } from "react-icons/tfi";
-import { TbListDetails } from "react-icons/tb";
 import { RiChatFollowUpLine } from "react-icons/ri";
 import LeadReminders from "./LeadReminders";
 import { ViewPackageLeadTab } from "./ViewPackageLeadTab";
 import { FaUser } from "react-icons/fa";
 import { useSelector } from "react-redux";
 import { LeadStudentDetails } from "../LeadStudentDetails/LeadStudentDetails";
-import { SwapOutlined } from '@ant-design/icons';
-import { UserOutlined } from '@ant-design/icons';
+import { SwapOutlined, UserOutlined } from "@ant-design/icons";
 
 export const TabLeadCard = ({
   moreinfoData,
@@ -46,7 +40,6 @@ export const TabLeadCard = ({
   getDetailsDataApi,
   mode,
 }) => {
-
   const modulePermission = useSelector(
     (state) => state.permissions.permissionsData
   );
@@ -116,16 +109,8 @@ export const TabLeadCard = ({
       ),
       icon: <TfiPackage className="inline-block" />,
     },
-    {
-      key: "7",
-      label: "Other Details",
-      children: <TabChildComponent moreinfoData={moreinfoData} />,
-      icon: <TbListDetails className="inline-block" />,
-    },
   ];
 
-  // packageData !== null &&
-  //   packageData?.length > 0 &&
   isRegistered === "registered" &&
     column.push({
       key: "4",
@@ -133,31 +118,46 @@ export const TabLeadCard = ({
       children: <UserList userData={userDataDetails} />,
       icon: <FaUser className="inline-block" />,
     });
+
   modulePermission?.student_profile_management !== "no_access" &&
-    column.push(
-      {
-        key: "8",
-        label: "Profile",
-        children: <LeadStudentDetails
+    column.push({
+      key: "8",
+      label: "Profile",
+      children: (
+        <LeadStudentDetails
           modulePermission={modulePermission}
           mode={mode}
-        />,
-        icon: <UserOutlined className="inline-block" />,
-      },
-    );
+        />
+      ),
+      icon: <UserOutlined className="inline-block" />,
+    });
 
   return (
     <>
+
       <Tabs
-        className="mt-4 overflow-hidden"
+        className="
+      mt-4 overflow-hidden
+      [&_.ant-tabs-nav]:justify-start
+      [&_.ant-tabs-nav-wrap]:justify-start
+      [&_.ant-tabs-nav-list]:justify-start
+      [&_.ant-tabs-tab-btn]:flex
+      [&_.ant-tabs-tab-btn]:items-center
+      [&_.ant-tabs-tab-btn]:justify-start
+    "
         defaultActiveKey="1"
         items={column.map((item) => ({
           key: item.key,
-          label: item.label,
+          label: (
+            <div className="flex items-center gap-2 text-left">
+              {item.icon}
+              <span>{item.label}</span>
+            </div>
+          ),
           children: item.children,
-          icon: item.icon,
         }))}
       />
+
     </>
   );
 };

@@ -41,7 +41,7 @@ import { notificationFun } from "../../lib/redux/NotificationSlice";
 import { useDispatch, useSelector } from "react-redux";
 import TextArea from "antd/es/input/TextArea";
 import { IoIosVideocam, IoLogoWhatsapp, IoMdCall } from "react-icons/io";
-import { MdEmail, MdMoney, MdPayment, MdSms } from "react-icons/md";
+import { MdEmail, MdMoney, MdOutlineSchedule, MdPayment, MdSms } from "react-icons/md";
 import Sms from "./Contact/Sms";
 import Whatsapp from "./Contact/Whatsapp";
 import Email from "./Contact/Email";
@@ -983,165 +983,427 @@ export const Viewlead = ({ mode }) => {
 
       {/* Sub Status List Drawer */}
       <Drawer
-        title="Select Sub Status"
+        title={
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-yellow-400/20 text-yellow-500">
+              <SwapOutlined className="text-lg" />
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold leading-none">
+                Select Sub Status
+              </h2>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Update lead progress
+              </p>
+            </div>
+          </div>
+        }
         placement="right"
-        width={400}
+        width={420}
         open={openSubStatusDrawer}
         onClose={() => setOpenSubStatusDrawer(false)}
         closeIcon={<ArrowLeftOutlined />}
+        className="[&_.ant-drawer-header]:border-b [&_.ant-drawer-header]:border-gray-200 dark:[&_.ant-drawer-header]:border-gray-800 [&_.ant-drawer-body]:p-0"
       >
-        <div className="flex flex-col gap-1">
-          {leadSubStatusDropdown?.length > 0 ? (
-            sortedSubStatusList.map((status) => (
-              <button
-                key={status.lead_sub_status_id}
-                id={`sub-${status.lead_sub_status_id}`}
-                disabled={subStatusLoading}
-                onClick={() => handleSubStatusClick(status)}
-                className={`
-                 w-full text-left px-3 py-1.5 rounded-md border
-                 transition-all duration-200 ease-out
-             
-                 ${subleadstatus?.lead_sub_status_id === status.lead_sub_status_id
-                    ? "bg-warning/15 border-warning text-warning shadow-sm"
-                    : "bg-white border-gray-200 text-gray-700"
-                  }
-             
-                 ${!subStatusLoading &&
-                    subleadstatus?.lead_sub_status_id !== status.lead_sub_status_id
-                    ? "hover:bg-warning/10 hover:border-warning hover:text-warning hover:-translate-y-[1px] hover:shadow-sm"
-                    : ""
-                  }
-             
-                 ${subStatusLoading ? "opacity-50 cursor-not-allowed" : ""}
-               `}
-              >
-                {status.lead_sub_status_name}
-              </button>
+        <div className="h-full flex flex-col bg-white dark:bg-[#0B1120]">
 
-            ))
-          ) : (
-            <p className="text-gray-500 dark:text-gray-400 text-sm">No sub status available</p>
-          )}
+          {/* Current Status */}
+          <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+            <div className="flex items-center justify-between rounded-2xl bg-yellow-50 dark:bg-yellow-500/10 border border-yellow-200 dark:border-yellow-500/20 px-4 py-3">
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                  Current Status
+                </p>
+
+                <h3 className="font-semibold text-yellow-600 dark:text-yellow-400">
+                  {subleadstatus?.name || "Not Selected"}
+                </h3>
+              </div>
+
+              <Badge status="processing" />
+            </div>
+          </div>
+
+          {/* Status List */}
+          <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+
+            {leadSubStatusDropdown?.length > 0 ? (
+              sortedSubStatusList.map((status) => {
+                const isActive =
+                  subleadstatus?.lead_sub_status_id ===
+                  status.lead_sub_status_id;
+
+                return (
+                  <button
+                    key={status.lead_sub_status_id}
+                    id={`sub-${status.lead_sub_status_id}`}
+                    disabled={subStatusLoading}
+                    onClick={() => handleSubStatusClick(status)}
+                    className={`
+                     group
+                     relative
+                     w-full
+                     rounded-2xl
+                     border
+                     px-4
+                     py-4
+                     text-left
+                     transition-all
+                     duration-200
+     
+                     ${isActive
+                        ? `
+                           border-yellow-400
+                           bg-yellow-50
+                           dark:bg-yellow-500/10
+                           shadow-md
+                         `
+                        : `
+                           border-gray-200
+                           dark:border-gray-800
+                           bg-white
+                           dark:bg-[#111827]
+                           hover:border-yellow-400
+                           hover:shadow-lg
+                           hover:-translate-y-[2px]
+                         `
+                      }
+     
+                     ${subStatusLoading
+                        ? "opacity-50 cursor-not-allowed"
+                        : "cursor-pointer"
+                      }
+                   `}
+                  >
+
+                    {/* Active Indicator */}
+                    {isActive && (
+                      <div className="absolute top-3 right-3 w-2.5 h-2.5 rounded-full bg-yellow-500 animate-pulse" />
+                    )}
+
+                    <div className="flex items-center justify-between gap-3">
+
+                      <div className="flex flex-col">
+                        <h3
+                          className={`
+                           text-sm
+                           font-semibold
+                           transition-colors
+     
+                           ${isActive
+                              ? "text-yellow-600 dark:text-yellow-400"
+                              : "text-gray-800 dark:text-gray-100"
+                            }
+                         `}
+                        >
+                          {status.lead_sub_status_name}
+                        </h3>
+
+                      </div>
+
+                      <div
+                        className={`
+                         w-8
+                         h-8
+                         rounded-xl
+                         flex
+                         items-center
+                         justify-center
+                         transition-all
+     
+                         ${isActive
+                            ? `
+                               bg-yellow-400
+                               text-black
+                             `
+                            : `
+                               bg-gray-100
+                               dark:bg-gray-800
+                               text-gray-500
+                               group-hover:bg-yellow-400
+                               group-hover:text-black
+                             `
+                          }
+                       `}
+                      >
+                        →
+                      </div>
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <div className="h-full flex items-center justify-center">
+                <div className="text-center">
+                  <div className="w-16 h-16 mx-auto rounded-2xl bg-gray-100 dark:bg-gray-800 flex items-center justify-center mb-3">
+                    <SwapOutlined className="text-2xl text-gray-400" />
+                  </div>
+
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    No sub status available
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </Drawer>
 
 
       {/* Followup Drawer */}
-      <Drawer
-        title="Add Followup"
-        placement="right"
-        width={400}
-        open={openFollowupDrawer}
 
+      <Drawer
+        title={
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-yellow-400/15 text-yellow-500">
+              <MdOutlineSchedule className="text-lg" />
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold leading-none">
+                Add Followup
+              </h2>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Schedule next lead action
+              </p>
+            </div>
+          </div>
+        }
+        placement="right"
+        width={420}
+        open={openFollowupDrawer}
         onClose={() => {
-          // STEP BACK: FOLLOWUP → LIST
           setOpenFollowupDrawer(false);
           setFollowupStep(FOLLOWUP_STEPS.LIST);
           setOpenSubStatusDrawer(true);
         }}
         closeIcon={<ArrowLeftOutlined />}
+        rootClassName="modern-drawer"
+        styles={{
+          body: {
+            padding: 0,
+          },
+        }}
       >
-        <AddFollowup
-          id={id}
-          dataForMetaPush={dataForMetaPush}
-          leadSubStatus={selectedSubStatus}
-          leadStatusId={leadStatusId}
-          setIsFollowUpModalOpen={setOpenFollowupDrawer}
-          getDetailsDataApi={getDetailsDataApi}
-          leadFollowupListGetApi={leadFollowupListGetApi}
-        />
+        <div className="h-full flex flex-col bg-white dark:bg-[#0B1120]">
+
+          {/* Top Info */}
+          <div className="px-5 py-4 border-b border-gray-100 dark:border-gray-800">
+
+            <div className="rounded-2xl border border-yellow-200 dark:border-yellow-500/20 bg-yellow-50 dark:bg-yellow-500/10 p-4">
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                Selected Sub Status
+              </p>
+
+              <h3 className="font-semibold text-yellow-600 dark:text-yellow-400">
+                {selectedSubStatus?.lead_sub_status_name || "Followup"}
+              </h3>
+
+            </div>
+
+          </div>
+
+          {/* Form Area */}
+          <div className="flex-1 overflow-y-auto px-5 py-5">
+
+            <AddFollowup
+              id={id}
+              dataForMetaPush={dataForMetaPush}
+              leadSubStatus={selectedSubStatus}
+              leadStatusId={leadStatusId}
+              setIsFollowUpModalOpen={setOpenFollowupDrawer}
+              getDetailsDataApi={getDetailsDataApi}
+              leadFollowupListGetApi={leadFollowupListGetApi}
+            />
+
+          </div>
+
+        </div>
       </Drawer>
 
       {/* Remarks Drawer */}
 
       <Drawer
-        title="Add Remarks"
+        title={
+          <div className="flex items-center gap-3">
+            <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-yellow-400/15 text-yellow-500">
+              ✎
+            </div>
+
+            <div>
+              <h2 className="text-base font-semibold leading-none">
+                Add Remarks
+              </h2>
+
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Update lead remark details
+              </p>
+            </div>
+          </div>
+        }
         placement="right"
-        width={400}
+        width={420}
         open={openRemarksDrawer}
         onClose={() => {
           setOpenRemarksDrawer(false);
           setFollowupStep(FOLLOWUP_STEPS.LIST);
-          setOpenSubStatusDrawer(true); // reopen sub-status list
+          setOpenSubStatusDrawer(true);
         }}
         closeIcon={<ArrowLeftOutlined />}
+        rootClassName="modern-drawer"
+        styles={{
+          body: {
+            padding: 0,
+          },
+        }}
       >
-        <label className="block mb-2 text-sm font-medium">Remark</label>
-        <TextArea
-          rows={4}
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          placeholder="Enter remarks"
-          maxLength={200}
-        />
+        <div className="h-full flex flex-col bg-white dark:bg-[#0B1120]">
 
-        <div className="pt-4 border-t mt-4 flex justify-center">
+          {/* Body */}
+          <div className="flex-1 overflow-y-auto px-5 py-5">
 
-          <PrimaryButton
-            type="primary"
-            title="Submit"
-            className="w-full !bg-yellow-400 hover:!bg-yellow-500 !text-black dark:text-white"
-            onClick={() => {
+            {/* Info Card */}
+            <div className="mb-5 rounded-2xl border border-yellow-200 dark:border-yellow-500/20 bg-yellow-50 dark:bg-yellow-500/10 p-4">
+              <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                Selected Sub Status
+              </p>
 
-              patchSubStatusService(
-                {
-                  lead_sub_status: selectedSubStatus.lead_sub_status_id,
-                  remark: remarks,
-                },
-                id
-              ).then(async (response) => {
-                if (response.data.success === "1") {
-                  setOpenRemarksDrawer(false);
-                  setRemarks("");
-                  getDetailsDataApi();
-                  message.success("Remark added");
+              <h3 className="font-semibold text-yellow-600 dark:text-yellow-400">
+                {selectedSubStatus?.lead_sub_status_name || "Remark Update"}
+              </h3>
+            </div>
 
-                  // ############################################### META Audience PUSH #####################################################################
-                  try {
-                    console.log("Meta Audience Push started with data:", dataForMetaPush);
-                    if (Array.isArray(dataForMetaPush)) {
-                      const phoneObj = dataForMetaPush.find((data) => data.code === "phone");
-                      const emailObj = dataForMetaPush.find((data) => data.code === "email");
+            {/* Remark Field */}
+            <div className="space-y-2">
 
-                      const phone = phoneObj ? phoneObj.value : "";
-                      const email = emailObj ? emailObj.value : "";
+              <label className="text-sm font-semibold text-gray-700 dark:text-gray-200">
+                Remark
+              </label>
 
-                      if (phone || email) {
-                        const userList = {
-                          "users": [
-                            {
-                              "email": email,
-                              "phone": phone
-                            }
-                          ],
-                          "FB_CUSTOM_AUDIENCE_ID": "120243338931080581"
-                        };
+              <div className="relative">
+                <TextArea
+                  rows={8}
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                  placeholder="Write detailed remarks here..."
+                  maxLength={200}
+                  className="
+                   !rounded-2xl
+                   !bg-gray-50
+                   dark:!bg-[#111827]
+                   !border-gray-200
+                   dark:!border-gray-700
+                   hover:!border-yellow-400
+                   focus:!border-yellow-500
+                   !shadow-none
+                   !text-sm
+                   !py-3
+                   !px-4
+                 "
+                />
 
-                        console.log("Sending Meta Audience Push user list:", userList);
-                        const pushToMetaAdd = await axios.post(baseurl + "/crmCallbacks/addAudienceToMetaAdd", userList);
-                        if (pushToMetaAdd.status === 200) {
-                          console.log("Meta Push Success:", pushToMetaAdd.data);
-                        } else {
-                          console.warn("Meta Push returned non-200 status:", pushToMetaAdd.status, pushToMetaAdd.data);
+                <div className="flex justify-end mt-2">
+                  <span className="text-xs text-gray-400">
+                    {remarks?.length || 0}/200
+                  </span>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+
+          {/* Footer */}
+          <div className="border-t border-gray-200 dark:border-gray-800 p-5 bg-white dark:bg-[#0B1120]">
+
+            <PrimaryButton
+              type="primary"
+              title={subStatusLoading ? "Submitting..." : "Submit Remark"}
+              disabled={subStatusLoading || !remarks?.trim()}
+              className="
+               w-full
+               !h-[48px]
+               !rounded-xl
+               !bg-yellow-400
+               hover:!bg-yellow-500
+               !border-none
+               !text-black
+               !font-semibold
+               !shadow-lg
+               hover:!shadow-yellow-500/20
+               transition-all
+             "
+              onClick={() => {
+
+                patchSubStatusService(
+                  {
+                    lead_sub_status: selectedSubStatus.lead_sub_status_id,
+                    remark: remarks,
+                  },
+                  id
+                ).then(async (response) => {
+
+                  if (response.data.success === "1") {
+
+                    setOpenRemarksDrawer(false);
+                    setRemarks("");
+                    getDetailsDataApi();
+
+                    message.success("Remark added successfully");
+
+                    try {
+
+                      if (Array.isArray(dataForMetaPush)) {
+
+                        const phoneObj = dataForMetaPush.find(
+                          (data) => data.code === "phone"
+                        );
+
+                        const emailObj = dataForMetaPush.find(
+                          (data) => data.code === "email"
+                        );
+
+                        const phone = phoneObj ? phoneObj.value : "";
+                        const email = emailObj ? emailObj.value : "";
+
+                        if (phone || email) {
+
+                          const userList = {
+                            users: [
+                              {
+                                email,
+                                phone,
+                              },
+                            ],
+                            FB_CUSTOM_AUDIENCE_ID:
+                              "120243338931080581",
+                          };
+
+                          await axios.post(
+                            baseurl +
+                            "/crmCallbacks/addAudienceToMetaAdd",
+                            userList
+                          );
                         }
-                      } else {
-                        console.warn("Meta Push skipped: Both phone and email are empty.");
                       }
-                    } else {
-                      console.warn("Meta Push skipped: dataForMetaPush is not a valid array.");
+
+                    } catch (metaError) {
+                      console.error(
+                        "META AUDIENCE PUSH ERROR:",
+                        metaError
+                      );
                     }
-                  } catch (metaError) {
-                    console.error("META AUDIENCE PUSH ERROR (NON-BLOCKING):", metaError);
                   }
-                  // ############################################### META Audience PUSH #####################################################################
+                });
+              }}
+            />
 
-                }
-              });
-            }}
-          />
+          </div>
         </div>
-
       </Drawer>
 
 
