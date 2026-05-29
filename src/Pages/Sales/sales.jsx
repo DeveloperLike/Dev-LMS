@@ -19,6 +19,9 @@ import {
 } from "../../Components/CustomComponents/InputWithIcon";
 import dayjs from "dayjs";
 import { getPackageDropdownService } from "../Package/ApiService";
+import { getLeadSourceDropdownService } from "../Lead/ApiService";
+import { getLeadStatusDropdownService } from "../LeadStatus/ApiService";
+import { getCounsellorDropdown } from "../AssignmentRule/ApiService";
 import { TabTables } from "../../Components/CustomComponents/TabTables";
 import { getProfileService } from "../Profile/ApiService";
 
@@ -40,6 +43,9 @@ const Sales = () => {
     const [formData, setFormData] = useState({});
     const [dateRange, setDateRange] = useState([]);
     const [packageDropdown, setPackageDropdown] = useState([]);
+    const [leadSourceDropdown, setLeadSourceDropdown] = useState([]);
+    const [leadStatusDropdown, setLeadStatusDropdown] = useState([]);
+    const [counsellorDropdown, setCounsellorDropdown] = useState([]);
     const [sampleFile, setSampleFile] = useState();
     const { RangePicker } = DatePicker;
     const dateFormat = "DD-MM-YYYY";
@@ -285,18 +291,40 @@ const Sales = () => {
                 </NavLink>
             ),
         },
+
+
         {
-            title: "Registration Date",
-            dataIndex: "date_joined",
-            key: "date_joined",
-            minWidth: "180px",
-            sorter: (a, b) =>
-                new Date(a.date_joined).getTime() -
-                new Date(b.date_joined).getTime(),
-            sortDirections: ["descend", "ascend"],
+            title: "Sales Date",
+            dataIndex: "sales_date",
+            key: "sales_date",
+            minWidth: "150px",
             render: (text, record) => (
                 <NavLink to={`/view-lead/${record.lead}`}>
-                    <p className="hover:text-orange-500 cursor-pointer">{text}</p>
+                    <p className="hover:text-orange-500 cursor-pointer">
+                        {text && dayjs(text).isValid() ? dayjs(text).format("DD-MMM-YYYY") : "-"}
+                    </p>
+                </NavLink>
+            ),
+        },
+        {
+            title: "Lead Assign To",
+            dataIndex: "lead_assign_to",
+            key: "lead_assign_to",
+            minWidth: "180px",
+            render: (text, record) => (
+                <NavLink to={`/view-lead/${record.lead}`}>
+                    <p className="hover:text-orange-500 cursor-pointer">{text || "-"}</p>
+                </NavLink>
+            ),
+        },
+        {
+            title: "Lead Status Name",
+            dataIndex: "lead_status_name",
+            key: "lead_status_name",
+            minWidth: "180px",
+            render: (text, record) => (
+                <NavLink to={`/view-lead/${record.lead}`}>
+                    <p className="hover:text-orange-500 cursor-pointer">{text || "-"}</p>
                 </NavLink>
             ),
         },
@@ -319,6 +347,39 @@ const Sales = () => {
             render: (text, record) => (
                 <NavLink to={`/view-lead/${record.lead}`}>
                     <p className="hover:text-orange-500 cursor-pointer">{text}</p>
+                </NavLink>
+            ),
+        },
+        {
+            title: "Total Package Amount",
+            dataIndex: "total_package_amount",
+            key: "total_package_amount",
+            minWidth: "180px",
+            render: (text, record) => (
+                <NavLink to={`/view-lead/${record.lead}`}>
+                    <p className="hover:text-orange-500 cursor-pointer">₹ {text || "0"}</p>
+                </NavLink>
+            ),
+        },
+        {
+            title: "Paid Amount",
+            dataIndex: "paid_amount",
+            key: "paid_amount",
+            minWidth: "140px",
+            render: (text, record) => (
+                <NavLink to={`/view-lead/${record.lead}`}>
+                    <p className="hover:text-orange-500 cursor-pointer">₹ {text || "0"}</p>
+                </NavLink>
+            ),
+        },
+        {
+            title: "Discounted Amount",
+            dataIndex: "discounted_amount",
+            key: "discounted_amount",
+            minWidth: "180px",
+            render: (text, record) => (
+                <NavLink to={`/view-lead/${record.lead}`}>
+                    <p className="hover:text-orange-500 cursor-pointer">₹ {text || "0"}</p>
                 </NavLink>
             ),
         },
@@ -347,22 +408,51 @@ const Sales = () => {
         },
         { key: "full_name", label: "Name" },
         {
-            key: "phone",
-            label: "Phone Number",
-            type: "number",
-        },
-        {
             key: "sales_person",
             label: "Sales Person",
+            type: "dropdown",
+            placeholder: "Select Sales Person",
+            options: counsellorDropdown.map((item) => ({
+                value: item.username,
+                label: item.full_name ? `${item.full_name} (${item.email})` : item.email,
+            })),
         },
-        { key: "date_joined", label: "Registration Date", type: "dateRange" },
-        // { key: "packages", label: "Packages", type: "dropdown" },
-        // { key: "passport_number", label: "Passport Number" },
-        // { key: "aps_number", label: "APS Number" },
+        {
+            key: "package",
+            label: "Packages",
+            type: "dropdown",
+            placeholder: "Select Packages",
+            options: packageDropdown.map((item) => ({
+                value: item.id,
+                label: item.name,
+            })),
+        },
+        {
+            key: "lead_source",
+            label: "Lead Source",
+            type: "dropdown",
+            placeholder: "Select Lead Source",
+            options: leadSourceDropdown.map((item) => ({
+                value: item.id,
+                label: item.name,
+            })),
+        },
+        {
+            key: "lead_status",
+            label: "Lead Status",
+            type: "dropdown",
+            placeholder: "Select Lead Status",
+            options: leadStatusDropdown.map((item) => ({
+                value: item.id,
+                label: item.name,
+            })),
+        },
+        { key: "date_joined", label: "Sales Date", type: "dateRange" },
     ];
 
     const handleInputChange = (e, field) => {
         let value = e?.target?.value !== undefined ? e.target.value : e;
+        if (value === undefined) value = null;
         setFormData((prevState) => ({
             ...prevState,
             [field]: { ...prevState[field], value },
@@ -377,7 +467,13 @@ const Sales = () => {
         setPage(1);
 
         let dataToSubmit = Object.fromEntries(
-            Object.entries(formData).map(([key, value]) => [key, value.value])
+            Object.entries(formData).map(([key, value]) => {
+                let val = value?.value;
+                if (Array.isArray(val)) {
+                    val = val.join(',');
+                }
+                return [key, val];
+            })
         );
 
         Object.assign(dataToSubmit, {
@@ -389,7 +485,7 @@ const Sales = () => {
 
         if (modulePermission?.user_group !== "admin") {
             dataToSubmit.sales_person = loginUser;
-        } else {
+        } else if (!dataToSubmit.sales_person) {
             delete dataToSubmit.sales_person;
         }
 
@@ -415,7 +511,7 @@ const Sales = () => {
 
         if (modulePermission?.user_group !== "admin") {
             payload.sales_person = loginUser;
-        } else {
+        } else if (!payload.sales_person) {
             delete payload.sales_person;
         }
 
@@ -438,6 +534,15 @@ const Sales = () => {
     useEffect(() => {
         getPackageDropdownService().then((response) => {
             setPackageDropdown(response.data.data);
+        });
+        getLeadSourceDropdownService().then((response) => {
+            setLeadSourceDropdown(response?.data?.data || []);
+        });
+        getLeadStatusDropdownService().then((response) => {
+            setLeadStatusDropdown(response?.data?.data || []);
+        });
+        getCounsellorDropdown().then((response) => {
+            setCounsellorDropdown(response?.data?.data || []);
         });
         getRegisteredUserExportService().then((response) => {
             console.log(response.data.data);
@@ -538,26 +643,6 @@ const Sales = () => {
                                             presets={rangePresets}
                                             value={dateRange && [dateRange[0], dateRange[1]]}
                                         />
-                                    ) : field.type === "dropdown" ? (
-                                        <CustomSelectInput
-                                            placeholder="Select Packages"
-                                            value={formData.packages?.value || null}
-                                            handler={(e) => handleInputChange(e, "packages")}
-                                            options={packageDropdown.map((item) => ({
-                                                value: {
-                                                    id: item.id,
-                                                    name: item.name,
-                                                },
-                                                label: item.name,
-                                            }))}
-                                        />
-                                    ) : field.type === "number" ? (
-                                        <InputWithIcon
-                                            type="number"
-                                            placeholder={`Please enter ${field.label}`}
-                                            value={formData[field.key]?.value || ""}
-                                            handler={(e) => handleInputChange(e, field.key)}
-                                        />
                                     ) : field.key === "sales_person" &&
                                         modulePermission?.user_group !== "admin" ? (
                                         <InputWithIcon
@@ -566,6 +651,21 @@ const Sales = () => {
                                             value={modulePermission?.email || ""}
                                             handler={() => { }}
                                             disabled
+                                        />
+                                    ) : field.type === "dropdown" ? (
+                                        <CustomSelectInput mode="multiple"
+                                            allowClear
+                                            placeholder={field.placeholder}
+                                            value={formData[field.key]?.value || []}
+                                            handler={(e) => handleInputChange(e, field.key)}
+                                            options={field.options || []}
+                                        />
+                                    ) : field.type === "number" ? (
+                                        <InputWithIcon
+                                            type="number"
+                                            placeholder={`Please enter ${field.label}`}
+                                            value={formData[field.key]?.value || ""}
+                                            handler={(e) => handleInputChange(e, field.key)}
                                         />
                                     ) : (
                                         <InputWithIcon

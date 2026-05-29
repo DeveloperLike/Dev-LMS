@@ -305,7 +305,8 @@ export const Viewlead = ({ mode }) => {
   const leadPackageListGetApi = () => {
     // console.log("leadPackageListGetApi calling");
     // userData &&
-    getRegisteredUserPackageService(userData).then((response) => {
+    getRegisteredUserPackageService(id).then((response) => {
+      // console.log(response.data.data, "package list response");
       setPackage(response.data.data);
       setPackageData(response.data.data);
     });

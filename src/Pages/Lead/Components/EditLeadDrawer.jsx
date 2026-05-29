@@ -126,7 +126,28 @@ export const EditLeadDrawer = ({
     }, [open]);
 
     const generatePayload = (values) => {
+        const staticKeys = [
+            "full_name",
+            "email",
+            "state",
+            "city",
+            "nearest_branch",
+            "level_of_education",
+            "budget",
+            "service_looking_for",
+            "preferred_intake_of_pursuing",
+            "fund_mode",
+            "learnt_IELTS",
+            "interested_course",
+            "other_english_proficiency_test",
+            "learnt_german_language",
+        ];
+
         const dynamicFields = formData?.lead_fields?.map((field) => {
+            if (staticKeys.includes(field.code)) {
+                return null;
+            }
+
             let inputValue = values?.[field.code];
             let fallbackValue = field.value;
 
@@ -177,17 +198,20 @@ export const EditLeadDrawer = ({
             };
         }).filter(Boolean);
 
-        const staticFields = [
-            "full_name",
-            "email",
-            "city",
-            "nearest_branch",
-        ]
+        const staticFields = staticKeys
             .filter((key) => values[key] !== undefined)
-            .map((key) => ({
-                code: key,
-                value: values[key],
-            }));
+            .map((key) => {
+                let val = values[key];
+                if (key === "preferred_intake_of_pursuing" && val) {
+                    const parsed = dayjs(val);
+                    val = parsed.isValid() ? parsed.format("YYYY-MM-DD") : null;
+                }
+                return {
+                    code: key,
+                    value: val,
+                };
+            })
+            .filter((field) => field.value !== null && field.value !== undefined && field.value !== "" && field.value !== "undefined" && field.value !== "Invalid Date");
 
         return {
             assign_to: assignTo?.username || assignTo,
