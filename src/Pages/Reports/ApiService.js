@@ -69,6 +69,101 @@ const getLeadCounsellorDropdownService = () => {
     "/api/v1/lead-management/counsellor-dropdown",
   );
 };
+const getPaymentDashboardService = (params) => {
+  return authenticatedAxiosInstance.get('/api/v1/student/payment-dashboard', { params });
+};
+
+const retryPaymentService = (data) => {
+  return authenticatedAxiosInstance.post(
+    "/api/v1/retry-payment",
+    data
+  );
+};
+const syncPendingPaymentsService = (transactionId = null) => {
+  const url = transactionId
+    ? `/api/v1/sync-pending-payments?transaction_id=${transactionId}`
+    : `/api/v1/sync-pending-payments`;
+
+  return authenticatedAxiosInstance.get(url);
+};
+
+const createBranchCommissionService = (
+  data
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `/api/v1/branch-commission/create`,
+    data,
+  });
+};
+
+
+const updateBranchCommissionService = (
+  id,
+  data
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "put",
+    url: `/api/v1/branch-commission/update/${id}`,
+    data,
+  });
+};
+
+const patchBranchCommissionService = (
+  id,
+  data
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "patch",
+    url: `/api/v1/branch-commission/patch/${id}`,
+    data,
+  });
+};
+
+const deleteBranchCommissionService = (
+  id
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "delete",
+    url: `/api/v1/branch-commission/delete/${id}`,
+  });
+};
+const getAllBranchCommissionService = (
+  params = {}
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: `/api/v1/branch-commission/list`,
+    params,
+  });
+};
+
+const getBranchCommissionByIdService = (
+  id
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: `/api/v1/branch-commission/${id}`,
+  });
+};
+const getTransactionSuggestionsService = (
+  params = {}
+) => {
+
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: `/api/v1/suggestions`,
+    params,
+  });
+
+};
+
 
 export {
   getLeadCounsellorDropdownService,
@@ -80,4 +175,14 @@ export {
   getGlobalVisitCountService,
   getLeadSourceDropdownService,
   getGlobalSqlCountService,
+  getPaymentDashboardService,
+  retryPaymentService,
+  syncPendingPaymentsService,
+  createBranchCommissionService,
+  updateBranchCommissionService,
+  patchBranchCommissionService,
+  deleteBranchCommissionService,
+  getAllBranchCommissionService,
+  getBranchCommissionByIdService, 
+  getTransactionSuggestionsService,
 };

@@ -107,6 +107,8 @@ import FacebookPerformance from "./Pages/Reports/Facebook Performance/FacebookPe
 import GoogleSearchConsole from "./Pages/Reports/Google Search Console/GoogleSearchConsole.jsx";
 import GoogleAnalytics from "./Pages/Reports/Google Analytics/GoogleAnalytics.jsx";
 import MailSettings from "./Pages/Integration/MailSettings/MailSettings.jsx";
+import TransactionsList from "./Pages/Payments/TransactionsList.jsx";
+import BranchCommissionSettings from "./Pages/Payments/BranchCommissionSettings.jsx";
 
 function App() {
   const [mode, setMode] = useState(
@@ -285,6 +287,36 @@ function App() {
               <>
                 <PageTitle title="Log In with OTP" />
                 <OtpLogin mode={mode} />
+              </>
+            }
+          />
+           <Route
+            path="/transaction"
+            element={
+              <>
+                <PageTitle title="Add User" />
+                <DefaultLayout>
+                  {modulePermission.staff_management === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <TransactionsList />
+                  )}
+                </DefaultLayout>
+              </>
+            }
+          />
+          <Route
+            path="/branch-commissions-setting"
+            element={
+              <>
+                <PageTitle title="Add User" />
+                <DefaultLayout>
+                  {modulePermission.staff_management === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <BranchCommissionSettings />
+                  )}
+                </DefaultLayout>
               </>
             }
           />
