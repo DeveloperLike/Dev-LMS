@@ -3,52 +3,87 @@ import { Drawer, message, Modal } from "antd";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import { editLeadProfileDetailService, getLeadStudentPersonalDetailsService } from "../../ApiService";
-import { CustomDatePicker,  CustomSelectInput,
-  InputWithIcon, } from "../../../../Components/CustomComponents/InputWithIcon";
+import {
+  CustomDatePicker, CustomSelectInput,
+  InputWithIcon,
+} from "../../../../Components/CustomComponents/InputWithIcon";
 import LoadSkeleton from "../../../../Components/CustomComponents/Skeleton";
 import { PrimaryButton } from "../../../../Components/CustomComponents/ButtonUi";
 import { LeadPersonalDataUpdate } from "./PersonalDataUpdate";
+import { ExclamationCircleOutlined } from "@ant-design/icons";
+
 dayjs.extend(customParseFormat);
 
 const fields = [
   { key: "alternate_email", label: "Alternate Email", type: "email" },
   { key: "alternate_mobile", label: "Alternate Mobile Number", type: "number" },
+
   { key: "date_of_birth", label: "Date of Birth", type: "date" },
   { key: "place_of_birth", label: "Place of Birth" },
+
   { key: "gender", label: "Gender", type: "dropdown" },
   { key: "marital_status", label: "Marital Status", type: "dropdown" },
+
   { key: "house_number", label: "House Number" },
   { key: "block_street", label: "Block/Street" },
   { key: "area", label: "Area" },
   { key: "city", label: "City" },
   { key: "state", label: "State" },
   { key: "pin_code", label: "Pin Code", type: "number" },
+
   { key: "aadhaar_number", label: "Aadhaar Number" },
   { key: "pan_card_number", label: "PAN Card Number" },
   { key: "passport_number", label: "Passport Number" },
   { key: "passport_expiry", label: "Passport Expiry", type: "date" },
+
   { key: "former_nationality", label: "Former Nationality" },
   { key: "place_of_current_residence", label: "Place of Current Residence" },
   { key: "residence_since", label: "Residence Since", type: "date" },
+
   { key: "family_name", label: "Family Name" },
   { key: "children", label: "Number of Children", type: "number" },
+
   { key: "occupation_learned", label: "Occupation Learned" },
   { key: "current_occupation", label: "Current Occupation" },
+
   { key: "convicted", label: "Convicted", type: "dropdown" },
   { key: "deported", label: "Deported", type: "dropdown" },
   { key: "visited_germany", label: "Visited Germany", type: "dropdown" },
+
   {
     key: "last_five_stays_germany",
     label: "Last Five Stays in Germany",
     type: "tags",
   },
+
   { key: "father_name", label: "Father's Name" },
   { key: "father_email", label: "Father's Email", type: "email" },
   { key: "father_mobile", label: "Father's Mobile Number", type: "number" },
+
   { key: "mother_name", label: "Mother's Name" },
   { key: "mother_email", label: "Mother's Email", type: "email" },
   { key: "mother_mobile", label: "Mother's Mobile Number", type: "number" },
 ];
+
+const germanyStateOptions = [
+  { label: "Baden-Württemberg", value: "Baden-Württemberg" },
+  { label: "Bavaria", value: "Bavaria" },
+  { label: "Berlin", value: "Berlin" },
+  { label: "Brandenburg", value: "Brandenburg" },
+  { label: "Bremen", value: "Bremen" },
+  { label: "Hamburg", value: "Hamburg" },
+  { label: "Hesse", value: "Hesse" },
+  { label: "Lower Saxony", value: "Lower Saxony" },
+  { label: "Mecklenburg-Vorpommern", value: "Mecklenburg-Vorpommern" },
+  { label: "North Rhine-Westphalia", value: "North Rhine-Westphalia" },
+  { label: "Rhineland-Palatinate", value: "Rhineland-Palatinate" },
+  { label: "Saarland", value: "Saarland" },
+  { label: "Saxony", value: "Saxony" },
+  { label: "Saxony-Anhalt", value: "Saxony-Anhalt" },
+  { label: "Schleswig-Holstein", value: "Schleswig-Holstein" },
+  { label: "Thuringia", value: "Thuringia" },
+];
+
 export const PersonalInfomation = ({
   userName,
   getIsApprovedApi,
@@ -80,23 +115,50 @@ export const PersonalInfomation = ({
     setIsModalVisible(false);
   };
 
-  const getProfileDetailApi = () => {
-    getLeadStudentPersonalDetailsService(userName).then((response) => {
-      if (response && response.data && response.data.data) {
-        setData(response.data.data);
+  const getProfileDetailApi = async () => {
+    try {
+      const response = await getLeadStudentPersonalDetailsService(userName);
+
+      if (response?.data?.success && response?.data?.data) {
+        const profile = response.data.data;
+
+        setData(profile);
+
         const initialFormData = {};
+
         fields.forEach((field) => {
+          let value;
+
+          switch (field.type) {
+            case "date":
+              value = profile?.[field.key]
+                ? dayjs(profile[field.key])
+                : null;
+              break;
+
+            case "tags":
+              value = Array.isArray(profile?.[field.key])
+                ? profile[field.key]
+                : [];
+              break;
+
+            default:
+              value = profile?.[field.key] ?? "";
+              break;
+          }
+
           initialFormData[field.key] = {
-            value:
-              field.type === "date" && response.data.data[field.key]
-                ? dayjs(response.data.data[field.key], "DD-MM-YYYY")
-                : response.data.data[field.key] || "",
+            value,
             errors: [],
           };
         });
+
         setFormData(initialFormData);
       }
-    });
+    } catch (error) {
+      console.error(error);
+      message.error("Failed to load profile");
+    }
   };
 
   const handleInputChange = (e, field) => {
@@ -120,34 +182,42 @@ export const PersonalInfomation = ({
     });
   };
 
-  const editProfileDetailApi = () => {
-    const dataToSubmit = Object.fromEntries(
-      Object.entries(formData).map(([key, value]) => [
-        key,
-        value.value instanceof dayjs
-          ? value.value.format("DD-MM-YYYY") // Format to DD-MM-YYYY
-          : value.value,
-      ])
-    );
-    console.log(dataToSubmit, "dataToSubmit");
-    editLeadProfileDetailService(dataToSubmit, userName)
-      .then((response) => {
-        if (response.data.success === "1") {
-          getProfileDetailApi();
-          message.success(response?.data?.message);
-        }
-      })
-      .catch((error) => {
-        if (error) {
-          handleError(error?.response?.data?.data);
-          message.error(error?.response?.data?.message);
-        }
+  const editProfileDetailApi = async () => {
+    try {
+      const dataToSubmit = {};
+
+      Object.keys(formData).forEach((key) => {
+        const value = formData[key]?.value;
+
+        dataToSubmit[key] = dayjs.isDayjs(value)
+          ? value.format("YYYY-MM-DD")
+          : value;
       });
+
+      const response = await editLeadProfileDetailService(
+        dataToSubmit,
+        userName
+      );
+
+      if (response?.data?.success) {
+        message.success("Profile updated successfully");
+        getProfileDetailApi();
+      }
+    } catch (error) {
+      handleError(error?.response?.data?.data);
+
+      message.error(
+        error?.response?.data?.message ||
+        "Failed to update profile"
+      );
+    }
   };
 
   useEffect(() => {
-    getProfileDetailApi();
-  }, []);
+    if (userName) {
+      getProfileDetailApi();
+    }
+  }, [userName]);
 
   return (
     <>
@@ -213,7 +283,7 @@ export const PersonalInfomation = ({
                       </label>
                       {field.type === "date" ? (
                         <CustomDatePicker
-                           required={false}
+                          required={false}
                           // disabled={data?.is_approved}
                           value={formData[field.key]?.value}
                           errors={formData[field.key]?.errors || []}
@@ -223,40 +293,40 @@ export const PersonalInfomation = ({
                         />
                       ) : field.type === "email" ? (
                         <InputWithIcon
-                           required={false}
+                          required={false}
                           type="email"
                           // disabled={data?.is_approved}
                           placeholder={`Please enter ${field.label}`}
-                          value={formData[field.key]?.value || ""}
+                          value={formData[field.key]?.value ?? ""}
                           errors={formData[field.key]?.errors || []}
                           handler={(e) => handleInputChange(e, field.key)}
                         />
                       ) : field.type === "dropdown" ? (
                         <CustomSelectInput
-                           required={false}
+                          required={false}
                           // disabled={data?.is_approved}
                           placeholder={`Select ${field.label}`}
-                          value={formData[field.key]?.value || null}
+                          value={formData[field.key]?.value ?? null}
                           errors={formData[field.key]?.errors || []}
                           handler={(e) => handleInputChange(e, field.key)}
                           options={
                             field.key === "gender"
                               ? [
-                                  {
-                                    value: "Male",
-                                    label: "Male",
-                                  },
-                                  {
-                                    value: "Female",
-                                    label: "Female",
-                                  },
-                                  {
-                                    value: "Others",
-                                    label: "Others",
-                                  },
-                                ]
+                                {
+                                  value: "Male",
+                                  label: "Male",
+                                },
+                                {
+                                  value: "Female",
+                                  label: "Female",
+                                },
+                                {
+                                  value: "Others",
+                                  label: "Others",
+                                },
+                              ]
                               : field.key === "marital_status"
-                              ? [
+                                ? [
                                   {
                                     value: "Single",
                                     label: "Single",
@@ -270,7 +340,7 @@ export const PersonalInfomation = ({
                                     label: "Divorced",
                                   },
                                 ]
-                              : [
+                                : [
                                   {
                                     value: "Yes",
                                     label: "Yes",
@@ -284,31 +354,29 @@ export const PersonalInfomation = ({
                         />
                       ) : field.type === "tags" ? (
                         <CustomSelectInput
-                           required={false}
-                          // disabled={data?.is_approved}
-                          mode="tags"
+                          required={false}
+                          mode="multiple"
                           placeholder={`Select ${field.label}`}
-                          value={formData[field.key]?.value}
+                          value={formData[field.key]?.value ?? []}
                           errors={formData[field.key]?.errors || []}
                           handler={(e) => handleInputChange(e, field.key)}
+                          options={germanyStateOptions}
                         />
                       ) : field.type === "number" ? (
                         <InputWithIcon
-                           required={false}
+                          required={false}
                           type="number"
-                          // disabled={data?.is_approved}
                           placeholder={`Please enter ${field.label}`}
-                          value={formData[field.key]?.value || ""}
+                          value={formData[field.key]?.value ?? ""}
                           errors={formData[field.key]?.errors || []}
                           handler={(e) => handleInputChange(e, field.key)}
                         />
                       ) : (
                         <InputWithIcon
-                        required={false}
+                          required={false}
                           type="text"
-                          // disabled={data?.is_approved}f
                           placeholder={`Please enter ${field.label}`}
-                          value={formData[field.key]?.value || ""}
+                          value={formData[field.key]?.value ?? ""}
                           errors={formData[field.key]?.errors || []}
                           handler={(e) => handleInputChange(e, field.key)}
                         />
@@ -321,7 +389,7 @@ export const PersonalInfomation = ({
                   <PrimaryButton
                     type="primary"
                     htmlType={"submit"}
-                    className="p-4 px-7 mt-4 flex justify-self-center "
+                    className="p-4 px-7 mt-4 flex justify-self-center text-black"
                     title={"Submit"}
                     block={false}
                   />
@@ -351,13 +419,66 @@ export const PersonalInfomation = ({
       </Drawer>
 
       <Modal
-        title="Verify Details"
         open={isModalVisible}
-        onOk={handleOk}
+        footer={null}
         onCancel={handleCancel}
-        okText="Save"
+        centered
+        width={500}
       >
-        <p>Please verify student details before saving.</p>
+        <div className="py-2">
+          <div className="flex items-start gap-3 mb-5">
+            <div className="w-12 h-12 rounded-full bg-yellow-100 dark:bg-yellow-500/15 flex items-center justify-center shrink-0">
+              <ExclamationCircleOutlined className="text-xl text-yellow-600 dark:text-yellow-400" />
+            </div>
+
+            <div>
+              <h3 className="text-lg font-semibold text-slate-900 dark:text-white">
+                Verify Details
+              </h3>
+
+              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                Please verify student details before saving.
+              </p>
+            </div>
+          </div>
+
+          <div className="rounded-lg border border-yellow-200 dark:border-yellow-500/20 bg-yellow-50 dark:bg-yellow-500/10 p-3 mb-6">
+            <p className="text-sm text-slate-600 dark:text-slate-300">
+              Once saved, the profile information will be updated and reflected in
+              the student's record.
+            </p>
+          </div>
+
+          <div className="flex justify-end gap-3">
+            <button
+              type="button"
+              onClick={handleCancel}
+              className="
+               px-5 py-2 rounded-lg
+               border border-slate-300 dark:border-slate-600
+               text-slate-700 dark:text-slate-300
+               bg-white dark:bg-slate-800
+               hover:bg-slate-50 dark:hover:bg-slate-700
+               transition-all
+             "
+            >
+              Cancel
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOk}
+              className="
+               px-5 py-2 rounded-lg
+               bg-yellow-500 hover:bg-yellow-400
+               text-black font-medium
+               transition-all
+             "
+            >
+              Save Changes
+            </button>
+          </div>
+        </div>
       </Modal>
     </>
   );

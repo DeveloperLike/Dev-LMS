@@ -185,18 +185,33 @@ const getViewLeadCardDetailsService = (id) => {
 
 // lead profile api
 // profile service start from here
-const getLeadStudentPersonalDetailsService = (userName, params = {}) => {
+// const getLeadStudentPersonalDetailsService = (userName, params = {}) => {
+//   return authenticatedAxiosInstance({
+//     method: "get",
+//     url: `/api/v1/student/lead-student-profile/${userName}`,
+//     params: params,
+//   });
+// };
+
+// const editLeadProfileDetailService = (payload, id) => {
+//   return authenticatedAxiosInstance({
+//     method: "put",
+//     url: `api/v1/student/lead-student-profile/${id}`,
+//     data: payload,
+//   });
+// };
+
+const getLeadStudentPersonalDetailsService = (leadId) => {
   return authenticatedAxiosInstance({
     method: "get",
-    url: `/api/v1/student/lead-student-profile/${userName}`,
-    params: params,
+    url: `/api/v1/crm/lead-profile/${leadId}`,
   });
 };
 
-const editLeadProfileDetailService = (payload, id) => {
+const editLeadProfileDetailService = (payload, leadId) => {
   return authenticatedAxiosInstance({
-    method: "put",
-    url: `api/v1/student/lead-student-profile/${id}`,
+    method: "patch",
+    url: `/api/v1/crm/lead-profile/${leadId}`,
     data: payload,
   });
 };

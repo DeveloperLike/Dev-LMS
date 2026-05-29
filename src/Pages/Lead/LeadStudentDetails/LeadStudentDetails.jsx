@@ -50,117 +50,117 @@ export const LeadStudentDetails = ({ modulePermission, mode }) => {
         ) : null,
       children: <PersonalInfomation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
     },
-    {
-      key: "matriculation",
-      label: (
-        <span className="text-slate-400">
-          10<sup>th</sup>/Matriculation
-        </span>
-      ),
-      icon:
-        isApproval?.matriculation === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.matriculation === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500 rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      children: (
-        <>
-          <LeadMatriculation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />
-        </>
-      ),
-    },
-    {
-      key: "intermediate",
-      icon:
-        isApproval?.intermediate === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.intermediate === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500 rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      label: (
-        <span className="text-slate-400" >
-          12<sup>th</sup>/Intermediate
-        </span>
-      ),
-      children: <LeadIntermediate userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
-    },
-    {
-      key: "diploma",
-      icon:
-        isApproval?.diploma === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.diploma === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500 rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      label: <span className="text-slate-400">Diploma</span>,
-      children: <LeadDiploma userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
-    },
-    {
-      key: "graduation",
-      icon:
-        isApproval?.graduation === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.graduation === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500 rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      label: <span className="text-slate-400" >Graduation</span>,
-      children: <LeadGraduation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
-    },
-    {
-      key: "postGraduation",
-      icon:
-        isApproval?.post_graduation === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.post_graduation === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500  rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      label: <span className="text-slate-400"  >PostGraduation</span>,
-      children: <LeadPostGraduation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
-    },
-    {
-      key: "employment",
-      icon:
-        isApproval?.employment === "Approved" ? (
-          <IoMdCheckbox className="inline-block" color="green" size={18} />
-        ) : isApproval?.employment === "Rejected" ? (
-          <RxCross2
-            className="inline-block bg-red-500 rounded"
-            color="white"
-            size={15}
-            mode={mode}
-          />
-        ) : null,
-      label: <span className="text-slate-400" >Employment</span>,
-      children: <LeadEmployment
-        userName={id}
-        mode={mode}
-      />,
-    },
+    // {
+    //   key: "matriculation",
+    //   label: (
+    //     <span className="text-slate-400">
+    //       10<sup>th</sup>/Matriculation
+    //     </span>
+    //   ),
+    //   icon:
+    //     isApproval?.matriculation === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.matriculation === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500 rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   children: (
+    //     <>
+    //       <LeadMatriculation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />
+    //     </>
+    //   ),
+    // },
+    // {
+    //   key: "intermediate",
+    //   icon:
+    //     isApproval?.intermediate === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.intermediate === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500 rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   label: (
+    //     <span className="text-slate-400" >
+    //       12<sup>th</sup>/Intermediate
+    //     </span>
+    //   ),
+    //   children: <LeadIntermediate userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
+    // },
+    // {
+    //   key: "diploma",
+    //   icon:
+    //     isApproval?.diploma === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.diploma === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500 rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   label: <span className="text-slate-400">Diploma</span>,
+    //   children: <LeadDiploma userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
+    // },
+    // {
+    //   key: "graduation",
+    //   icon:
+    //     isApproval?.graduation === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.graduation === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500 rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   label: <span className="text-slate-400" >Graduation</span>,
+    //   children: <LeadGraduation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
+    // },
+    // {
+    //   key: "postGraduation",
+    //   icon:
+    //     isApproval?.post_graduation === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.post_graduation === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500  rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   label: <span className="text-slate-400"  >PostGraduation</span>,
+    //   children: <LeadPostGraduation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
+    // },
+    // {
+    //   key: "employment",
+    //   icon:
+    //     isApproval?.employment === "Approved" ? (
+    //       <IoMdCheckbox className="inline-block" color="green" size={18} />
+    //     ) : isApproval?.employment === "Rejected" ? (
+    //       <RxCross2
+    //         className="inline-block bg-red-500 rounded"
+    //         color="white"
+    //         size={15}
+    //         mode={mode}
+    //       />
+    //     ) : null,
+    //   label: <span className="text-slate-400" >Employment</span>,
+    //   children: <LeadEmployment
+    //     userName={id}
+    //     mode={mode}
+    //   />,
+    // },
     // {
     //   key: "score",
     //   icon:
