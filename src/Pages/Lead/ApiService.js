@@ -377,6 +377,27 @@ const createLeadByWebsite = (payload) => {
   });
 }
 
+const payNowService = (leadId, transactionId) => {
+  return authenticatedAxiosInstance.get(
+    `/api/v1/pay/${leadId}/${transactionId}`
+  );
+};
+
+const handlePayNow = async (leadId, transactionId) => {
+  try {
+    const res = await payNowService(leadId, transactionId);
+
+    const paymentUrl = res?.data?.paymentUrl;
+
+    if (paymentUrl) {
+      window.location.href = res.data.paymentUrl;
+    }
+  } catch (error) {
+    console.error("Payment init failed:", error);
+  }
+};
+
+
 
 export {
   deleteDripMarketingRuleService,
@@ -423,5 +444,7 @@ export {
   getLeadRealPhoneService,
   findLeadByEmailAndPhone,
   createFollowUp,
-  createLeadByWebsite
+  createLeadByWebsite,
+  handlePayNow,
+  payNowService,
 };

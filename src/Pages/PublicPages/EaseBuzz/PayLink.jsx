@@ -1,7 +1,9 @@
 import { Link, useSearchParams } from "react-router-dom";
 import logo from "../../../assets/Logo.png";
+import { baseurl } from "../../../lib/Constants";
+import { handlePayNow, payNowService } from "../../../Pages/Lead/ApiService.js";
 
-const nodeApi = import.meta.env.VITE_NODE_API_URL;
+//const nodeApi = import.meta.env.VITE_NODE_API_URL;
 
 const PayLink = () => {
 
@@ -17,9 +19,7 @@ const PayLink = () => {
                     <img className="dark:hidden" style={{ maxHeight: "130px" }} src={logo} alt="Logo" />
                 </Link>
                 <button
-                    onClick={() =>
-                        window.location.href = `${nodeApi}/pay/${leadId}/${transactionId}`
-                    }
+                    onClick={() => handlePayNow(leadId, transactionId)}
                     className="bg-yellow-300 text-dark px-6 py-3 rounded-lg"
                 >
                     Pay Now
