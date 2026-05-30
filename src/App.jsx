@@ -294,9 +294,9 @@ function App() {
             path="/transaction"
             element={
               <>
-                <PageTitle title="Add User" />
+                <PageTitle title="Transactions" />
                 <DefaultLayout>
-                  {modulePermission.staff_management === "no_access" ? (
+                  {modulePermission.finance_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <TransactionsList />
@@ -309,9 +309,9 @@ function App() {
             path="/branch-commissions-setting"
             element={
               <>
-                <PageTitle title="Add User" />
+                <PageTitle title="Branch Commissions" />
                 <DefaultLayout>
-                  {modulePermission.staff_management === "no_access" ? (
+                  {modulePermission.finance_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <BranchCommissionSettings />
@@ -370,7 +370,7 @@ function App() {
                   <>
                     <PageTitle title="Add Role" />
                     <DefaultLayout>
-                      {modulePermission.staff_management === "no_access" ? (
+                      {modulePermission.role_management === "no_access" ? (
                         <NotFound />
                       ) : (
                         <AddRole mode={mode} />
@@ -385,7 +385,7 @@ function App() {
                   <>
                     <PageTitle title="Edit Role" />
                     <DefaultLayout>
-                      {modulePermission.staff_management === "no_access" ? (
+                      {modulePermission.role_management === "no_access" ? (
                         <NotFound />
                       ) : (
                         <EditRole mode={mode} />
@@ -449,7 +449,7 @@ function App() {
                   <>
                     <PageTitle title="DID Numbers" />
                     <DefaultLayout>
-                      {modulePermission.staff_management === "no_access" ? (
+                      {modulePermission.did_numbers === "no_access" ? (
                         <NotFound />
                       ) : (
                         <DIDNumbers mode={mode} />
@@ -511,7 +511,7 @@ function App() {
               <>
                 <PageTitle title="Lead Source" />
                 <DefaultLayout>
-                  {modulePermission.state_management === "no_access" ? (
+                  {modulePermission.lead_source === "no_access" ? (
                     <NotFound />
                   ) : (
                     <LeadSource />
@@ -520,57 +520,51 @@ function App() {
               </>
             }
           />
-          {modulePermission.user_group === "admin" && (
-            <Route
-              path="/lead-status"
-              element={
-                <>
-                  <PageTitle title="Lead Status" />
-                  <DefaultLayout>
-                    {modulePermission.lead_management === "no_access" ? (
-                      <NotFound />
-                    ) : (
-                      <LeadStatus mode={mode} />
-                    )}
-                  </DefaultLayout>
-                </>
-              }
-            />
-          )}
-          {modulePermission.user_group === "admin" && (
-            <Route
-              path="/lead-status/:id"
-              element={
-                <>
-                  <PageTitle title="Lead Sub Status" />
-                  <DefaultLayout>
-                    {modulePermission.lead_management === "no_access" ? (
-                      <NotFound />
-                    ) : (
-                      <LeadStatusDetails mode={mode} />
-                    )}
-                  </DefaultLayout>
-                </>
-              }
-            />
-          )}
-          {modulePermission.user_group === "admin" && (
-            <Route
-              path="/lead-sub-status"
-              element={
-                <>
-                  <PageTitle title="Lead Sub Status" />
-                  <DefaultLayout>
-                    {modulePermission.lead_management === "no_access" ? (
-                      <NotFound />
-                    ) : (
-                      <LeadSubStatus mode={mode} />
-                    )}
-                  </DefaultLayout>
-                </>
-              }
-            />
-          )}
+          <Route
+            path="/lead-status"
+            element={
+              <>
+                <PageTitle title="Lead Status" />
+                <DefaultLayout>
+                  {modulePermission.lead_status === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <LeadStatus mode={mode} />
+                  )}
+                </DefaultLayout>
+              </>
+            }
+          />
+          <Route
+            path="/lead-status/:id"
+            element={
+              <>
+                <PageTitle title="Lead Sub Status" />
+                <DefaultLayout>
+                  {modulePermission.lead_status === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <LeadStatusDetails mode={mode} />
+                  )}
+                </DefaultLayout>
+              </>
+            }
+          />
+          <Route
+            path="/lead-sub-status"
+            element={
+              <>
+                <PageTitle title="Lead Sub Status" />
+                <DefaultLayout>
+                  {modulePermission.lead_sub_status === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <LeadSubStatus mode={mode} />
+                  )}
+                </DefaultLayout>
+              </>
+            }
+          />
           {
             // modulePermission.user_group === "admin" &&
             <Route
@@ -589,23 +583,21 @@ function App() {
               }
             />
           }
-          {modulePermission.user_group === "admin" && (
-            <Route
-              path="/customise-widget"
-              element={
-                <>
-                  <PageTitle title="Customise Widget" />
-                  <DefaultLayout>
-                    {modulePermission.lead_management === "no_access" ? (
-                      <NotFound />
-                    ) : (
-                      <CustomiseWidget mode={mode} />
-                    )}
-                  </DefaultLayout>
-                </>
-              }
-            />
-          )}
+          <Route
+            path="/customise-widget"
+            element={
+              <>
+                <PageTitle title="Customise Widget" />
+                <DefaultLayout>
+                  {modulePermission.customise_widget === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <CustomiseWidget mode={mode} />
+                  )}
+                </DefaultLayout>
+              </>
+            }
+          />
 
           <Route
             path="/whatsapp"
@@ -613,7 +605,11 @@ function App() {
               <>
                 <PageTitle title="WhatsApp" />
                 <DefaultLayout>
-                  <WhatsAppLayout />
+                  {modulePermission.whatsapp_management === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <WhatsAppLayout />
+                  )}
                 </DefaultLayout>
               </>
             }
@@ -639,9 +635,13 @@ function App() {
             path="/sales"
             element={
               <>
-                <PageTitle title="sales" />
+                <PageTitle title="Sales" />
                 <DefaultLayout>
-                  <Sales />
+                  {modulePermission.sales_management === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <Sales />
+                  )}
                 </DefaultLayout>
               </>
             }
@@ -746,7 +746,11 @@ function App() {
                   <>
                     <PageTitle title="Profile" />
                     <DefaultLayout>
-                      <Profile mode={mode} />
+                      {modulePermission.profile === "no_access" ? (
+                        <NotFound />
+                      ) : (
+                        <Profile mode={mode} />
+                      )}
                     </DefaultLayout>
                   </>
                 }
@@ -826,7 +830,7 @@ function App() {
               <>
                 <PageTitle title="Drip Marketing Rule" />
                 <DefaultLayout>
-                  {modulePermission.assignment_rule_management === "no_access" ? (
+                  {modulePermission.drip_marketing_rule === "no_access" ? (
                     <NotFound />
                   ) : (
                     <DripMarketingRule />
@@ -841,7 +845,7 @@ function App() {
               <>
                 <PageTitle title="Add Drip Marketing Rule" />
                 <DefaultLayout>
-                  {modulePermission.assignment_rule_management === "no_access" ? (
+                  {modulePermission.drip_marketing_rule === "no_access" ? (
                     <NotFound />
                   ) : (
                     <AddDripMarketingRule />
@@ -856,7 +860,7 @@ function App() {
               <>
                 <PageTitle title="Edit Drip Marketing Rule" />
                 <DefaultLayout>
-                  {modulePermission.assignment_rule_management === "no_access" ? (
+                  {modulePermission.drip_marketing_rule === "no_access" ? (
                     <NotFound />
                   ) : (
                     <EditDripMarketingRule />
@@ -1139,7 +1143,7 @@ function App() {
                 <Followup />
               </DefaultLayout> */}
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.follow_ups === "no_access" ? (
                     <NotFound />
                   ) : (
                     <FollowupNew mode={mode} />
@@ -1174,7 +1178,7 @@ function App() {
               <>
                 <PageTitle title="Call Logs" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.call_logs === "no_access" ? (
                     <NotFound />
                   ) : (
                     <CallLogs mode={mode} />
@@ -1190,7 +1194,7 @@ function App() {
               <>
                 <PageTitle title="Call Report" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.call_reports === "no_access" ? (
                     <NotFound />
                   ) : (
                     <CallReport mode={mode} />
@@ -1206,7 +1210,7 @@ function App() {
               <>
                 <PageTitle title="Lead Funnel" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.lead_funnel === "no_access" ? (
                     <NotFound />
                   ) : (
                     <LeadFunnel />
@@ -1221,7 +1225,7 @@ function App() {
               <>
                 <PageTitle title="Branch Lead Perfomance" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.branch_performance === "no_access" ? (
                     <NotFound />
                   ) : (
                     <BranchPerfomance />
@@ -1236,7 +1240,7 @@ function App() {
               <>
                 <PageTitle title="User Lead Perfomance" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.user_performance === "no_access" ? (
                     <NotFound />
                   ) : (
                     <UserPerfomance />
@@ -1251,7 +1255,7 @@ function App() {
               <>
                 <PageTitle title="Marketing Performance" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.marketing_performance === "no_access" ? (
                     <NotFound />
                   ) : (
                     <MarketingPerformance />
@@ -1266,7 +1270,7 @@ function App() {
               <>
                 <PageTitle title="Facebook Performance" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.facebook_performance === "no_access" ? (
                     <NotFound />
                   ) : (
                     <FacebookPerformance />
@@ -1281,7 +1285,7 @@ function App() {
               <>
                 <PageTitle title="Google Search Console" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.google_performance === "no_access" ? (
                     <NotFound />
                   ) : (
                     <GoogleSearchConsole />
@@ -1296,7 +1300,7 @@ function App() {
               <>
                 <PageTitle title="Google Analytics" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.google_analytics === "no_access" ? (
                     <NotFound />
                   ) : (
                     <GoogleAnalytics />
@@ -1328,7 +1332,7 @@ function App() {
               <>
                 <PageTitle title="Document" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.document_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <Document mode={mode} />
@@ -1344,7 +1348,7 @@ function App() {
               <>
                 <PageTitle title="Document Category" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.document_category_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <DocumentCategory mode={mode} />
@@ -1359,7 +1363,7 @@ function App() {
               <>
                 <PageTitle title="Documents" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.document_category_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <Documents mode={mode} />
@@ -1375,7 +1379,7 @@ function App() {
               <>
                 <PageTitle title="University" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.university_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <University mode={mode} />
@@ -1391,7 +1395,7 @@ function App() {
               <>
                 <PageTitle title="Course" />
                 <DefaultLayout>
-                  {modulePermission.lead_management === "no_access" ? (
+                  {modulePermission.course_management === "no_access" ? (
                     <NotFound />
                   ) : (
                     <Course mode={mode} />
@@ -1503,7 +1507,11 @@ function App() {
               <>
                 <PageTitle title="Facebook" />
                 <DefaultLayout>
-                  <FacebookMainPage mode={mode} />
+                  {modulePermission.facebook_integration === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <FacebookMainPage mode={mode} />
+                  )}
                 </DefaultLayout>
               </>
             }
@@ -1515,7 +1523,11 @@ function App() {
               <>
                 <PageTitle title="Facebook" />
                 <DefaultLayout>
-                  <FaceBookPageList mode={mode} />
+                  {modulePermission.facebook_integration === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <FaceBookPageList mode={mode} />
+                  )}
                 </DefaultLayout>
               </>
             }
@@ -1539,7 +1551,11 @@ function App() {
               <>
                 <PageTitle title="Google Integration" />
                 <DefaultLayout>
-                  <GoogleIntegration mode={mode} />
+                  {modulePermission.google_integration === "no_access" ? (
+                    <NotFound />
+                  ) : (
+                    <GoogleIntegration mode={mode} />
+                  )}
                 </DefaultLayout>
               </>
             }
@@ -1562,7 +1578,7 @@ function App() {
               <>
                 <PageTitle title="Mail Settings" />
                 <DefaultLayout>
-                  {modulePermission.is_superuser === true || modulePermission.user_group === 'admin' ? (
+                  {modulePermission.is_superuser === true || modulePermission.user_group === 'admin' || modulePermission.mail_settings !== "no_access" ? (
                     <MailSettings mode={mode} />
                   ) : (
                     <NotFound mode={mode} />

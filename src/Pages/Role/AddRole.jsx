@@ -40,6 +40,7 @@ export default function AddRole({ mode }) {
         ...prevFormData.permissions,
         [permissionCode]: {
           ...prevFormData.permissions[permissionCode],
+          code: permissionCode,
           permission: permissionValue,
         },
       };

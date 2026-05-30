@@ -110,9 +110,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
   const checkingActiveRoutes = [
     "drip-marketing-rule",
     "assignment-rule",
-    "lead-status",
-    "lead-sub-status",
-    "customise-widget",
+    "form-field",
   ];
 
   const isActiveRoutes = checkingActiveRoutes.some((route) =>
@@ -177,22 +175,23 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
           <div>
             <ul className="mb-6 flex flex-col gap-1.5">
               {/* <!-- Menu Item dashboard --> */}
-              {
-                <li>
-                  <NavLink
-                    to="/dashboard"
-                    className={({ isActive }) =>
-                      isActive
-                        ? "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
-                        : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-current duration-300 ease-in-out hover:bg-[#ffce00] hover:text-black dark:hover:text-black"
-                    }
-                  >
-                    <MdDashboard className="text-current" />
-                    Dashboard
-                  </NavLink>
+              {(modulePermission.dashboard === "edit" ||
+                modulePermission.dashboard === "view") && (
+                  <li>
+                    <NavLink
+                      to="/dashboard"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
+                          : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-current duration-300 ease-in-out hover:bg-[#ffce00] hover:text-black dark:hover:text-black"
+                      }
+                    >
+                      <MdDashboard className="text-current" />
+                      Dashboard
+                    </NavLink>
 
-                </li>
-              }
+                  </li>
+                )}
               {/* <!-- Menu Item dashboard --> */}
 
               {/* <!-- Menu Item Analytics --> */}
@@ -411,9 +410,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
               {/* <!-- Menu Item Lead Management --> */}
 
-              {(modulePermission.lead_management === "no_access" &&
-                modulePermission.assignment_rule_management === "no_access" &&
-                modulePermission.lead_form_management === "no_access") || (
+              {((modulePermission.lead_management === "edit" || modulePermission.lead_management === "view") ||
+                (modulePermission.fresh_lead === "edit" || modulePermission.fresh_lead === "view") ||
+                (modulePermission.future_lead === "edit" || modulePermission.future_lead === "view") ||
+                (modulePermission.did_not_pick === "edit" || modulePermission.did_not_pick === "view") ||
+                (modulePermission.unassigned_leads_management === "edit" || modulePermission.unassigned_leads_management === "view") ||
+                (modulePermission.whatsapp_management === "edit" || modulePermission.whatsapp_management === "view")) && (
                   <SidebarLinkGroup
                     activeCondition={
                       pathname === "/auth" || pathname.includes("auth")
@@ -464,7 +466,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
 
                               {/* <!-- Menu Item Lead --> */}
-                              {
+                              {(modulePermission.lead_management === "edit" ||
+                                modulePermission.lead_management === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead"
@@ -481,11 +484,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     Lead
                                   </NavLink>
                                 </li>
-                              }
+                              )}
                               {/* <!-- Menu Item Lead --> */}
 
                               {/* <!-- Menu Item Fresh Lead --> */}
-                              {
+                              {(modulePermission.fresh_lead === "edit" ||
+                                modulePermission.fresh_lead === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-filter/0233cefc-fb3e-49d5-9ee1-5f8adadf143a"
@@ -503,11 +507,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     Fresh Lead
                                   </NavLink>
                                 </li>
-                              }
+                              )}
                               {/* <!-- Menu Item Fresh Lead --> */}
 
                               {/* <!-- Menu Item Future Lead --> */}
-                              {
+                              {(modulePermission.future_lead === "edit" ||
+                                modulePermission.future_lead === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-filter/c8704f97-f12c-47f7-81db-e82b6069ee2f"
@@ -525,11 +530,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     Future Lead
                                   </NavLink>
                                 </li>
-                              }
+                              )}
                               {/* <!-- Menu Item Future Lead --> */}
 
                               {/* <!-- Menu Item Did Not Pick --> */}
-                              {
+                              {(modulePermission.did_not_pick === "edit" ||
+                                modulePermission.did_not_pick === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-filter/4b3428a2-18f5-47ec-a842-ae732ac7c9cb"
@@ -546,7 +552,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                     Did Not Pick
                                   </NavLink>
                                 </li>
-                              }
+                              )}
                               {/* <!-- Menu Item Did Not Pick --> */}
 
                               {/* <!-- Menu Item Unassigned Lead --> */}
@@ -581,23 +587,22 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
 
                               {/* <!-- Menu Item WhatsAppLayout --> */}
-                              {/* {modulePermission.user_group === "admin" && ( */}
-
-                              <li>
-                                <NavLink
-                                  to="/whatsapp"
-                                  className={({ isActive }) =>
-                                    isActive || pathname.startsWith("/whatsapp")
-                                      ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
-                                      : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
-                                  }
-                                >
-                                  <IoLogoWhatsapp />
-                                  Whatsapp
-                                </NavLink>
-                              </li>
-
-
+                              {(modulePermission.whatsapp_management === "edit" ||
+                                modulePermission.whatsapp_management === "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/whatsapp"
+                                      className={({ isActive }) =>
+                                        isActive || pathname.startsWith("/whatsapp")
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
+                                          : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
+                                      }
+                                    >
+                                      <IoLogoWhatsapp />
+                                      Whatsapp
+                                    </NavLink>
+                                  </li>
+                                )}
                               {/* <!-- Menu Item WhatsAppLayout --> */}
 
 
@@ -631,7 +636,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                 )}
 
               {/* <!-- Menu Item Lead Settings --> */}
-              {modulePermission.user_group === "admin" && (
+              {(modulePermission.lead_settings_management === "edit" ||
+                modulePermission.lead_settings_management === "view") &&
+                (modulePermission.drip_marketing_rule === "edit" || modulePermission.drip_marketing_rule === "view" ||
+                 modulePermission.assignment_rule_management === "edit" || modulePermission.assignment_rule_management === "view" ||
+                 modulePermission.lead_form_management === "edit" || modulePermission.lead_form_management === "view") && (
                 <li>
                   <SidebarLinkGroup
                     activeCondition={isActiveRoutes}
@@ -675,9 +684,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                           >
                             <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                               {/* <!-- Menu Item Drip Marketing Rule --> */}
-                              {(modulePermission.assignment_rule_management ===
+                              {(modulePermission.drip_marketing_rule ===
                                 "edit" ||
-                                modulePermission.assignment_rule_management ===
+                                modulePermission.drip_marketing_rule ===
                                 "view") && (
                                   <li>
                                     <NavLink
@@ -1095,7 +1104,15 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
               {/* <!-- Menu Item Document Management --> */}
 
               {/* <!-- Menu Item Reports --> */}
-              {modulePermission.lead_management !== "no_access" && (
+              {(modulePermission.reports_management === "edit" ||
+                modulePermission.reports_management === "view") &&
+                (modulePermission.call_logs === "edit" || modulePermission.call_logs === "view" ||
+                 modulePermission.call_reports === "edit" || modulePermission.call_reports === "view" ||
+                 modulePermission.lead_funnel === "edit" || modulePermission.lead_funnel === "view" ||
+                 modulePermission.branch_performance === "edit" || modulePermission.branch_performance === "view" ||
+                 modulePermission.marketing_performance === "edit" || modulePermission.marketing_performance === "view" ||
+                 modulePermission.facebook_performance === "edit" || modulePermission.facebook_performance === "view" ||
+                 modulePermission.google_performance === "edit" || modulePermission.google_performance === "view") && (
                 <SidebarLinkGroup
                   activeCondition={
                     pathname === "/auth" || pathname.includes("auth")
@@ -1142,8 +1159,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                         >
                           <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
                             {/* <!-- Menu Item Call Log --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") && (
+                            {(modulePermission.call_logs === "edit" ||
+                              modulePermission.call_logs === "view") && (
                                 <li>
                                   <NavLink
                                     to="/call-logs"
@@ -1164,8 +1181,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Call Log --> */}
 
                             {/* <!-- Menu Item Call Report --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") && (
+                            {(modulePermission.call_reports === "edit" ||
+                              modulePermission.call_reports === "view") && (
                                 <li>
                                   <NavLink
                                     to="/call-report"
@@ -1186,8 +1203,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Call Report --> */}
 
                             {/* <!-- Menu Item Lead Funnel --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") && (
+                            {(modulePermission.lead_funnel === "edit" ||
+                              modulePermission.lead_funnel === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-funnel"
@@ -1208,10 +1225,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Lead Funnel --> */}
 
                             {/* <!-- Menu Item Branch Lead Performance --> */}
-                            {(modulePermission.user_group === "admin" ||
-                              modulePermission.user_group === "manager") &&
-                              (modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {(modulePermission.branch_performance === "edit" ||
+                              modulePermission.branch_performance === "view") && (
                                 <li>
                                   <NavLink
                                     to="/branch-perfomance"
@@ -1230,10 +1245,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Branch Lead Performance --> */}
 
                             {/* <!-- Menu Item User Lead Performance --> */}
-                            {/* {(modulePermission.user_group === "admin" ||
-                              modulePermission.user_group === "manager") &&
-                              (modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {/* {(modulePermission.user_performance === "edit" ||
+                              modulePermission.user_performance === "view") && (
                                 <li>
                                   <NavLink
                                     to="/user-perfomance"
@@ -1252,9 +1265,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item User Lead Performance --> */}
 
                             {/* <!-- Menu  Marketing Performance --> */}
-                            {modulePermission.user_group === "admin" &&
-                              (modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {(modulePermission.marketing_performance === "edit" ||
+                              modulePermission.marketing_performance === "view") && (
                                 <li>
                                   <NavLink
                                     to="/marketing-performance"
@@ -1272,9 +1284,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu  Marketing Performance --> */}
                             {/* <!-- Menu  Facebook Performance --> */}
-                            {modulePermission.user_group === "admin" &&
-                              (modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {(modulePermission.facebook_performance === "edit" ||
+                              modulePermission.facebook_performance === "view") && (
                                 <li>
                                   <NavLink
                                     to="/facebook-performance"
@@ -1293,8 +1304,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu  Facebook Performance --> */}
 
                             {/* <!-- Menu Google Search Console --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {(modulePermission.google_performance === "edit" ||
+                                modulePermission.google_performance === "view") && (
                                 <li>
                                   <NavLink
                                     to="/google-performance"
@@ -1313,9 +1324,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Google Search Console --> */}
 
                             {/* <!-- Menu Google Analytics --> */}
-                            {/* {modulePermission.user_group === "admin" &&
-                              (modulePermission.lead_management === "edit" ||
-                                modulePermission.lead_management === "view") && (
+                            {/* {(modulePermission.google_analytics === "edit" ||
+                              modulePermission.google_analytics === "view") && (
                                 <li>
                                   <NavLink
                                     to="/google-analytics"
@@ -1366,8 +1376,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
               {/* <!-- Menu Item Template --> */}
 
               {/* <!-- Menu Item User Management --> */}
-              {(modulePermission.role_management !== "no_access" ||
-                modulePermission.staff_management !== "no_access") && (
+              {(modulePermission.role_management === "edit" || modulePermission.role_management === "view" ||
+                modulePermission.staff_management === "edit" || modulePermission.staff_management === "view" ||
+                modulePermission.did_numbers === "edit" || modulePermission.did_numbers === "view") && (
                   <SidebarLinkGroup
                     activeCondition={
                       pathname === "/auth" || pathname.includes("auth")
@@ -1456,8 +1467,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               {/* <!-- Menu Item Users --> */}
 
                               {/* <!-- Menu Item DID Numbers --> */}
-                              {(modulePermission.staff_management === "edit" ||
-                                modulePermission.staff_management === "view") && (
+                              {(modulePermission.did_numbers === "edit" ||
+                                modulePermission.did_numbers === "view") && (
                                   <li>
                                     <NavLink
                                       to="/did-numbers"
@@ -1487,7 +1498,12 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
               {/* <!-- Menu Item User Management --> */}
 
               {/* <!-- Menu Item Integration Management --> */}
-              {(modulePermission.is_superuser === true) && (
+              {((modulePermission.is_superuser === true) ||
+                (modulePermission.google_integration === "edit" || modulePermission.google_integration === "view" ||
+                 modulePermission.facebook_integration === "edit" || modulePermission.facebook_integration === "view" ||
+                 modulePermission.customise_widget === "edit" || modulePermission.customise_widget === "view" ||
+                 modulePermission.bulk_action_management === "edit" || modulePermission.bulk_action_management === "view" ||
+                 modulePermission.mail_settings === "edit" || modulePermission.mail_settings === "view")) && (
                 <SidebarLinkGroup
                   activeCondition={isIntegrationActive}
                 >
@@ -1529,6 +1545,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             }`}
                         >
                           <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+                            {(modulePermission.google_integration === "edit" ||
+                              modulePermission.google_integration === "view") && (
                             <li>
                               <NavLink
                                 to="/integrations/google"
@@ -1545,6 +1563,9 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 Google
                               </NavLink>
                             </li>
+                            )}
+                            {(modulePermission.facebook_integration === "edit" ||
+                              modulePermission.facebook_integration === "view") && (
                             <li>
                               <NavLink
                                 to="/facebook-page"
@@ -1561,10 +1582,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 Facebook
                               </NavLink>
                             </li>
+                            )}
                             {/* <!-- Menu Item Customise Widget --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
+                            {(modulePermission.customise_widget === "edit" ||
+                              modulePermission.customise_widget === "view") && (
                                 <li>
                                   <NavLink
                                     to="/customise-widget"
@@ -1608,6 +1629,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               )}
                             {/* <!-- Menu Item Bulk Actions --> */}
 
+                            {(modulePermission.mail_settings === "edit" ||
+                              modulePermission.mail_settings === "view") && (
                             <li>
                               <NavLink
                                 to="/Mail-Settings"
@@ -1624,11 +1647,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                 Mail Settings
                               </NavLink>
                             </li>
+                            )}
 
                             {/* <!-- Menu Item Lead Status --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
+                            {(modulePermission.lead_status === "edit" ||
+                              modulePermission.lead_status === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-status"
@@ -1649,9 +1672,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Lead Status --> */}
 
                             {/* <!-- Menu Item Lead Sub Status --> */}
-                            {(modulePermission.lead_management === "edit" ||
-                              modulePermission.lead_management === "view") &&
-                              modulePermission.user_group === "admin" && (
+                            {(modulePermission.lead_sub_status === "edit" ||
+                              modulePermission.lead_sub_status === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-sub-status"
@@ -1672,8 +1694,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu Item Lead Sub Status --> */}
 
                             {/* <!-- Menu Item Lead Source --> */}
-                            {(modulePermission.state_management === "edit" ||
-                              modulePermission.state_management === "view") && (
+                            {(modulePermission.lead_source === "edit" ||
+                              modulePermission.lead_source === "view") && (
                                 <li>
                                   <NavLink
                                     to="/lead-source"
@@ -1701,129 +1723,134 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   }}
                 </SidebarLinkGroup>
               )}
-              {(modulePermission.role_management !== "no_access" ||
-  modulePermission.staff_management !== "no_access") && (
-    <SidebarLinkGroup
-      activeCondition={
-        pathname === "/auth" || pathname.includes("auth")
-      }
-    >
-      {(handleClick, open) => {
-        return (
-          <React.Fragment>
-            <div
-              className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] ${
-                (pathname === "/auth" ||
-                  pathname.includes("auth")) &&
-                "bg-graydark dark:bg-meta-4"
-              }`}
-              onClick={(e) => {
-                e.preventDefault();
-                sidebarExpanded
-                  ? handleClick()
-                  : setSidebarExpanded(true);
-              }}
-            >
-              <FaWallet />
-              Accounts
-
-              <svg
-                className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
-                  open && "rotate-180"
-                }`}
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
-                  fill=""
-                />
-              </svg>
-            </div>
-
-            {/* <!-- Dropdown Menu Start --> */}
-            <div
-              className={`translate transform overflow-hidden ${
-                !open && "hidden"
-              }`}
-            >
-              <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-
-                {/* <!-- Transactions --> */}
-                {(modulePermission.role_management === "edit" ||
-                  modulePermission.role_management === "view") && (
-                    <li>
-                      <NavLink
-                        to="/transaction"
-                        className={({ isActive }) =>
-                          isActive
-                            ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                            : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
-                            ${
-                              pathname.includes("transaction") &&
+              {(modulePermission.accounts_management === "edit" ||
+                modulePermission.accounts_management === "view") &&
+                (modulePermission.finance_management === "edit" ||
+                  modulePermission.finance_management === "view" ||
+                  modulePermission.sales_management === "edit" ||
+                  modulePermission.sales_management === "view") && (
+                  <SidebarLinkGroup
+                    activeCondition={
+                      pathname === "/auth" || pathname.includes("auth")
+                    }
+                  >
+                    {(handleClick, open) => {
+                      return (
+                        <React.Fragment>
+                          <div
+                            className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] ${
+                              (pathname === "/auth" ||
+                                pathname.includes("auth")) &&
                               "bg-graydark dark:bg-meta-4"
-                            }`
-                        }
-                      >
-                        <FaMoneyCheckAlt />
-                        Transactions
-                      </NavLink>
-                    </li>
-                  )}
+                            }`}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              sidebarExpanded
+                                ? handleClick()
+                                : setSidebarExpanded(true);
+                            }}
+                          >
+                            <FaWallet />
+                            Accounts
 
-                {/* <!-- Branch Commissions --> */}
-                {(modulePermission.staff_management === "edit" ||
-                  modulePermission.staff_management === "view") && (
-                    <li>
-                      <NavLink
-                        to="/branch-commissions-setting"
-                        className={({ isActive }) =>
-                          isActive
-                            ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                            : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
-                            ${
-                              pathname.includes("users") &&
-                              "bg-graydark dark:bg-meta-4"
-                            }`
-                        }
-                      >
-                        <FaBuilding />
-                        Branch Commissions
-                      </NavLink>
-                    </li>
-                  )}
-                  {/* <!-- Menu Item Sales --> */}
+                            <svg
+                              className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                                open && "rotate-180"
+                              }`}
+                              width="20"
+                              height="20"
+                              viewBox="0 0 20 20"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                                fill=""
+                              />
+                            </svg>
+                          </div>
 
-                              {
-                                <li>
-                                  <NavLink
-                                    to="/sales"
-                                    className={({ isActive }) =>
-                                      isActive || pathname.startsWith("/sales")
-                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
-                                        : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
-                                    }
-                                  >
-                                    <MdOutlineTrendingUp size={18} />
-                                    Sales
-                                  </NavLink>
-                                </li>
-                              }
+                          {/* <!-- Dropdown Menu Start --> */}
+                          <div
+                            className={`translate transform overflow-hidden ${
+                              !open && "hidden"
+                            }`}
+                          >
+                            <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+
+                              {/* <!-- Transactions --> */}
+                              {(modulePermission.finance_management === "edit" ||
+                                modulePermission.finance_management === "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/transaction"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
+                                          ${
+                                            pathname.includes("transaction") &&
+                                            "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <FaMoneyCheckAlt />
+                                      Transactions
+                                    </NavLink>
+                                  </li>
+                                )}
+
+                              {/* <!-- Branch Commissions --> */}
+                              {(modulePermission.finance_management === "edit" ||
+                                modulePermission.finance_management === "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/branch-commissions-setting"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
+                                          ${
+                                            pathname.includes("users") &&
+                                            "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <FaBuilding />
+                                      Branch Commissions
+                                    </NavLink>
+                                  </li>
+                                )}
+                              {/* <!-- Menu Item Sales --> */}
+
+                              {(modulePermission.sales_management === "edit" ||
+                                modulePermission.sales_management === "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/sales"
+                                      className={({ isActive }) =>
+                                        isActive || pathname.startsWith("/sales")
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
+                                          : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
+                                      }
+                                    >
+                                      <MdOutlineTrendingUp size={18} />
+                                      Sales
+                                    </NavLink>
+                                  </li>
+                                )}
 
                               {/* <!-- Menu Sales --> */}
-              </ul>
-            </div>
-            {/* <!-- Dropdown Menu End --> */}
-          </React.Fragment>
-        );
-      }}
-    </SidebarLinkGroup>
-  )}
+                            </ul>
+                          </div>
+                          {/* <!-- Dropdown Menu End --> */}
+                        </React.Fragment>
+                      );
+                    }}
+                  </SidebarLinkGroup>
+                )}
               {/* <!-- Menu Item Integration Management --> */}
 
               {/* <!-- Menu Item Package --> */}
@@ -1847,8 +1874,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   </li>
                 )}
 
-              {/* {(modulePermission.lead_management === "edit" ||
-                modulePermission.lead_management === "view") && (
+              {/* {(modulePermission.my_followup === "edit" ||
+                modulePermission.my_followup === "view") && (
                   <li>
                     <NavLink
                       to="/followup"
@@ -1866,8 +1893,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                     </NavLink>
                   </li>
                 )} */}
-              {(modulePermission.lead_management === "edit" ||
-                modulePermission.lead_management === "view") && (
+              {(modulePermission.follow_ups === "edit" ||
+                modulePermission.follow_ups === "view") && (
                   <li>
                     <NavLink
                       to="/follow-up"
@@ -1886,22 +1913,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   </li>
                 )}
 
-              <li>
-                <NavLink
-                  to="/reminder"
-                  className={({ isActive }) =>
-                    isActive
-                      ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                      : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                  ${pathname.includes("calendar") &&
-                      "bg-graydark dark:bg-meta-4"
-                      }`
-                  }
-                >
-                  <CgNotes />
-                  My Reminders
-                </NavLink>
-              </li>
+              {(modulePermission.reminder_management === "edit" ||
+                modulePermission.reminder_management === "view") && (
+                  <li>
+                    <NavLink
+                      to="/reminder"
+                      className={({ isActive }) =>
+                        isActive
+                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                      ${pathname.includes("calendar") &&
+                          "bg-graydark dark:bg-meta-4"
+                          }`
+                      }
+                    >
+                      <CgNotes />
+                      My Reminders
+                    </NavLink>
+                  </li>
+                )}
               {/* {modulePermission.user_group === "admin" && (
                 <li>
                   <NavLink
@@ -1923,7 +1953,8 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
               {/* <!-- Menu Item Support Management --> */}
 
               {/* <!-- Menu Item Profile --> */}
-              {/* {
+              {(modulePermission.profile === "edit" ||
+                modulePermission.profile === "view") && (
                 <li>
                   <NavLink
                     to="/profile"
@@ -1940,7 +1971,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                     Profile
                   </NavLink>
                 </li>
-              } */}
+              )}
               {/* <!-- Menu Item Profile --> */}
 
               {/* <!-- Menu Item Integration Partners --> */}

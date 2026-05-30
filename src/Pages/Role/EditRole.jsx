@@ -61,6 +61,7 @@ export default function EditRole({ mode }) {
         ...prevFormData.permissions,
         [permissionCode]: {
           ...prevFormData.permissions[permissionCode],
+          code: permissionCode,
           permission: permissionValue,
         },
       };
@@ -81,7 +82,10 @@ export default function EditRole({ mode }) {
       name: formData.name.value,
       is_active: formData.is_active.value,
       permissions: Object.keys(formData.permissions).map((permissionCode) => {
-        return formData.permissions[permissionCode];
+        return {
+          code: permissionCode,
+          permission: formData.permissions[permissionCode]?.permission || "no_access",
+        };
       }),
     };
 
@@ -101,32 +105,46 @@ export default function EditRole({ mode }) {
       .finally(() => setLoading(false)); // Re-enable the button
   };
 
-  // Fetch select modules
-  useEffect(() => {
-    getRoleModuleService().then((response) => {
-      setSelectInputs(response.data.data);
-    });
-  }, []);
-
-  // Fetch role details
+  // Fetch select modules and role details together
   useEffect(() => {
     if (id) {
-      getRoleListDetailService(id).then((response) => {
-        const jsonResponse = response.data.data;
-        const permissions = {};
-        jsonResponse.permissions.forEach((section) => {
-          permissions[section.code] = {
-            code: section.code,
-            permission: section.permission,
-          };
-        });
+      Promise.all([getRoleModuleService(), getRoleListDetailService(id)])
+        .then(([moduleResponse, detailResponse]) => {
+          const allModules = moduleResponse.data.data;
+          setSelectInputs(allModules);
 
-        setFormData({
-          name: { value: jsonResponse.name, errors: [] },
-          is_active: { value: jsonResponse.is_active },
-          permissions: permissions,
+          const roleDetail = detailResponse.data.data;
+          
+          // Map existing permissions
+          const mappedPermissions = {};
+          roleDetail.permissions.forEach((section) => {
+            if (section.code) {
+              mappedPermissions[section.code] = {
+                code: section.code,
+                permission: section.permission,
+              };
+            }
+          });
+
+          // Initialize ALL active modules (default to 'no_access' if not present in role mapping)
+          const permissions = {};
+          allModules.forEach((mod) => {
+            permissions[mod.code] = {
+              code: mod.code,
+              permission: mappedPermissions[mod.code]?.permission || "no_access",
+            };
+          });
+
+          setFormData({
+            name: { value: roleDetail.name, errors: [] },
+            is_active: { value: roleDetail.is_active },
+            permissions: permissions,
+          });
+        })
+        .catch((error) => {
+          console.error("Error loading edit role data:", error);
+          message.error("Failed to load role details");
         });
-      });
     }
   }, [id]);
 
