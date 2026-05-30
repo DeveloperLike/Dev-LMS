@@ -46,6 +46,10 @@ import LeadStatusAnalytics from "../../Pages/Analytics/LeadStatusAnalytics";
 import { IoLogoWhatsapp } from "react-icons/io";
 import { MdOutlineTrendingUp, MdOutlineMail } from "react-icons/md";
 import { LucideChartNoAxesCombined } from "lucide-react";
+import { FaWallet } from "react-icons/fa";
+import { FaMoneyCheckAlt } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa";
+
 
 const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
   const location = useLocation();
@@ -1714,6 +1718,110 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                   }}
                 </SidebarLinkGroup>
               )}
+              {(modulePermission.role_management !== "no_access" ||
+  modulePermission.staff_management !== "no_access") && (
+    <SidebarLinkGroup
+      activeCondition={
+        pathname === "/auth" || pathname.includes("auth")
+      }
+    >
+      {(handleClick, open) => {
+        return (
+          <React.Fragment>
+            <div
+              className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] ${
+                (pathname === "/auth" ||
+                  pathname.includes("auth")) &&
+                "bg-graydark dark:bg-meta-4"
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                sidebarExpanded
+                  ? handleClick()
+                  : setSidebarExpanded(true);
+              }}
+            >
+              <FaWallet />
+              Accounts
+
+              <svg
+                className={`absolute right-4 top-1/2 -translate-y-1/2 fill-current ${
+                  open && "rotate-180"
+                }`}
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  clipRule="evenodd"
+                  d="M4.41107 6.9107C4.73651 6.58527 5.26414 6.58527 5.58958 6.9107L10.0003 11.3214L14.4111 6.91071C14.7365 6.58527 15.2641 6.58527 15.5896 6.91071C15.915 7.23614 15.915 7.76378 15.5896 8.08922L10.5896 13.0892C10.2641 13.4147 9.73651 13.4147 9.41107 13.0892L4.41107 8.08922C4.08563 7.76378 4.08563 7.23614 4.41107 6.9107Z"
+                  fill=""
+                />
+              </svg>
+            </div>
+
+            {/* <!-- Dropdown Menu Start --> */}
+            <div
+              className={`translate transform overflow-hidden ${
+                !open && "hidden"
+              }`}
+            >
+              <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
+
+                {/* <!-- Transactions --> */}
+                {(modulePermission.role_management === "edit" ||
+                  modulePermission.role_management === "view") && (
+                    <li>
+                      <NavLink
+                        to="/transaction"
+                        className={({ isActive }) =>
+                          isActive
+                            ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                            : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
+                            ${
+                              pathname.includes("transaction") &&
+                              "bg-graydark dark:bg-meta-4"
+                            }`
+                        }
+                      >
+                        <FaMoneyCheckAlt />
+                        Transactions
+                      </NavLink>
+                    </li>
+                  )}
+
+                {/* <!-- Branch Commissions --> */}
+                {(modulePermission.staff_management === "edit" ||
+                  modulePermission.staff_management === "view") && (
+                    <li>
+                      <NavLink
+                        to="/branch-commissions-setting"
+                        className={({ isActive }) =>
+                          isActive
+                            ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                            : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00]
+                            ${
+                              pathname.includes("users") &&
+                              "bg-graydark dark:bg-meta-4"
+                            }`
+                        }
+                      >
+                        <FaBuilding />
+                        Branch Commissions
+                      </NavLink>
+                    </li>
+                  )}
+              </ul>
+            </div>
+            {/* <!-- Dropdown Menu End --> */}
+          </React.Fragment>
+        );
+      }}
+    </SidebarLinkGroup>
+  )}
               {/* <!-- Menu Item Integration Management --> */}
 
               {/* <!-- Menu Item Package --> */}
