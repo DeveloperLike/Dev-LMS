@@ -334,48 +334,63 @@ export const EditLeadDrawer = ({
                         </Select>
                     </Form.Item>
 
-                    <Form.Item name="level_of_education" label="Level" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select education level">
-                            {fieldOptions["level_of_education"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="level_of_education"
+                        label="Level"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter education level"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="budget" label="Budget" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select budget">
-                            {fieldOptions["budget"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="budget"
+                        label="Budget"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter budget"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="service_looking_for" label="Service" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select service">
-                            {fieldOptions["service_looking_for"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="service_looking_for"
+                        label="Service"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter service"
+                        />
                     </Form.Item>
 
                     <Form.Item name="preferred_intake_of_pursuing" label="Intake" style={{ marginBottom: 5 }}>
                         <DatePicker style={{ width: "100%" }} size="large" placeholder="Select intake date" />
                     </Form.Item>
 
-                    <Form.Item name="fund_mode" label="Fund Mode" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select fund mode">
-                            {fieldOptions["fund_mode"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="fund_mode"
+                        label="Fund Mode"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter fund mode"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="learnt_IELTS" label="IELTS" style={{ marginBottom: 5 }}>
-                        <Radio.Group>
-                            {fieldOptions["learnt_IELTS"]?.map((opt) => (
-                                <Radio key={opt} value={opt}>{opt}</Radio>
-                            ))}
-                        </Radio.Group>
+                    <Form.Item
+                        name="learnt_IELTS"
+                        label="IELTS"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter IELTS score"
+                        />
                     </Form.Item>
 
                     <Form.Item
