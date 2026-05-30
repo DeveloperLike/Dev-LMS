@@ -112,6 +112,21 @@ const getGoogleGscSitesService = () => {
   });
 };
 
+const getGoogleSettingsService = () => {
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: "/google/settings",
+  });
+};
+
+const postGoogleSettingsService = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/google/settings",
+    data: payload,
+  });
+};
+
 const postToggleFacebookPageService = (payload) => {
   return authenticatedAxiosInstance({
     method: "post",
@@ -125,6 +140,35 @@ const postToggleFacebookAdAccountService = (payload) => {
     method: "post",
     url: "/api/v1/integration/toggle-facebook-ad-account",
     data: payload,
+  });
+};
+
+const getFacebookPerformanceSettingsService = () => {
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: "/facebook/performance-settings"
+  });
+};
+
+const postFacebookPerformanceSettingsService = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/facebook/performance-settings",
+    data: payload
+  });
+};
+
+const postSyncFacebookPerformanceService = () => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/facebook/ad-accounts"
+  });
+};
+
+const postGetFacebookPerformanceDataService = () => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/facebook/get-ad-data"
   });
 };
 
@@ -143,8 +187,14 @@ export {
   postGoogleCallbackService,
   getGooglePropertiesService,
   getGoogleGscSitesService,
+  getGoogleSettingsService,
+  postGoogleSettingsService,
   postToggleFacebookPageService,
-  postToggleFacebookAdAccountService
+  postToggleFacebookAdAccountService,
+  getFacebookPerformanceSettingsService,
+  postFacebookPerformanceSettingsService,
+  postSyncFacebookPerformanceService,
+  postGetFacebookPerformanceDataService
 };
 
 

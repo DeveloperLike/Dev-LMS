@@ -5,7 +5,7 @@ import customParseFormat from "dayjs/plugin/customParseFormat";
 import { CustomDatePicker, InputWithIcon } from "../../../../../Components/CustomComponents/InputWithIcon";
 import { PrimaryButton } from "../../../../../Components/CustomComponents/ButtonUi";
 import LoadSkeleton from "../../../../../Components/CustomComponents/Skeleton";
-import { getLeadStudentIntermediateDetailsService } from "../../../ApiService";
+import { getLeadStudentIntermediateDetailsService, editLeadIntermediateDetailService } from "../../../ApiService";
 dayjs.extend(customParseFormat);
 
 const fields = [
@@ -124,7 +124,7 @@ export const LeadIntermediate = ({
           : value.value,
       ])
     );
-    editIntermediateDetailService(dataToSubmit, userName)
+    editLeadIntermediateDetailService(dataToSubmit, userName)
       .then((response) => {
         if (response.data.success === "1") {
           getIntermediateDetailApi();

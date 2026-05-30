@@ -23,7 +23,12 @@ import {
     PhoneOutlined,
     EnvironmentOutlined,
     ApiOutlined,
-    CopyOutlined
+    CopyOutlined,
+    DatabaseOutlined,
+    DollarCircleOutlined,
+    EyeOutlined,
+    PieChartOutlined,
+    SlidersOutlined
 } from "@ant-design/icons";
 
 import FacebookLogin from "@greatsumini/react-facebook-login";
@@ -34,7 +39,11 @@ import {
     postLinkFacebookAccountListService,
     postSyncFacebookLeadsService,
     getFacebookLeadsService,
-    postToggleFacebookPageService
+    postToggleFacebookPageService,
+    getFacebookPerformanceSettingsService,
+    postFacebookPerformanceSettingsService,
+    postSyncFacebookPerformanceService,
+    postGetFacebookPerformanceDataService
 } from "../ApiService";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -57,6 +66,83 @@ const FaceBook = () => {
     const [syncedLeads, setSyncedLeads] = useState([]);
     const [showSettings, setShowSettings] = useState(false);
     const [activeTab, setActiveTab] = useState("pages");
+
+    // MongoDB Settings and Performance States
+    const [mongoUrl, setMongoUrl] = useState("");
+    const [isMongoActive, setIsMongoActive] = useState(false);
+    const [savingSettings, setSavingSettings] = useState(false);
+    const [syncingPerf, setSyncingPerf] = useState(false);
+    const [fetchingPerf, setFetchingPerf] = useState(false);
+    const [perfData, setPerfData] = useState([]);
+
+    const getPerformanceSettingsApi = () => {
+        getFacebookPerformanceSettingsService()
+            .then((response) => {
+                if (response.data?.success) {
+                    setMongoUrl(response.data.data.mongodb_url || "");
+                    setIsMongoActive(response.data.data.is_active || false);
+                }
+            })
+            .catch((err) => console.error("Error fetching performance settings:", err));
+    };
+
+    const getPerformanceDataApi = () => {
+        setFetchingPerf(true);
+        postGetFacebookPerformanceDataService()
+            .then((response) => {
+                if (response.data?.success) {
+                    setPerfData(response.data.data || []);
+                }
+            })
+            .catch((err) => console.error("Error fetching performance data:", err))
+            .finally(() => setFetchingPerf(false));
+    };
+
+    const handleSavePerformanceSettings = async () => {
+        if (!mongoUrl) {
+            message.warning("Please enter a valid MongoDB connection string");
+            return;
+        }
+        setSavingSettings(true);
+        try {
+            const response = await postFacebookPerformanceSettingsService({
+                mongodb_url: mongoUrl,
+                is_active: isMongoActive
+            });
+            if (response.data?.success) {
+                message.success("MongoDB Settings saved and connection verified successfully!");
+                getPerformanceSettingsApi();
+                getPerformanceDataApi();
+            } else {
+                message.error(response.data?.message || "Failed to save settings");
+            }
+        } catch (error) {
+            console.error("Error saving settings:", error);
+            const errorMsg = error.response?.data?.error || error.message || "Failed to verify MongoDB connection.";
+            message.error(`❌ ${errorMsg}`);
+        } finally {
+            setSavingSettings(false);
+        }
+    };
+
+    const handleSyncPerformanceData = async () => {
+        setSyncingPerf(true);
+        try {
+            const response = await postSyncFacebookPerformanceService();
+            if (response.data?.success) {
+                message.success(`Successfully synced Facebook Ad Performance data across ${response.data.total_accounts} accounts!`);
+                getPerformanceDataApi();
+            } else {
+                message.error(response.data?.error || "Failed to sync performance data");
+            }
+        } catch (error) {
+            console.error("Sync performance data error:", error);
+            const errorMsg = error.response?.data?.error || error.message || "Failed to sync Facebook performance.";
+            message.error(`❌ ${errorMsg}`);
+        } finally {
+            setSyncingPerf(false);
+        }
+    };
 
     // Dynamic App Settings state (Sync with localStorage)
     const [appId, setAppId] = useState(localStorage.getItem("fb_app_id") || import.meta.env.VITE_FACEBOOK_APP_ID || "1419171219814595");
@@ -102,8 +188,16 @@ const FaceBook = () => {
     };
 
     useEffect(() => {
+        getPerformanceSettingsApi();
+    }, []);
+
+    useEffect(() => {
         if (activeTab === "pages") getLeadApi();
         else if (activeTab === "leads") getSyncedLeadsApi();
+        else if (activeTab === "performance") {
+            getPerformanceSettingsApi();
+            getPerformanceDataApi();
+        }
     }, [page, leadsPage, appId, activeTab]);
 
     const handleSyncLeads = async () => {
@@ -478,6 +572,105 @@ const FaceBook = () => {
                             />
                         </div>
                     </Card>
+                </div>
+            )
+        },
+        {
+            key: "performance",
+            label: (
+                <Space>
+                    <PieChartOutlined />
+                    Facebook Performance
+                </Space>
+            ),
+            children: (
+                <div className="mt-4 space-y-6 animate-slide-up">
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        {/* MongoDB Config Card */}
+                        <Card className="lg:col-span-2 bg-white dark:bg-[#1E293B] border-slate-200 dark:border-slate-700 rounded-2xl shadow-md">
+                            <Title level={5} className="text-black dark:text-white mb-2 flex items-center gap-2">
+                                <DatabaseOutlined className="text-blue-500" />
+                                MongoDB Storage Setup
+                            </Title>
+                            <Paragraph className="text-slate-500 dark:text-slate-400 text-xs mb-4">
+                                Enter your MongoDB Connection String to store daily Facebook Ad Performance and campaigns data dynamically, mirroring yg-portal's structure.
+                            </Paragraph>
+
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 uppercase mb-2">MongoDB URI Connection String</label>
+                                    <Input.Password
+                                        value={mongoUrl}
+                                        onChange={(e) => setMongoUrl(e.target.value)}
+                                        placeholder="mongodb+srv://username:password@cluster.mongodb.net/database"
+                                        className="bg-slate-50 dark:bg-[#0F172A] border-slate-200 dark:border-slate-700 text-black dark:text-white rounded-lg p-2"
+                                    />
+                                </div>
+
+                                <div className="flex items-center justify-between p-3 bg-slate-50 dark:bg-[#0F172A] rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <div>
+                                        <div className="font-semibold text-xs text-slate-700 dark:text-slate-300">Auto-Sync Background Cron</div>
+                                        <div className="text-[10px] text-slate-500 dark:text-slate-400">Trigger daily auto-sync of campaign statistics every 30 minutes in background.</div>
+                                    </div>
+                                    <Switch
+                                        checked={isMongoActive}
+                                        onChange={(checked) => setIsMongoActive(checked)}
+                                        className="bg-slate-300 dark:bg-slate-700"
+                                    />
+                                </div>
+
+                                <Button
+                                    type="primary"
+                                    icon={<SlidersOutlined />}
+                                    onClick={handleSavePerformanceSettings}
+                                    loading={savingSettings}
+                                    className="w-full bg-blue-600 hover:bg-blue-700 border-none text-white rounded-lg h-10 font-medium"
+                                >
+                                    Verify & Save MongoDB Settings
+                                </Button>
+                            </div>
+                        </Card>
+
+                        {/* Action Panel Card */}
+                        <Card className="bg-white dark:bg-[#1E293B] border-slate-200 dark:border-slate-700 rounded-2xl shadow-md flex flex-col justify-between">
+                            <div>
+                                <Title level={5} className="text-black dark:text-white mb-2 flex items-center gap-2">
+                                    <SyncOutlined className="text-green-500" />
+                                    Performance Sync
+                                </Title>
+                                <Paragraph className="text-slate-500 dark:text-slate-400 text-xs mb-4">
+                                    Pull all Campaign stats, daily Impressions, Spend, CTR, Clicks and Lead statistics from the Facebook Graph API directly into MongoDB.
+                                </Paragraph>
+                            </div>
+
+                            <div className="space-y-4 mt-auto">
+                                <div className="p-3 bg-slate-50 dark:bg-[#0F172A] rounded-xl border border-slate-100 dark:border-slate-800">
+                                    <div className="text-xs text-slate-500 dark:text-slate-400 mb-1">Connection Status</div>
+                                    {mongoUrl ? (
+                                        <Tag color="success" className="rounded px-2.5 py-0.5 border-none font-semibold text-xs flex items-center gap-1.5 w-fit">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                            MongoDB Connected
+                                        </Tag>
+                                    ) : (
+                                        <Tag color="error" className="rounded px-2.5 py-0.5 border-none font-semibold text-xs w-fit">
+                                            Not Configured
+                                        </Tag>
+                                    )}
+                                </div>
+
+                                <Button
+                                    type="primary"
+                                    icon={<SyncOutlined spin={syncingPerf} />}
+                                    onClick={handleSyncPerformanceData}
+                                    loading={syncingPerf}
+                                    disabled={!mongoUrl}
+                                    className="w-full bg-green-600 hover:bg-green-700 border-none text-white rounded-lg h-10 font-medium disabled:opacity-50"
+                                >
+                                    Sync Performance Now
+                                </Button>
+                            </div>
+                        </Card>
+                    </div>
                 </div>
             )
         }

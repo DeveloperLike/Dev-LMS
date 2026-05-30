@@ -126,7 +126,28 @@ export const EditLeadDrawer = ({
     }, [open]);
 
     const generatePayload = (values) => {
+        const staticKeys = [
+            "full_name",
+            "email",
+            "state",
+            "city",
+            "nearest_branch",
+            "level_of_education",
+            "budget",
+            "service_looking_for",
+            "preferred_intake_of_pursuing",
+            "fund_mode",
+            "learnt_IELTS",
+            "interested_course",
+            "other_english_proficiency_test",
+            "learnt_german_language",
+        ];
+
         const dynamicFields = formData?.lead_fields?.map((field) => {
+            if (staticKeys.includes(field.code)) {
+                return null;
+            }
+
             let inputValue = values?.[field.code];
             let fallbackValue = field.value;
 
@@ -177,17 +198,20 @@ export const EditLeadDrawer = ({
             };
         }).filter(Boolean);
 
-        const staticFields = [
-            "full_name",
-            "email",
-            "city",
-            "nearest_branch",
-        ]
+        const staticFields = staticKeys
             .filter((key) => values[key] !== undefined)
-            .map((key) => ({
-                code: key,
-                value: values[key],
-            }));
+            .map((key) => {
+                let val = values[key];
+                if (key === "preferred_intake_of_pursuing" && val) {
+                    const parsed = dayjs(val);
+                    val = parsed.isValid() ? parsed.format("YYYY-MM-DD") : null;
+                }
+                return {
+                    code: key,
+                    value: val,
+                };
+            })
+            .filter((field) => field.value !== null && field.value !== undefined && field.value !== "" && field.value !== "undefined" && field.value !== "Invalid Date");
 
         return {
             assign_to: assignTo?.username || assignTo,
@@ -310,48 +334,63 @@ export const EditLeadDrawer = ({
                         </Select>
                     </Form.Item>
 
-                    <Form.Item name="level_of_education" label="Level" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select education level">
-                            {fieldOptions["level_of_education"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="level_of_education"
+                        label="Level"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter education level"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="budget" label="Budget" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select budget">
-                            {fieldOptions["budget"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="budget"
+                        label="Budget"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter budget"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="service_looking_for" label="Service" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select service">
-                            {fieldOptions["service_looking_for"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="service_looking_for"
+                        label="Service"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter service"
+                        />
                     </Form.Item>
 
                     <Form.Item name="preferred_intake_of_pursuing" label="Intake" style={{ marginBottom: 5 }}>
                         <DatePicker style={{ width: "100%" }} size="large" placeholder="Select intake date" />
                     </Form.Item>
 
-                    <Form.Item name="fund_mode" label="Fund Mode" style={{ marginBottom: 5 }}>
-                        <Select size="large" placeholder="Select fund mode">
-                            {fieldOptions["fund_mode"]?.map((opt) => (
-                                <Option key={opt} value={opt}>{opt}</Option>
-                            ))}
-                        </Select>
+                    <Form.Item
+                        name="fund_mode"
+                        label="Fund Mode"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter fund mode"
+                        />
                     </Form.Item>
 
-                    <Form.Item name="learnt_IELTS" label="IELTS" style={{ marginBottom: 5 }}>
-                        <Radio.Group>
-                            {fieldOptions["learnt_IELTS"]?.map((opt) => (
-                                <Radio key={opt} value={opt}>{opt}</Radio>
-                            ))}
-                        </Radio.Group>
+                    <Form.Item
+                        name="learnt_IELTS"
+                        label="IELTS"
+                        style={{ marginBottom: 5 }}
+                    >
+                        <Input
+                            size="large"
+                            placeholder="Enter IELTS score"
+                        />
                     </Form.Item>
 
                     <Form.Item

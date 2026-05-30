@@ -305,7 +305,8 @@ export const Viewlead = ({ mode }) => {
   const leadPackageListGetApi = () => {
     // console.log("leadPackageListGetApi calling");
     // userData &&
-    getRegisteredUserPackageService(userData).then((response) => {
+    getRegisteredUserPackageService(id).then((response) => {
+      // console.log(response.data.data, "package list response");
       setPackage(response.data.data);
       setPackageData(response.data.data);
     });
@@ -1008,7 +1009,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openSubStatusDrawer}
         onClose={() => setOpenSubStatusDrawer(false)}
         closeIcon={<ArrowLeftOutlined />}
@@ -1221,7 +1222,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openFollowupDrawer}
         onClose={() => {
           setOpenFollowupDrawer(false);
@@ -1266,6 +1267,7 @@ export const Viewlead = ({ mode }) => {
               setIsFollowUpModalOpen={setOpenFollowupDrawer}
               getDetailsDataApi={getDetailsDataApi}
               leadFollowupListGetApi={leadFollowupListGetApi}
+              isDrawerOpen={openFollowupDrawer}
             />
 
           </div>
@@ -1294,7 +1296,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openRemarksDrawer}
         onClose={() => {
           setOpenRemarksDrawer(false);

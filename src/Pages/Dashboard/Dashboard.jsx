@@ -87,9 +87,10 @@ export const Dashboard = () => {
           .filter((config) => {
             if (!data) return true;
 
-            return data.some(
+            const matchedItem = data.find(
               (d) => normalize(d.name) === normalize(config.key)
             );
+            return matchedItem && Number(matchedItem.count) > 0;
           })
 
           .map((config, index) => {

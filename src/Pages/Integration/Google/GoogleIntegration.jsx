@@ -1,7 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Card, Button, Typography, Space, message, Select, Divider, Tag, Spin, Result, Input } from "antd";
 import { GoogleOutlined, LogoutOutlined, CheckCircleOutlined, SyncOutlined, SettingOutlined } from "@ant-design/icons";
-import { getGoogleAuthUrlService, postGoogleCallbackService, getGooglePropertiesService, getGoogleGscSitesService } from "../../Integration/ApiService";
+import { 
+    getGoogleAuthUrlService, 
+    postGoogleCallbackService, 
+    getGooglePropertiesService, 
+    getGoogleGscSitesService,
+    getGoogleSettingsService,
+    postGoogleSettingsService
+} from "../../Integration/ApiService";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const { Title, Text } = Typography;
@@ -23,11 +30,40 @@ const GoogleIntegration = ({ mode }) => {
 
         if (code) {
             handleCallback(code);
-        } else if (isConnected) {
-            fetchProperties();
-            fetchGscSites();
+        } else {
+            fetchSettings();
         }
     }, []);
+
+    const fetchSettings = async () => {
+        setLoading(true);
+        try {
+            const response = await getGoogleSettingsService();
+            if (response.data.success) {
+                const { ga_property_id, gsc_site, is_linked } = response.data.data;
+                if (ga_property_id) {
+                    setSelectedProperty(ga_property_id);
+                    localStorage.setItem("google_property_id", ga_property_id);
+                }
+                if (gsc_site) {
+                    setSelectedGscSite(gsc_site);
+                    localStorage.setItem("google_gsc_site", gsc_site);
+                }
+                if (is_linked) {
+                    setIsConnected(true);
+                    if (!localStorage.getItem("google_access_token")) {
+                        localStorage.setItem("google_access_token", "central_linked");
+                    }
+                    // Fetch properties and GSC sites list for selection
+                    await Promise.all([fetchProperties(), fetchGscSites()]);
+                }
+            }
+        } catch (error) {
+            console.error("Fetch Google Settings Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     const handleCallback = async (code) => {
         setLoading(true);
@@ -41,8 +77,7 @@ const GoogleIntegration = ({ mode }) => {
                 message.success("Successfully connected to Google!");
                 // Clear query params
                 navigate("/integrations/google", { replace: true });
-                fetchProperties();
-                fetchGscSites();
+                await fetchSettings();
             } else {
                 message.error(response.data.message || "Failed to handle callback");
             }
@@ -107,16 +142,28 @@ const GoogleIntegration = ({ mode }) => {
         }
     };
 
-    const handlePropertyChange = (value) => {
+    const handlePropertyChange = async (value) => {
         setSelectedProperty(value);
         localStorage.setItem("google_property_id", value);
-        message.success("Analytics Property updated!");
+        try {
+            await postGoogleSettingsService({ ga_property_id: value });
+            message.success("Analytics Property updated globally!");
+        } catch (error) {
+            console.error("Global Property update error:", error);
+            message.error("Failed to update property globally");
+        }
     };
 
-    const handleGscSiteChange = (value) => {
+    const handleGscSiteChange = async (value) => {
         setSelectedGscSite(value);
         localStorage.setItem("google_gsc_site", value);
-        message.success("Search Console Site updated!");
+        try {
+            await postGoogleSettingsService({ gsc_site: value });
+            message.success("Search Console Site updated globally!");
+        } catch (error) {
+            console.error("Global Site update error:", error);
+            message.error("Failed to update GSC site globally");
+        }
     };
 
     const handleLogout = () => {

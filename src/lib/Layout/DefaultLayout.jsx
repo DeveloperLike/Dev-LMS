@@ -118,6 +118,29 @@ useEffect(() => {
       }
     });
 
+    // Fetch and sync global Google Integration settings
+    authenticatedAxiosInstance({
+      method: 'get',
+      url: `google/settings`,
+    }).then((response) => {
+      if (response.data.success && response.data.data) {
+        const { ga_property_id, gsc_site, is_linked } = response.data.data;
+        if (ga_property_id) {
+          localStorage.setItem("google_property_id", ga_property_id);
+        }
+        if (gsc_site) {
+          localStorage.setItem("google_gsc_site", gsc_site);
+        }
+        if (is_linked) {
+          if (!localStorage.getItem("google_access_token")) {
+            localStorage.setItem("google_access_token", "central_linked");
+          }
+        }
+      }
+    }).catch((err) => {
+      console.warn("Failed to fetch global Google settings:", err.message);
+    });
+
     getUserNow()
   }, []);
 

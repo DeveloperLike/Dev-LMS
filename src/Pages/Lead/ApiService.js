@@ -185,18 +185,94 @@ const getViewLeadCardDetailsService = (id) => {
 
 // lead profile api
 // profile service start from here
-const getLeadStudentPersonalDetailsService = (userName, params = {}) => {
+// const getLeadStudentPersonalDetailsService = (userName, params = {}) => {
+//   return authenticatedAxiosInstance({
+//     method: "get",
+//     url: `/api/v1/student/lead-student-profile/${userName}`,
+//     params: params,
+//   });
+// };
+
+// const editLeadProfileDetailService = (payload, id) => {
+//   return authenticatedAxiosInstance({
+//     method: "put",
+//     url: `api/v1/student/lead-student-profile/${id}`,
+//     data: payload,
+//   });
+// };
+
+const getLeadStudentPersonalDetailsService = (leadId) => {
   return authenticatedAxiosInstance({
     method: "get",
-    url: `/api/v1/student/lead-student-profile/${userName}`,
-    params: params,
+    url: `/api/v1/crm/lead-profile/${leadId}`,
   });
 };
 
-const editLeadProfileDetailService = (payload, id) => {
+const editLeadProfileDetailService = (payload, leadId) => {
   return authenticatedAxiosInstance({
-    method: "put",
-    url: `api/v1/student/lead-student-profile/${id}`,
+    method: "patch",
+    url: `/api/v1/crm/lead-profile/${leadId}`,
+    data: payload,
+  });
+};
+
+// ================= EDUCATION APIs =================
+
+const getLeadEducationDetailsService = (leadId) => {
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: `/api/v1/crm/lead-education/${leadId}`,
+  });
+};
+
+const editLeadEducationDetailService = (payload, leadId) => {
+  return authenticatedAxiosInstance({
+    method: "patch",
+    url: `/api/v1/crm/lead-education/${leadId}`,
+    data: payload,
+  });
+};
+
+const createLeadEducationDetailService = (
+  payload,
+  leadId
+) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `/api/v1/crm/lead-education/${leadId}`,
+    data: payload,
+  });
+};
+
+// ================= Employment APIs =================
+
+const getLeadEmploymentDetailsService = (
+  leadId
+) => {
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: `/api/v1/crm/lead-employment/${leadId}`,
+  });
+};
+
+const editLeadEmploymentDetailService = (
+  payload,
+  leadId
+) => {
+  return authenticatedAxiosInstance({
+    method: "patch",
+    url: `/api/v1/crm/lead-employment/${leadId}`,
+    data: payload,
+  });
+};
+
+const createLeadEmploymentDetailService = (
+  payload,
+  leadId
+) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: `/api/v1/crm/lead-employment/${leadId}`,
     data: payload,
   });
 };
@@ -297,19 +373,19 @@ const addLeadEmploymentService = (payload, username) => {
   });
 };
 
-const getLeadEmploymentDetailService = (id) => {
-  return authenticatedAxiosInstance({
-    method: "get",
-    url: `/api/v1/student/lead-employment-details/${id}`,
-  });
-};
-const editLeadEmploymentDetailService = (payload, username, id) => {
-  return authenticatedAxiosInstance({
-    method: "put",
-    url: `api/v1/student/lead-employment-details/${username}/${id}`,
-    data: payload,
-  });
-};
+// const getLeadEmploymentDetailService = (id) => {
+//   return authenticatedAxiosInstance({
+//     method: "get",
+//     url: `/api/v1/student/lead-employment-details/${id}`,
+//   });
+// };
+// const editLeadEmploymentDetailService = (payload, username, id) => {
+//   return authenticatedAxiosInstance({
+//     method: "put",
+//     url: `api/v1/student/lead-employment-details/${username}/${id}`,
+//     data: payload,
+//   });
+// };
 
 const getLeadRealPhoneService = async (id) => {
   const response = await authenticatedAxiosInstance({
@@ -400,6 +476,10 @@ const handlePayNow = async (leadId, transactionId) => {
 
 
 export {
+  createLeadEmploymentDetailService,
+  createLeadEducationDetailService,
+  getLeadEmploymentDetailsService,
+  editLeadEmploymentDetailService,
   deleteDripMarketingRuleService,
   updateActivityLog,
   getLeadListService,
@@ -439,12 +519,14 @@ export {
   getLeadStudentPostGraducationDetailsService,
   editLeadPostGraduationDetailService,
   addLeadEmploymentService,
-  getLeadEmploymentDetailService,
-  editLeadEmploymentDetailService,
+  // getLeadEmploymentDetailService,
+  // editLeadEmploymentDetailService,
   getLeadRealPhoneService,
   findLeadByEmailAndPhone,
   createFollowUp,
   createLeadByWebsite,
   handlePayNow,
   payNowService,
+  getLeadEducationDetailsService,
+  editLeadEducationDetailService,
 };
