@@ -438,6 +438,22 @@ const Sales = () => {
             })),
         },
         {
+            key: "source_group",
+            label: "Source Group",
+            type: "dropdown",
+            placeholder: "Select Source Group",
+            options: Array.from(
+                new Set(
+                    leadSourceDropdown
+                        .map((item) => item.source_group)
+                        .filter(Boolean)
+                )
+            ).map((group) => ({
+                value: group,
+                label: group,
+            })),
+        },
+        {
             key: "lead_status",
             label: "Lead Status",
             type: "dropdown",
