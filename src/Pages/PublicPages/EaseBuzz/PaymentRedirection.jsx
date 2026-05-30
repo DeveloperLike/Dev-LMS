@@ -14,7 +14,9 @@ const PaymentRedirection = () => {
     });
 
     useEffect(() => {
+        console.log("useEffect Fired");
         const result = statusConfig(paymentStatus);
+        console.log("Status Result:", result);
         setCurrent(result);
     }, [paymentStatus]);
 

@@ -1,6 +1,10 @@
 import { Button, Select } from "antd";
 import { Loader2Icon, Send, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { baseurl } from "../../lib/Constants";
+
+console.log(baseurl); // http://127.0.0.1:8443
+
 
 const nodeApi = import.meta.env.VITE_NODE_API_URL;
 const appUrl = import.meta.env.VITE_APP_URL;
@@ -208,7 +212,7 @@ const EasebuzzPaymentForm = ({
         formData.amount = parseFloat(formData.amount).toFixed(2);
 
         try {
-            const emailRes = await fetch(`${nodeApi}/send-mail`, {
+            const emailRes = await fetch(`${baseurl}/api/v1/send-mail`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -259,7 +263,7 @@ const EasebuzzPaymentForm = ({
                 };
 
                 const transactionRes = await fetch(
-                    `${nodeApi}/transaction-saved`,
+                    `${baseurl}/api/v1/transaction-saved`,
                     {
                         method: "POST",
                         headers: {
