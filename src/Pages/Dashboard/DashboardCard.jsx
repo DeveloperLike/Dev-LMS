@@ -32,9 +32,6 @@ export const DashboardCard = ({
 
         backdrop-blur-2xl
 
-        hover:-translate-y-1
-        hover:scale-[1.01]
-
         shadow-[0_10px_30px_rgba(0,0,0,0.06)]
         dark:shadow-[0_12px_40px_rgba(0,0,0,0.45)]
 

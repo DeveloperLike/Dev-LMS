@@ -15,7 +15,8 @@ import { LeadIntermediate } from "./Components/Intermidiate/Intermidiate";
 import { LeadDiploma } from "./Components/Diploma/Diploma";
 import { LeadGraduation } from "./Components/Graduation/Graduation";
 import { LeadPostGraduation } from "./Components/PostGraduation/PostGraduation";
-import LeadEmployment from "./Components/Employment/Employment";
+import LeadEducation from "./Components/Education";
+import LeadEmployment from "./Components/Employment";
 export const LeadStudentDetails = ({ modulePermission, mode }) => {
   const [isApproval, setIsApproval] = useState();
 
@@ -36,7 +37,7 @@ export const LeadStudentDetails = ({ modulePermission, mode }) => {
   const tabs = [
     {
       key: "personal",
-      label: <span className="text-slate-400">Personal</span>,
+      label: <span className="text-black dark:text-white"><strong>Personal</strong></span>,
       icon:
         isApproval?.profile === "Approved" ? (
           <IoMdCheckbox className="inline-block" color="green" size={18} />
@@ -49,6 +50,62 @@ export const LeadStudentDetails = ({ modulePermission, mode }) => {
           />
         ) : null,
       children: <PersonalInfomation userName={id} getIsApprovedApi={getIsApprovedApi} modulePermission={modulePermission} mode={mode} />,
+    },
+    {
+      key: "education",
+      icon:
+        isApproval?.education === "Approved" ? (
+          <IoMdCheckbox className="inline-block" color="green" size={18} />
+        ) : isApproval?.education === "Rejected" ? (
+          <RxCross2
+            className="inline-block bg-red-500 rounded"
+            color="white"
+            size={15}
+            mode={mode}
+          />
+        ) : null,
+      label: (
+        <span className="text-black dark:text-white"><strong>Education</strong></span>
+      ),
+      children: (
+        <LeadEducation
+          userName={id}
+          getIsApprovedApi={getIsApprovedApi}
+          modulePermission={modulePermission}
+          mode={mode}
+        />
+      ),
+    },
+    {
+      key: "employment",
+      icon:
+        isApproval?.employment === "Approved" ? (
+          <IoMdCheckbox
+            className="inline-block"
+            color="green"
+            size={18}
+          />
+        ) : isApproval?.employment === "Rejected" ? (
+          <RxCross2
+            className="inline-block bg-red-500 rounded"
+            color="white"
+            size={15}
+            mode={mode}
+          />
+        ) : null,
+      label: (
+        <span className="text-black dark:text-white">
+          <strong>Employment</strong>
+        </span>
+      ),
+      children: (
+        <LeadEmployment
+          userName={id}
+          getIsApprovedApi={getIsApprovedApi}
+          modulePermission={modulePermission}
+          mode={mode}
+        />
+      ),
     },
     // {
     //   key: "matriculation",
