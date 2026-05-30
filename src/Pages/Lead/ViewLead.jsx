@@ -1009,7 +1009,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openSubStatusDrawer}
         onClose={() => setOpenSubStatusDrawer(false)}
         closeIcon={<ArrowLeftOutlined />}
@@ -1222,7 +1222,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openFollowupDrawer}
         onClose={() => {
           setOpenFollowupDrawer(false);
@@ -1267,6 +1267,7 @@ export const Viewlead = ({ mode }) => {
               setIsFollowUpModalOpen={setOpenFollowupDrawer}
               getDetailsDataApi={getDetailsDataApi}
               leadFollowupListGetApi={leadFollowupListGetApi}
+              isDrawerOpen={openFollowupDrawer}
             />
 
           </div>
@@ -1295,7 +1296,7 @@ export const Viewlead = ({ mode }) => {
           </div>
         }
         placement="right"
-        width={420}
+        width={520}
         open={openRemarksDrawer}
         onClose={() => {
           setOpenRemarksDrawer(false);
