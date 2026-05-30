@@ -112,6 +112,21 @@ const getGoogleGscSitesService = () => {
   });
 };
 
+const getGoogleSettingsService = () => {
+  return authenticatedAxiosInstance({
+    method: "get",
+    url: "/google/settings",
+  });
+};
+
+const postGoogleSettingsService = (payload) => {
+  return authenticatedAxiosInstance({
+    method: "post",
+    url: "/google/settings",
+    data: payload,
+  });
+};
+
 const postToggleFacebookPageService = (payload) => {
   return authenticatedAxiosInstance({
     method: "post",
@@ -172,6 +187,8 @@ export {
   postGoogleCallbackService,
   getGooglePropertiesService,
   getGoogleGscSitesService,
+  getGoogleSettingsService,
+  postGoogleSettingsService,
   postToggleFacebookPageService,
   postToggleFacebookAdAccountService,
   getFacebookPerformanceSettingsService,

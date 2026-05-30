@@ -459,29 +459,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                               }`}
                           >
                             <ul className="mt-4 mb-5.5 flex flex-col gap-2.5 pl-6">
-                              {/* <!-- Menu Item Lead Form--> */}
-                              {(modulePermission.lead_form_management ===
-                                "edit" ||
-                                modulePermission.lead_form_management ===
-                                "view") && (
-                                  <li>
-                                    <NavLink
-                                      to="/form-field"
-                                      className={({ isActive }) =>
-                                        isActive
-                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
-                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
-                              ${pathname.includes("calendar") &&
-                                          "bg-graydark dark:bg-meta-4"
-                                          }`
-                                      }
-                                    >
-                                      <MdFormatListBulletedAdd />
-                                      Lead Form Fields
-                                    </NavLink>
-                                  </li>
-                                )}
-                              {/* <!-- Menu Item Lead Form--> */}
+                              
 
 
 
@@ -597,25 +575,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
 
 
 
-                              {/* <!-- Menu Item Sales --> */}
-
-                              {
-                                <li>
-                                  <NavLink
-                                    to="/sales"
-                                    className={({ isActive }) =>
-                                      isActive || pathname.startsWith("/sales")
-                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
-                                        : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
-                                    }
-                                  >
-                                    <MdOutlineTrendingUp size={18} />
-                                    Sales
-                                  </NavLink>
-                                </li>
-                              }
-
-                              {/* <!-- Menu Sales --> */}
+                              
 
 
 
@@ -755,6 +715,30 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                                   </li>
                                 )}
                               {/* <!-- Menu Item Assignment Rule --> */}
+
+                              {/* <!-- Menu Item Lead Form--> */}
+                              {(modulePermission.lead_form_management ===
+                                "edit" ||
+                                modulePermission.lead_form_management ===
+                                "view") && (
+                                  <li>
+                                    <NavLink
+                                      to="/form-field"
+                                      className={({ isActive }) =>
+                                        isActive
+                                          ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium"
+                                          : `group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium  duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4 
+                              ${pathname.includes("calendar") &&
+                                          "bg-graydark dark:bg-meta-4"
+                                          }`
+                                      }
+                                    >
+                                      <MdFormatListBulletedAdd />
+                                      Lead Form Fields
+                                    </NavLink>
+                                  </li>
+                                )}
+                              {/* <!-- Menu Item Lead Form--> */}
 
                             </ul>
                           </div>
@@ -1309,8 +1293,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                             {/* <!-- Menu  Facebook Performance --> */}
 
                             {/* <!-- Menu Google Search Console --> */}
-                            {modulePermission.user_group === "admin" &&
-                              (modulePermission.lead_management === "edit" ||
+                            {(modulePermission.lead_management === "edit" ||
                                 modulePermission.lead_management === "view") && (
                                 <li>
                                   <NavLink
@@ -1814,6 +1797,25 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, mode }) => {
                       </NavLink>
                     </li>
                   )}
+                  {/* <!-- Menu Item Sales --> */}
+
+                              {
+                                <li>
+                                  <NavLink
+                                    to="/sales"
+                                    className={({ isActive }) =>
+                                      isActive || pathname.startsWith("/sales")
+                                        ? "sidebarActive group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium bg-[#ffce00] text-black"
+                                        : "group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium duration-300 ease-in-out hover:text-white hover:bg-[#ffce00] dark:hover:bg-meta-4"
+                                    }
+                                  >
+                                    <MdOutlineTrendingUp size={18} />
+                                    Sales
+                                  </NavLink>
+                                </li>
+                              }
+
+                              {/* <!-- Menu Sales --> */}
               </ul>
             </div>
             {/* <!-- Dropdown Menu End --> */}
